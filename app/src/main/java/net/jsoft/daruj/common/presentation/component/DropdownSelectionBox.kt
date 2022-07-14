@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
@@ -43,6 +42,7 @@ fun DropdownSelectionBox(
     modifier: Modifier = Modifier,
     items: List<String>? = null,
     expanded: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit = {},
     onSelected: (index: Int) -> Unit = {}
 ) {
@@ -61,15 +61,21 @@ fun DropdownSelectionBox(
                     color = MaterialTheme.colorScheme.surface,
                     shape = MaterialTheme.shape.rounded10
                 )
-                .clickable(
-                    shape = MaterialTheme.shape.rounded10,
-                    onClick = onClick
+                .then(
+                    if(enabled) {
+                        Modifier.clickable(
+                            shape = MaterialTheme.shape.rounded10,
+                            onClick = onClick
+                        )
+                    } else {
+                        Modifier
+                    }
                 )
                 .padding(horizontal = BOX_HORIZONTAL_PADDING)
         ) {
             if (itemsNotEmpty) {
                 val rotation: Float by animateFloatAsState(
-                    targetValue = if (expanded) 180f else 0f
+                    targetValue = if (expanded && enabled) 180f else 0f
                 )
 
                 Icon(
@@ -90,24 +96,25 @@ fun DropdownSelectionBox(
                     .padding(horizontal = TEXT_HORIZONTAL_PADDING),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = if(enabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceDim
+                },
                 style = MaterialTheme.typography.labelMedium
             )
         }
 
         AnimatedVisibility(
-            visible = expanded && itemsNotEmpty
+            visible = expanded && enabled && itemsNotEmpty
         ) {
             val listState = rememberLazyListState()
-            val scope = rememberCoroutineScope()
 
             LaunchedEffect(text) {
-                scope.launch {
-                    val index = items?.indexOf(text)
+                val index = items?.indexOf(text)
 
-                    if (index != null && index != -1) {
-                        listState.scrollToItem(index)
-                    }
+                if (index != null && index != -1) {
+                    listState.scrollToItem(index)
                 }
             }
 

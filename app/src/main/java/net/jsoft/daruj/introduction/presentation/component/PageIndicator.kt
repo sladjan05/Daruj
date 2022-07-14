@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.common.presentation.ui.theme.shape
 
+private val WIDTH = 35.dp
+private val HEIGHT = 5.dp
+
 @Composable
 fun PageIndicator(
     pageCount: Int,
@@ -17,7 +20,7 @@ fun PageIndicator(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.height(5.dp),
+        modifier = modifier.height(HEIGHT),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         for(i in 0 until pageCount) {
@@ -31,7 +34,7 @@ fun PageIndicator(
 
             Box(
                 modifier = Modifier
-                    .width(35.dp)
+                    .width(WIDTH)
                     .fillMaxHeight()
                     .background(
                         color = color,

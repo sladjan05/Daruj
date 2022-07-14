@@ -1,4 +1,4 @@
-package net.jsoft.daruj.auth.di.access
+package net.jsoft.daruj.auth.di
 
 import dagger.Binds
 import dagger.Module

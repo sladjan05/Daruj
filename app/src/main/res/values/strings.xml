@@ -273,5 +273,6 @@
     <string name="tx_tutorial_illustration_description_3">Dijeljenjem objava, darovanjem krvi i ostalim aktivnostima u aplikaciji sakupljaš bodove i ostvaruješ pravo na nagrade.</string>
     <string name="tx_next">Dalje</string>
     <string name="tx_finish">Završi</string>
+    <string name="tx_code_is_sent_again">Kod je poslan.</string>
 
 </resources>

@@ -5,28 +5,30 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberViewModel
 import net.jsoft.daruj.common.presentation.component.DropdownSelectionBox
 import net.jsoft.daruj.common.presentation.component.TextBox
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
 import net.jsoft.daruj.common.util.countriesSortedBySerbianAlphabet
 import net.jsoft.daruj.common.util.value
 
 @Composable
 fun PhoneNumberScreen(
-    viewModel: PhoneNumberViewModel = hiltViewModel()
+    viewModel: PhoneNumberViewModel,
+    isLoading: Boolean
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -34,6 +36,12 @@ fun PhoneNumberScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        LaunchedEffect(isLoading) {
+            if (isLoading) {
+                focusManager.clearFocus()
+            }
+        }
+
         Text(
             text = R.string.tx_enter_your_phone_number.value,
             color = MaterialTheme.colorScheme.primary,
@@ -61,6 +69,7 @@ fun PhoneNumberScreen(
             modifier = Modifier.width(300.dp),
             items = countryNames,
             expanded = viewModel.countryDropdownExpanded,
+            enabled = !isLoading,
             onClick = {
                 viewModel.onEvent(PhoneNumberEvent.ExpandCountryDropdown)
             },
@@ -80,6 +89,7 @@ fun PhoneNumberScreen(
                 text = viewModel.dialCode.value,
                 prefix = "+",
                 maxLength = 4,
+                enabled = !isLoading,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone
                 ),
@@ -95,6 +105,7 @@ fun PhoneNumberScreen(
                 text = viewModel.phoneNumber.value,
                 hint = R.string.tx_phone_number.value,
                 maxLength = 10,
+                enabled = !isLoading,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone
                 ),

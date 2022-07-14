@@ -16,6 +16,12 @@ import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.util.value
 
+private val HEIGHT = 300.dp
+private val ILLUSTRATION_HEIGHT = 140.dp
+private val DESCRIPTION_WIDTH = 265.dp
+
+private val TITLE_WIDTH = 280.dp
+
 @Composable
 fun IntroductionIllustration(
     painter: Painter,
@@ -24,22 +30,21 @@ fun IntroductionIllustration(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .height(380.dp),
+        modifier = modifier.height(HEIGHT),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painter,
             contentDescription = "Illustration",
-            modifier = Modifier.height(140.dp)
+            modifier = Modifier.height(ILLUSTRATION_HEIGHT)
         )
 
         Spacer(modifier = Modifier.height(26.dp))
 
         Text(
             text = title,
-            modifier = Modifier.widthIn(max = 280.dp),
+            modifier = Modifier.widthIn(max = TITLE_WIDTH),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center
@@ -49,7 +54,7 @@ fun IntroductionIllustration(
 
         Text(
             text = description,
-            modifier = Modifier.widthIn(max = 265.dp),
+            modifier = Modifier.widthIn(max = DESCRIPTION_WIDTH),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center

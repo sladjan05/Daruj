@@ -1,81 +1,98 @@
 package net.jsoft.daruj.auth.presentation.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import net.jsoft.daruj.auth.domain.Authenticator
+import net.jsoft.daruj.R
+import net.jsoft.daruj.auth.domain.usecase.InitializeAuthenticatorUseCase
+import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
+import net.jsoft.daruj.auth.domain.usecase.VerifyWithCodeUseCase
+import net.jsoft.daruj.auth.exception.InvalidRequestException
+import net.jsoft.daruj.auth.exception.RedundantVerificationRequestException
+import net.jsoft.daruj.auth.exception.TooManyRequestsException
+import net.jsoft.daruj.auth.exception.WrongCodeException
 import net.jsoft.daruj.auth.presentation.screen.Screen
-import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberEvent
-import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberTask
-import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberViewModel
-import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeEvent
-import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeTask
-import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeViewModel
-import net.jsoft.daruj.common.presentation.viewmodel.BasicViewModel
+import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
 import net.jsoft.daruj.common.util.UiText.Companion.asUiText
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    val phoneViewModel: PhoneNumberViewModel,
-    val verificationViewModel: VerificationCodeViewModel,
+    private val initializeAuthenticator: InitializeAuthenticatorUseCase,
+    private val sendSMSVerification: SendSMSVerificationUseCase,
+    private val verifyWithCode: VerifyWithCodeUseCase
+) : LoadingViewModel<AuthEvent, AuthTask>() {
 
-    private val authenticator: Authenticator
-) : BasicViewModel<AuthEvent, AuthTask>() {
-    var screen: Screen = Screen.Phone
+    var screen: Screen by mutableStateOf(Screen.Phone)
         private set
 
-    init {
-        viewModelScope.launch {
-            phoneViewModel.taskFlow.collectLatest { task ->
-                when (task) {
-                    is PhoneNumberTask.Next -> {
-                        screen = Screen.Verification
-                        _taskFlow.emit(AuthTask.Next)
-                    }
+    private lateinit var fullPhoneNumber: String
 
-                    is PhoneNumberTask.ShowError -> {
-                        _taskFlow.emit(AuthTask.ShowError(task.message))
-                    }
+    override fun onEvent(event: AuthEvent) {
+        when (event) {
+            is AuthEvent.SendVerificationCode -> viewModelScope.launch(smsExceptionHandler) {
+                fullPhoneNumber = "+${event.dialCode}${event.phoneNumber}"
 
-                    is PhoneNumberTask.ShowInfo -> TODO()
+                load {
+                    initializeAuthenticator(event.activity)
+                    sendSMSVerification(fullPhoneNumber)
                 }
+
+                screen = Screen.Verification
+                mTaskFlow.emit(AuthTask.ShowVerificationScreen)
             }
-        }
 
-        viewModelScope.launch {
-            verificationViewModel.taskFlow.collectLatest { task ->
-                when (task) {
-                    is VerificationCodeTask.Next -> {
-                        _taskFlow.emit(AuthTask.ShowInfo("Uspješna prijava!".asUiText()))
-                    }
 
-                    VerificationCodeTask.SendVerificationCodeAgain -> viewModelScope.launch {
-                        TODO("Wrong phone format")
-                        authenticator.sendSMSVerification(phoneViewModel.phoneNumber.toString())
-                    }
+            is AuthEvent.SendVerificationCodeAgain -> viewModelScope.launch(smsExceptionHandler) {
+                load { sendSMSVerification(fullPhoneNumber) }
+            }
 
-                    is VerificationCodeTask.ShowError -> {
-                        _taskFlow.emit(AuthTask.ShowError(task.message))
-                    }
-
-                    is VerificationCodeTask.ShowInfo -> TODO()
-                }
+            is AuthEvent.VerifyWithCode -> viewModelScope.launch(verificationExceptionHandler) {
+                load { verifyWithCode(event.code) }
+                mTaskFlow.emit(AuthTask.Finish)
             }
         }
     }
 
-    override fun onEvent(event: AuthEvent) {
-        when (event) {
-            is AuthEvent.Next -> when (screen) {
-                is Screen.Phone -> {
-                    phoneViewModel.onEvent(PhoneNumberEvent.Next(event.activity))
-                }
+    // ============================== EXCEPTION HANDLERS ==============================
 
-                is Screen.Verification -> {
-                    verificationViewModel.onEvent(VerificationCodeEvent.Next)
-                }
+    private val smsExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        isLoading = false
+
+        when (throwable) {
+            is RedundantVerificationRequestException -> {
+                Log.d("Auth", "RedundantVerificationRequest")
+            }
+
+            is InvalidRequestException -> viewModelScope.launch {
+                mTaskFlow.emit(AuthTask.ShowError(R.string.tx_invalid_phone_number.asUiText()))
+            }
+
+            is TooManyRequestsException -> viewModelScope.launch {
+                mTaskFlow.emit(AuthTask.ShowError(R.string.tx_too_many_requests.asUiText()))
+            }
+
+            else -> viewModelScope.launch {
+                mTaskFlow.emit(AuthTask.ShowError(R.string.tx_unknown_error.asUiText()))
+            }
+        }
+    }
+
+    private val verificationExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        isLoading = false
+
+        when (throwable) {
+            is WrongCodeException -> viewModelScope.launch {
+                mTaskFlow.emit(AuthTask.ShowError(R.string.tx_invalid_code.asUiText()))
+            }
+
+            else -> viewModelScope.launch {
+                mTaskFlow.emit(AuthTask.ShowError(R.string.tx_unknown_error.asUiText()))
             }
         }
     }

@@ -1,5 +1,6 @@
 package net.jsoft.daruj.auth.presentation.component
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
@@ -14,15 +15,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.presentation.component.TextBox
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
+
+private val WIDTH = 40.dp
 
 @Composable
 fun VerificationCodeInputBox(
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
     code: String = "",
+    enabled: Boolean = true,
     onCodeChange: (code: String) -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
@@ -35,7 +40,7 @@ fun VerificationCodeInputBox(
         for (i in 0 until 6) {
             TextBox(
                 modifier = Modifier
-                    .width(40.dp)
+                    .width(WIDTH)
                     .then(
                         if (i == code.length) {
                             Modifier.focusRequester(focusRequester)
@@ -49,6 +54,7 @@ fun VerificationCodeInputBox(
                     ""
                 },
                 maxLength = 1,
+                enabled = enabled,
                 contentAlignment = Alignment.Center,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone,

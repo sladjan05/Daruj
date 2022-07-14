@@ -38,6 +38,7 @@ fun TextBox(
     hint: String? = null,
     multiline: Boolean = false,
     maxLength: Int = Int.MAX_VALUE,
+    enabled: Boolean = true,
     contentAlignment: Alignment = Alignment.CenterStart,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions(),
@@ -57,7 +58,11 @@ fun TextBox(
         },
         singleLine = !multiline,
         textStyle = MaterialTheme.typography.labelMedium.copy(
-            color = MaterialTheme.colorScheme.onSurface
+            color = if (enabled) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurfaceDim
+            }
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceDim),
         keyboardOptions = keyboardOptions,
@@ -72,14 +77,22 @@ fun TextBox(
                         shape = MaterialTheme.shape.rounded10
                     )
                     .then(
-                        if (onCustomClick != null) {
-                            Modifier.clickable(
+                        when {
+                            !enabled -> {
+                                Modifier.clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = { }
+                                )
+                            }
+
+                            onCustomClick != null -> Modifier.clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
                                 onClick = onCustomClick
                             )
-                        } else {
-                            Modifier
+
+                            else -> Modifier
                         }
                     )
                     .padding(horizontal = BOX_HORIZONTAL_PADDING),
@@ -101,8 +114,8 @@ fun TextBox(
                                 measurable: Measurable,
                                 constraints: Constraints
                             ): MeasureResult {
-                                val placeable = measurable.measure(constraints.offset(horizontal = 10))
-                                return layout(placeable.width, placeable.height) {
+                                val placeable = measurable.measure(constraints)
+                                return layout(placeable.width + 5, placeable.height) {
                                     placeable.placeRelative(5, 0)
                                 }
                             }
@@ -117,7 +130,11 @@ fun TextBox(
                 ) {
                     Text(
                         text = prefix,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = if (enabled) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceDim
+                        },
                         style = MaterialTheme.typography.labelMedium
                     )
 

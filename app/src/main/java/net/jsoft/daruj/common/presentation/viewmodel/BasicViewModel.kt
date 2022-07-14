@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 
 abstract class BasicViewModel<Event, Task> : ViewModel() {
-    protected val _taskFlow = MutableSharedFlow<Task>()
-    val taskFlow: SharedFlow<Task> = _taskFlow
+    protected val mTaskFlow = MutableSharedFlow<Task>()
+    val taskFlow: SharedFlow<Task> = mTaskFlow
 
     abstract fun onEvent(event: Event)
 }

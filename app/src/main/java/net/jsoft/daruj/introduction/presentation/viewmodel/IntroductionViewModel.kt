@@ -24,7 +24,7 @@ class IntroductionViewModel @Inject constructor(
 
             is IntroductionEvent.Next -> {
                 if (_page.value == PAGE_COUNT - 1) viewModelScope.launch {
-                    _taskFlow.emit(IntroductionTask.Next)
+                    mTaskFlow.emit(IntroductionTask.Next)
                 } else {
                     _page.value += 1
                 }

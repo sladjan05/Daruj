@@ -14,7 +14,7 @@ class WelcomeViewModel @Inject constructor(
     override fun onEvent(event: WelcomeEvent) {
         when(event) {
             is WelcomeEvent.Next -> viewModelScope.launch {
-                _taskFlow.emit(WelcomeTask.Next)
+                mTaskFlow.emit(WelcomeTask.Next)
             }
         }
     }

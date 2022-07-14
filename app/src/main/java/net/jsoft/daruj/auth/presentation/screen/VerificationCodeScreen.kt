@@ -6,35 +6,35 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.component.VerificationCodeInputBox
+import net.jsoft.daruj.auth.presentation.viewmodel.AuthEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeViewModel
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
-import net.jsoft.daruj.common.util.clickable
 import net.jsoft.daruj.common.util.value
 
 @Composable
 fun VerificationCodeScreen(
-    viewModel: VerificationCodeViewModel = hiltViewModel()
+    viewModel: VerificationCodeViewModel,
+    isLoading: Boolean,
+    onEvent: (event: AuthEvent) -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
-    val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
@@ -43,9 +43,10 @@ fun VerificationCodeScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LaunchedEffect(Unit) {
-            scope.launch {
-                delay(500)
+        LaunchedEffect(isLoading) {
+            if (isLoading) {
+                focusManager.clearFocus()
+            } else {
                 focusRequester.requestFocus()
             }
         }
@@ -77,9 +78,10 @@ fun VerificationCodeScreen(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
-                  focusRequester.requestFocus()
+                    focusRequester.requestFocus()
                 },
             code = viewModel.code.value,
+            enabled = !isLoading,
             onCodeChange = { code ->
                 viewModel.onEvent(VerificationCodeEvent.CodeChange(code))
             }
@@ -101,7 +103,11 @@ fun VerificationCodeScreen(
                 text = buildAnnotatedString {
                     withStyle(
                         SpanStyle(
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = if (isLoading) {
+                                MaterialTheme.colorScheme.onBackgroundDim
+                            } else {
+                                MaterialTheme.colorScheme.onBackground
+                            },
                             textDecoration = TextDecoration.Underline
                         )
                     ) {
@@ -109,7 +115,7 @@ fun VerificationCodeScreen(
                     }
                 },
                 onClick = {
-                    viewModel.onEvent(VerificationCodeEvent.SendVerificationCodeAgain)
+                    onEvent(AuthEvent.SendVerificationCodeAgain)
                 },
                 style = MaterialTheme.typography.bodyMedium
             )
