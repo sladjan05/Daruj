@@ -1,11 +1,15 @@
 package net.jsoft.daruj.introduction.presentation.screen
 
+import android.app.Activity
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -14,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.AuthActivity
@@ -33,8 +37,7 @@ fun IntroductionScreen(
 ) {
     val context = LocalContext.current
 
-    val pagerState = remember { PagerState() }
-    var page by remember { mutableStateOf(0) }
+    val pagerState = rememberPagerState()
 
     LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collectLatest { newPage ->
@@ -43,23 +46,17 @@ fun IntroductionScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.page.collectLatest { newPage ->
-            page = newPage
-            pagerState.animateScrollToPage(page)
-        }
-    }
-
-    LaunchedEffect(Unit) {
         viewModel.taskFlow.collectLatest { task ->
-            when(task) {
-                is IntroductionTask.Next -> {
+            when (task) {
+                is IntroductionTask.SwitchPage -> pagerState.animateScrollToPage(viewModel.page)
+                is IntroductionTask.Finish -> {
                     val intent = Intent(
                         context,
                         AuthActivity::class.java
                     )
 
                     context.startActivity(intent)
-                    (context as ComponentActivity).finish()
+                    (context as Activity).finish()
                 }
             }
         }
@@ -113,14 +110,14 @@ fun IntroductionScreen(
         ) {
             PageIndicator(
                 pageCount = IntroductionViewModel.PAGE_COUNT,
-                page = page,
+                page = viewModel.page,
                 modifier = Modifier.width(125.dp)
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
             PrimaryButton(
-                text = if (page == IntroductionViewModel.PAGE_COUNT - 1) {
+                text = if (viewModel.page == IntroductionViewModel.PAGE_COUNT - 1) {
                     R.string.tx_finish.value
                 } else {
                     R.string.tx_next.value

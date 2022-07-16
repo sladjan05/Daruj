@@ -1,6 +1,5 @@
 package net.jsoft.daruj.auth.presentation.component
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
@@ -15,7 +14,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.presentation.component.TextBox
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
@@ -42,17 +40,13 @@ fun VerificationCodeInputBox(
                 modifier = Modifier
                     .width(WIDTH)
                     .then(
-                        if (i == code.length) {
+                        if (i == code.length || (code.length == 6 && i == 5)) {
                             Modifier.focusRequester(focusRequester)
                         } else {
                             Modifier
                         }
                     ),
-                text = if (i < code.length) {
-                    code[i].toString()
-                } else {
-                    ""
-                },
+                text = if (i < code.length) code[i].toString() else "",
                 maxLength = 1,
                 enabled = enabled,
                 contentAlignment = Alignment.Center,
@@ -64,8 +58,8 @@ fun VerificationCodeInputBox(
                     onCodeChange(code.substring(0, i) + value)
 
                     if (value.isEmpty()) {
-                        if(i != 0) focusManager.moveFocus(FocusDirection.Previous)
-                    } else if(i != 5) {
+                        if (i != 0) focusManager.moveFocus(FocusDirection.Previous)
+                    } else if (i != 5) {
                         focusManager.moveFocus(FocusDirection.Next)
                     }
                 },

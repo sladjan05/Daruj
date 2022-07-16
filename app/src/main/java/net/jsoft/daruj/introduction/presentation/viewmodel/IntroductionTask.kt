@@ -1,5 +1,6 @@
 package net.jsoft.daruj.introduction.presentation.viewmodel
 
 sealed class IntroductionTask {
-    object Next : IntroductionTask()
+    object SwitchPage : IntroductionTask()
+    object Finish : IntroductionTask()
 }

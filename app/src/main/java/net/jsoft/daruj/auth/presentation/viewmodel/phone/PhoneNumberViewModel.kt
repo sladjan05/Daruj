@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import net.jsoft.daruj.common.presentation.viewmodel.BasicViewModel
 import net.jsoft.daruj.common.util.Country
-import net.jsoft.daruj.common.util.UiText.Companion.asUiText
+import net.jsoft.daruj.common.util.asUiText
 
 class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
 
@@ -25,11 +25,11 @@ class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
 
     override fun onEvent(event: PhoneNumberEvent) {
         when (event) {
-            is PhoneNumberEvent.ExpandCountryDropdown -> countryDropdownExpanded = !countryDropdownExpanded
+            is PhoneNumberEvent.CountryDropdownClick -> setExpanded(country = !countryDropdownExpanded)
 
             is PhoneNumberEvent.CountryChange -> {
                 country = event.country
-                countryDropdownExpanded = false
+                setExpanded()
 
                 if (country != null) {
                     dialCode = country!!.dialCode.removePrefix("+").asUiText()
@@ -45,5 +45,11 @@ class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
 
             is PhoneNumberEvent.PhoneNumberChange -> phoneNumber = event.phoneNumber.asUiText()
         }
+    }
+
+    private fun setExpanded(
+        country: Boolean = false
+    ) {
+        countryDropdownExpanded = country
     }
 }

@@ -6,7 +6,6 @@ sealed class AuthTask {
     object ShowVerificationScreen : AuthTask()
     object Finish : AuthTask()
 
-
     class ShowInfo(val message: UiText) : AuthTask()
     class ShowError(val message: UiText) : AuthTask()
 }

@@ -1,9 +1,6 @@
 package net.jsoft.daruj.common.presentation.component
 
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -26,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
+import net.jsoft.daruj.common.util.rememberMutableInteractionSource
 
 private val HEIGHT = 40.dp
 private val BOX_HORIZONTAL_PADDING = 12.dp
@@ -45,8 +43,6 @@ fun TextBox(
     onValueChange: (value: String) -> Unit = {},
     onCustomClick: (() -> Unit)? = null
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     BasicTextField(
         value = text,
         modifier = modifier
@@ -67,7 +63,7 @@ fun TextBox(
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceDim),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        interactionSource = interactionSource,
+        interactionSource = rememberMutableInteractionSource(),
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
@@ -80,14 +76,14 @@ fun TextBox(
                         when {
                             !enabled -> {
                                 Modifier.clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
+                                    interactionSource = rememberMutableInteractionSource(),
                                     indication = null,
                                     onClick = { }
                                 )
                             }
 
                             onCustomClick != null -> Modifier.clickable(
-                                interactionSource = remember { MutableInteractionSource() },
+                                interactionSource = rememberMutableInteractionSource(),
                                 indication = null,
                                 onClick = onCustomClick
                             )
@@ -122,7 +118,7 @@ fun TextBox(
                         })
                         .widthIn(min = 0.dp, max = Dp.Infinity)
                         .horizontalScroll(
-                            state = remember { ScrollState(0) },
+                            state = rememberScrollState(0),
                             enabled = false
                         ),
                     horizontalArrangement = Arrangement.Start,

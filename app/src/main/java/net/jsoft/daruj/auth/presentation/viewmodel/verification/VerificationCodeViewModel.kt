@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import net.jsoft.daruj.common.presentation.viewmodel.BasicViewModel
-import net.jsoft.daruj.common.util.UiText.Companion.asUiText
+import net.jsoft.daruj.common.util.asUiText
 
 class VerificationCodeViewModel : BasicViewModel<VerificationCodeEvent, Nothing>() {
 
@@ -13,9 +13,7 @@ class VerificationCodeViewModel : BasicViewModel<VerificationCodeEvent, Nothing>
 
     override fun onEvent(event: VerificationCodeEvent) {
         when (event) {
-            is VerificationCodeEvent.CodeChange -> {
-                code = event.code.asUiText()
-            }
+            is VerificationCodeEvent.CodeChange -> code = event.code.asUiText()
         }
     }
 }

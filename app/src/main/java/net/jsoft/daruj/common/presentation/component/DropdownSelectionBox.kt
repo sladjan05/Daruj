@@ -25,7 +25,7 @@ import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
 import net.jsoft.daruj.common.util.Country
-import net.jsoft.daruj.common.util.clickable
+import net.jsoft.daruj.common.util.clickableIf
 
 private val HEIGHT = 40.dp
 private val BOX_HORIZONTAL_PADDING = 12.dp
@@ -61,15 +61,10 @@ fun DropdownSelectionBox(
                     color = MaterialTheme.colorScheme.surface,
                     shape = MaterialTheme.shape.rounded10
                 )
-                .then(
-                    if(enabled) {
-                        Modifier.clickable(
-                            shape = MaterialTheme.shape.rounded10,
-                            onClick = onClick
-                        )
-                    } else {
-                        Modifier
-                    }
+                .clickableIf(
+                    clickable = enabled,
+                    shape = MaterialTheme.shape.rounded10,
+                    onClick = onClick
                 )
                 .padding(horizontal = BOX_HORIZONTAL_PADDING)
         ) {
@@ -96,7 +91,7 @@ fun DropdownSelectionBox(
                     .padding(horizontal = TEXT_HORIZONTAL_PADDING),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = if(enabled) {
+                color = if (enabled) {
                     MaterialTheme.colorScheme.onSurface
                 } else {
                     MaterialTheme.colorScheme.onSurfaceDim
@@ -105,16 +100,14 @@ fun DropdownSelectionBox(
             )
         }
 
-        AnimatedVisibility(
-            visible = expanded && enabled && itemsNotEmpty
-        ) {
+        AnimatedVisibility(visible = expanded && enabled && itemsNotEmpty) {
             val listState = rememberLazyListState()
 
             LaunchedEffect(text) {
                 val index = items?.indexOf(text)
 
                 if (index != null && index != -1) {
-                    listState.scrollToItem(index)
+                    listState.animateScrollToItem(index)
                 }
             }
 
@@ -139,18 +132,12 @@ fun DropdownSelectionBox(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(HEIGHT)
-                            .then(
-                                if (isCurrentItem) {
-                                    Modifier
-                                } else {
-                                    Modifier.clickable(
-                                        shape = RectangleShape,
-                                        onClick = {
-                                            onSelected(index)
-                                        }
-                                    )
-                                }
-                            )
+                            .clickableIf(
+                                clickable = !isCurrentItem,
+                                shape = RectangleShape
+                            ) {
+                                onSelected(index)
+                            }
                             .padding(horizontal = BOX_HORIZONTAL_PADDING),
                         contentAlignment = Alignment.Center
                     ) {
@@ -185,7 +172,7 @@ fun DropdownSelectionBoxPreview() {
         DropdownSelectionBox(
             text = current,
             items = countryNames,
-            modifier = Modifier.width(350.dp),
+            modifier = Modifier.width(90.dp),
             expanded = expanded,
             onClick = {
                 expanded = !expanded

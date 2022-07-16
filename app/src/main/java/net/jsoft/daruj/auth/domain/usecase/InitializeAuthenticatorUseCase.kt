@@ -1,7 +1,6 @@
 package net.jsoft.daruj.auth.domain.usecase
 
 import net.jsoft.daruj.auth.domain.Authenticator
-import net.jsoft.daruj.auth.exception.WrongCodeException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,7 +8,7 @@ import javax.inject.Singleton
 class InitializeAuthenticatorUseCase @Inject constructor(
     private val authenticator: Authenticator
 ) {
-    operator fun invoke(vararg args: Any) {
+    operator fun invoke(vararg args: Pair<Any, Any>) {
         authenticator.initialize(*args)
     }
 }

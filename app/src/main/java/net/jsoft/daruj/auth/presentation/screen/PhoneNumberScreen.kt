@@ -2,8 +2,6 @@ package net.jsoft.daruj.auth.presentation.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -11,14 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberViewModel
 import net.jsoft.daruj.common.presentation.component.DropdownSelectionBox
 import net.jsoft.daruj.common.presentation.component.TextBox
-import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
+import net.jsoft.daruj.common.presentation.component.TitleSubtitle
 import net.jsoft.daruj.common.util.countriesSortedBySerbianAlphabet
 import net.jsoft.daruj.common.util.value
 
@@ -42,21 +39,9 @@ fun PhoneNumberScreen(
             }
         }
 
-        Text(
-            text = R.string.tx_enter_your_phone_number.value,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        Text(
-            text = R.string.tx_enter_your_phone_number_desc.value,
-            modifier = Modifier.widthIn(max = 270.dp),
-            color = MaterialTheme.colorScheme.onBackgroundDim,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
+        TitleSubtitle(
+            title = R.string.tx_enter_your_phone_number.value,
+            subtitle = R.string.tx_enter_your_phone_number_desc.value
         )
 
         Spacer(modifier = Modifier.height(45.dp))
@@ -71,7 +56,7 @@ fun PhoneNumberScreen(
             expanded = viewModel.countryDropdownExpanded,
             enabled = !isLoading,
             onClick = {
-                viewModel.onEvent(PhoneNumberEvent.ExpandCountryDropdown)
+                viewModel.onEvent(PhoneNumberEvent.CountryDropdownClick)
             },
             onSelected = { index ->
                 viewModel.onEvent(PhoneNumberEvent.CountryChange(countries[index]))

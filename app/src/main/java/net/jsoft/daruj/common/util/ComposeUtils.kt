@@ -4,11 +4,15 @@ import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 
@@ -19,6 +23,13 @@ fun Modifier.clickable(shape: Shape, onClick: () -> Unit): Modifier =
             indication = rememberRipple(),
             onClick = onClick
         )
+    }
+
+fun Modifier.clickableIf(clickable: Boolean, shape: Shape, onClick: () -> Unit): Modifier =
+    if (clickable) {
+        clickable(shape, onClick)
+    } else {
+        Modifier
     }
 
 val Int.value: String
@@ -77,4 +88,24 @@ fun Context.countriesSortedBySerbianAlphabet(): List<Country> {
     }
 
     return countries
+}
+
+@Composable
+fun <T> rememberMutableStateOf(initialValue: T): MutableState<T> = remember {
+    mutableStateOf(initialValue)
+}
+
+@Composable
+fun rememberMutableInteractionSource(): MutableInteractionSource = remember {
+    MutableInteractionSource()
+}
+
+@Composable
+fun rememberSnackbarHostState(): SnackbarHostState = remember {
+    SnackbarHostState()
+}
+
+@Composable
+fun rememberFocusRequester(): FocusRequester = remember {
+    FocusRequester()
 }

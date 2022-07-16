@@ -2,7 +2,7 @@ package net.jsoft.daruj.auth.domain
 
 interface Authenticator {
 
-    fun initialize(vararg args: Any)
+    fun initialize(vararg args: Pair<Any, Any>)
 
     suspend fun sendSMSVerification(phoneNumber: String)
     suspend fun verifyWithCode(code: String)

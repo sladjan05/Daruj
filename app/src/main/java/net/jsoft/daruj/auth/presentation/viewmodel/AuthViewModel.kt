@@ -1,5 +1,6 @@
 package net.jsoft.daruj.auth.presentation.viewmodel
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +19,7 @@ import net.jsoft.daruj.auth.exception.TooManyRequestsException
 import net.jsoft.daruj.auth.exception.WrongCodeException
 import net.jsoft.daruj.auth.presentation.screen.Screen
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.util.UiText.Companion.asUiText
+import net.jsoft.daruj.common.util.asUiText
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +40,7 @@ class AuthViewModel @Inject constructor(
                 fullPhoneNumber = "+${event.dialCode}${event.phoneNumber}"
 
                 load {
-                    initializeAuthenticator(event.activity)
+                    initializeAuthenticator(Activity::class to event.activity)
                     sendSMSVerification(fullPhoneNumber)
                 }
 
@@ -50,6 +51,7 @@ class AuthViewModel @Inject constructor(
 
             is AuthEvent.SendVerificationCodeAgain -> viewModelScope.launch(smsExceptionHandler) {
                 load { sendSMSVerification(fullPhoneNumber) }
+                mTaskFlow.emit(AuthTask.ShowInfo(R.string.tx_code_is_sent_again.asUiText()))
             }
 
             is AuthEvent.VerifyWithCode -> viewModelScope.launch(verificationExceptionHandler) {
@@ -66,7 +68,7 @@ class AuthViewModel @Inject constructor(
 
         when (throwable) {
             is RedundantVerificationRequestException -> {
-                Log.d("Auth", "RedundantVerificationRequest")
+                Log.d("Auth", "RedundantVerificationRequest") // TODO
             }
 
             is InvalidRequestException -> viewModelScope.launch {

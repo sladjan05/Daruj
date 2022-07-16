@@ -24,7 +24,10 @@ import net.jsoft.daruj.auth.presentation.component.VerificationCodeInputBox
 import net.jsoft.daruj.auth.presentation.viewmodel.AuthEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeViewModel
+import net.jsoft.daruj.common.presentation.component.TitleSubtitle
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
+import net.jsoft.daruj.common.util.rememberFocusRequester
+import net.jsoft.daruj.common.util.rememberMutableInteractionSource
 import net.jsoft.daruj.common.util.value
 
 @Composable
@@ -33,7 +36,7 @@ fun VerificationCodeScreen(
     isLoading: Boolean,
     onEvent: (event: AuthEvent) -> Unit
 ) {
-    val focusRequester = remember { FocusRequester() }
+    val focusRequester = rememberFocusRequester()
     val focusManager = LocalFocusManager.current
 
     Column(
@@ -51,21 +54,9 @@ fun VerificationCodeScreen(
             }
         }
 
-        Text(
-            text = R.string.tx_check_sms.value,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        Text(
-            text = R.string.tx_code_is_sent.value,
-            modifier = Modifier.widthIn(max = 270.dp),
-            color = MaterialTheme.colorScheme.onBackgroundDim,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
+        TitleSubtitle(
+            title = R.string.tx_check_sms.value,
+            subtitle = R.string.tx_code_is_sent.value
         )
 
         Spacer(modifier = Modifier.height(45.dp))
@@ -75,7 +66,7 @@ fun VerificationCodeScreen(
             modifier = Modifier
                 .width(300.dp)
                 .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = rememberMutableInteractionSource(),
                     indication = null
                 ) {
                     focusRequester.requestFocus()

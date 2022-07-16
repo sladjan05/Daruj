@@ -25,6 +25,7 @@ import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberViewModel
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeViewModel
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.component.TextSnackbar
+import net.jsoft.daruj.common.util.rememberSnackbarHostState
 import net.jsoft.daruj.common.util.value
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -37,8 +38,8 @@ fun AuthScreen(
     val context = LocalContext.current
     val navController = rememberAnimatedNavController()
 
-    val hostState = remember { SnackbarHostState() }
-    val errorHostState = remember { SnackbarHostState() }
+    val hostState = rememberSnackbarHostState()
+    val errorHostState = rememberSnackbarHostState()
 
     Box(
         modifier = Modifier

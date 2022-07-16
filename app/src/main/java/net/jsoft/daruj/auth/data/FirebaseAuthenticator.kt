@@ -8,10 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import net.jsoft.daruj.auth.domain.Authenticator
-import net.jsoft.daruj.auth.exception.InvalidRequestException
-import net.jsoft.daruj.auth.exception.RedundantVerificationRequestException
-import net.jsoft.daruj.auth.exception.TooManyRequestsException
-import net.jsoft.daruj.auth.exception.WrongCodeException
+import net.jsoft.daruj.auth.exception.*
 import net.jsoft.daruj.common.exception.UnknownException
 import net.jsoft.daruj.common.util.DispatcherProvider
 import java.util.concurrent.TimeUnit
@@ -30,18 +27,9 @@ class FirebaseAuthenticator @Inject constructor(
     private lateinit var verificationId: String
     private lateinit var activity: Activity
 
-    override fun initialize(vararg args: Any) {
-        args.forEach { arg ->
-            when (arg) {
-                is Activity -> {
-                    activity = arg
-                }
-
-                else -> {
-                    throw UnknownException()
-                }
-            }
-        }
+    override fun initialize(vararg args: Pair<Any, Any>) {
+        val map = mapOf(*args)
+        activity = (map[Activity::class] ?: throw MissingArgumentException()) as Activity
     }
 
     override suspend fun sendSMSVerification(phoneNumber: String): Unit =

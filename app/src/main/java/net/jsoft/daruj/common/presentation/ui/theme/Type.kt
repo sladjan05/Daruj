@@ -25,6 +25,13 @@ private val Roboto = FontFamily(
     )
 )
 
+private val Cookie = FontFamily(
+    Font(
+        resId = R.font.ft_cookie,
+        weight = FontWeight.Normal
+    )
+)
+
 val Typography = Typography(
     titleSmall = TextStyle(
         fontFamily = Roboto,
@@ -60,12 +67,26 @@ val Typography = Typography(
     ),
     bodyMedium = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Light,
         fontSize = 14.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Light,
+        fontWeight = FontWeight.Normal,
         fontSize = 14.sp
     )
 )
+
+val Typography.bloodType: TextStyle
+    get() = TextStyle(
+        fontFamily = Cookie,
+        fontWeight = FontWeight.Light,
+        fontSize = 28.sp
+    )
+
+val Typography.bloodRh: TextStyle
+    get() = TextStyle(
+        fontFamily = Cookie,
+        fontWeight = FontWeight.Light,
+        fontSize = 20.sp
+    )
