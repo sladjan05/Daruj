@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.jsoft.daruj">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <application
         android:name="net.jsoft.daruj.DarujApplication"
         android:allowBackup="true"
@@ -18,7 +23,8 @@
         <activity
             android:name="net.jsoft.daruj.welcome.presentation.WelcomeActivity"
             android:exported="true"
-            android:theme="@style/Theme.Daruj">
+            android:theme="@style/Theme.Daruj"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +40,12 @@
 
         <activity
             android:name="net.jsoft.daruj.auth.presentation.AuthActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Daruj"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="net.jsoft.daruj.create_account.presentation.CreateAccountActivity"
             android:exported="true"
             android:theme="@style/Theme.Daruj"
             android:windowSoftInputMode="adjustResize" />

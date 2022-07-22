@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.R
-import net.jsoft.daruj.common.domain.Blood
+import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.presentation.ui.theme.bloodRh
 import net.jsoft.daruj.common.presentation.ui.theme.bloodType
 import net.jsoft.daruj.common.util.value
@@ -20,6 +20,7 @@ fun BloodSelectionBox(
     blood: Blood,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit = {},
     onSelected: (blood: Blood) -> Unit = {}
 ) {
@@ -68,6 +69,7 @@ fun BloodSelectionBox(
         columns = 4,
         modifier = modifier,
         expanded = expanded,
+        enabled = enabled,
         labelColor = MaterialTheme.colorScheme.primary,
         onClick = onClick,
         onSelected = { index ->

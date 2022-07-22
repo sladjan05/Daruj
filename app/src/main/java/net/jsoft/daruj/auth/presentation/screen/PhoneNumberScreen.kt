@@ -56,10 +56,13 @@ fun PhoneNumberScreen(
             expanded = viewModel.countryDropdownExpanded,
             enabled = !isLoading,
             onClick = {
-                viewModel.onEvent(PhoneNumberEvent.CountryDropdownClick)
+                viewModel.onEvent(PhoneNumberEvent.CountryClick)
             },
             onSelected = { index ->
                 viewModel.onEvent(PhoneNumberEvent.CountryChange(countries[index]))
+            },
+            onDismiss = {
+                viewModel.onEvent(PhoneNumberEvent.CountryDismiss)
             }
         )
 

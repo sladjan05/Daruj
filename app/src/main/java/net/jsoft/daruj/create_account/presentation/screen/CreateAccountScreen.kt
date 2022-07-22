@@ -6,32 +6,57 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.component.*
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
+import net.jsoft.daruj.common.util.getBitmap
+import net.jsoft.daruj.common.util.getValues
+import net.jsoft.daruj.common.util.rememberSnackbarHostState
 import net.jsoft.daruj.common.util.value
 import net.jsoft.daruj.create_account.presentation.component.ProfilePicture
 import net.jsoft.daruj.create_account.presentation.viewmodel.CreateAccountEvent
+import net.jsoft.daruj.create_account.presentation.viewmodel.CreateAccountTask
 import net.jsoft.daruj.create_account.presentation.viewmodel.CreateAccountViewModel
 
 @Composable
 fun CreateAccountScreen(
     viewModel: CreateAccountViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
+    val hostState = rememberSnackbarHostState()
+    val errorHostState = rememberSnackbarHostState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.TopCenter
     ) {
+        LaunchedEffect(Unit) {
+            viewModel.taskFlow.collectLatest { task ->
+                when (task) {
+                    is CreateAccountTask.Finish -> {
+                        hostState.showSnackbar("Napravljen nalog") // TODO
+                    }
+
+                    is CreateAccountTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
+                    is CreateAccountTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
+                }
+            }
+        }
+
         Column(
             modifier = Modifier.padding(top = 70.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -58,7 +83,11 @@ fun CreateAccountScreen(
                     modifier = Modifier
                         .size(120.dp)
                         .align(Alignment.TopCenter),
-                    pictureChangeEnabled = true
+                    bitmap = viewModel.pictureUri?.getBitmap(context),
+                    pictureChangeEnabled = !viewModel.isLoading,
+                    onPictureChange = { uri ->
+                        viewModel.onEvent(CreateAccountEvent.PictureChange(uri))
+                    }
                 )
 
                 SexSelectionBox(
@@ -67,6 +96,7 @@ fun CreateAccountScreen(
                         .align(Alignment.BottomStart)
                         .padding(start = 7.dp),
                     expanded = viewModel.sexExpanded,
+                    enabled = !viewModel.isLoading,
                     onClick = {
                         viewModel.onEvent(CreateAccountEvent.SexClick)
                     },
@@ -79,6 +109,7 @@ fun CreateAccountScreen(
                     blood = viewModel.blood,
                     modifier = Modifier.align(Alignment.BottomEnd),
                     expanded = viewModel.bloodExpanded,
+                    enabled = !viewModel.isLoading,
                     onClick = {
                         viewModel.onEvent(CreateAccountEvent.BloodClick)
                     },
@@ -105,6 +136,7 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = viewModel.name.value,
                     hint = R.string.tx_name.value,
+                    enabled = !viewModel.isLoading,
                     maxLength = 15,
                     onValueChange = { value ->
                         viewModel.onEvent(CreateAccountEvent.NameChange(value))
@@ -117,6 +149,7 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = viewModel.surname.value,
                     hint = R.string.tx_surname.value,
+                    enabled = !viewModel.isLoading,
                     maxLength = 20,
                     onValueChange = { value ->
                         viewModel.onEvent(CreateAccountEvent.SurnameChange(value))
@@ -127,10 +160,10 @@ fun CreateAccountScreen(
             Spacer(modifier = Modifier.height(30.dp))
 
             Column(
-                modifier = Modifier.width(300.dp),
+                modifier = Modifier.width(300.dp)
             ) {
                 Text(
-                    text = R.string.tx_primary_data.value,
+                    text = R.string.tx_date_of_birth.value,
                     color = MaterialTheme.colorScheme.onBackgroundDim,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -138,69 +171,91 @@ fun CreateAccountScreen(
                 Spacer(modifier = Modifier.height(2.dp))
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     DropdownSelectionBox(
                         text = viewModel.birth.dayOfMonth.toString(),
-                        modifier = Modifier.width(90.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
                         items = viewModel.days.value,
                         expanded = viewModel.dayExpanded,
+                        enabled = !viewModel.isLoading,
                         onClick = {
                             viewModel.onEvent(CreateAccountEvent.DayClick)
                         },
                         onSelected = { index ->
                             viewModel.onEvent(CreateAccountEvent.DayIndexChange(index))
+                        },
+                        onDismiss = {
+                            viewModel.onEvent(CreateAccountEvent.DayDismiss)
                         }
                     )
 
-                    val months = listOf(
-                        R.string.tx_jan.value,
-                        R.string.tx_feb.value,
-                        R.string.tx_mar.value,
-                        R.string.tx_apr.value,
-                        R.string.tx_maj.value,
-                        R.string.tx_jun.value,
-                        R.string.tx_jul.value,
-                        R.string.tx_avg.value,
-                        R.string.tx_sep.value,
-                        R.string.tx_okt.value,
-                        R.string.tx_nov.value,
-                        R.string.tx_dec.value
-                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    val months = remember {
+                        listOf(
+                            R.string.tx_jan,
+                            R.string.tx_feb,
+                            R.string.tx_mar,
+                            R.string.tx_apr,
+                            R.string.tx_may,
+                            R.string.tx_jun,
+                            R.string.tx_jul,
+                            R.string.tx_aug,
+                            R.string.tx_sep,
+                            R.string.tx_okt,
+                            R.string.tx_nov,
+                            R.string.tx_dec
+                        ).getValues(context)
+                    }
 
                     DropdownSelectionBox(
                         text = months[viewModel.birth.month.ordinal],
-                        modifier = Modifier.width(90.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
                         items = months,
                         expanded = viewModel.monthExpanded,
+                        enabled = !viewModel.isLoading,
                         onClick = {
                             viewModel.onEvent(CreateAccountEvent.MonthClick)
                         },
                         onSelected = { index ->
                             viewModel.onEvent(CreateAccountEvent.MonthIndexChange(index))
-                        }
-                    )
-
-                    DropdownSelectionBox(
-                        text = viewModel.birth.year.toString(),
-                        modifier = Modifier.width(90.dp),
-                        items = CreateAccountViewModel.years.value,
-                        expanded = viewModel.yearExpanded,
-                        onClick = {
-                            viewModel.onEvent(CreateAccountEvent.YearClick)
                         },
-                        onSelected = { index ->
-                            viewModel.onEvent(CreateAccountEvent.YearIndexChange(index))
+                        onDismiss = {
+                            viewModel.onEvent(CreateAccountEvent.MonthDismiss)
                         }
                     )
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                DropdownSelectionBox(
+                    text = viewModel.birth.year.toString(),
+                    modifier = Modifier.fillMaxWidth(),
+                    items = CreateAccountViewModel.years.value,
+                    expanded = viewModel.yearExpanded,
+                    enabled = !viewModel.isLoading,
+                    onClick = {
+                        viewModel.onEvent(CreateAccountEvent.YearClick)
+                    },
+                    onSelected = { index ->
+                        viewModel.onEvent(CreateAccountEvent.YearIndexChange(index))
+                    },
+                    onDismiss = {
+                        viewModel.onEvent(CreateAccountEvent.YearDismiss)
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(
                 text = R.string.tx_legal_id_optional.value,
+                modifier = Modifier.align(Alignment.Start),
                 color = MaterialTheme.colorScheme.onBackgroundDim,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -211,6 +266,7 @@ fun CreateAccountScreen(
                 modifier = Modifier.width(300.dp),
                 text = viewModel.legalId.value,
                 hint = R.string.tx_id_number.value,
+                enabled = !viewModel.isLoading,
                 onValueChange = { value ->
                     viewModel.onEvent(CreateAccountEvent.LegalIdChange(value))
                 }
@@ -231,13 +287,40 @@ fun CreateAccountScreen(
 
             Text(
                 text = R.string.tx_after_this_step_you_will_become_a_memeber.value,
-                modifier = Modifier.widthIn(max = 280.dp),
+                modifier = Modifier.widthIn(max = 260.dp),
                 color = MaterialTheme.colorScheme.onBackgroundDim,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(30.dp))
         }
+
+        TextSnackbar(
+            hostState = hostState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 12.dp,
+                    vertical = 8.dp
+                )
+                .align(Alignment.BottomCenter),
+            backgroundColor = MaterialTheme.colorScheme.surface,
+            textColor = MaterialTheme.colorScheme.onSurface
+        )
+
+        TextSnackbar(
+            hostState = errorHostState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 12.dp,
+                    vertical = 8.dp
+                )
+                .align(Alignment.BottomCenter),
+            backgroundColor = MaterialTheme.colorScheme.error,
+            textColor = MaterialTheme.colorScheme.onError
+        )
     }
 }
 

@@ -1,3 +1,8 @@
 package net.jsoft.daruj.common.exception
 
-open class DarujException(message: String) : Exception(message)
+import net.jsoft.daruj.common.util.UiText
+
+open class DarujException(
+    message: String,
+    val uiText: UiText
+) : Exception(message)

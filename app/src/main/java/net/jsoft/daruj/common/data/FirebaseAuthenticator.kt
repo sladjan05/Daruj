@@ -1,4 +1,4 @@
-package net.jsoft.daruj.auth.data
+package net.jsoft.daruj.common.data
 
 import android.app.Activity
 import com.google.firebase.FirebaseException
@@ -7,9 +7,8 @@ import com.google.firebase.auth.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import net.jsoft.daruj.auth.domain.Authenticator
-import net.jsoft.daruj.auth.exception.*
-import net.jsoft.daruj.common.exception.UnknownException
+import net.jsoft.daruj.common.domain.Authenticator
+import net.jsoft.daruj.common.exception.*
 import net.jsoft.daruj.common.util.DispatcherProvider
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -23,6 +22,9 @@ class FirebaseAuthenticator @Inject constructor(
     private val auth: FirebaseAuth,
     private val dispatchers: DispatcherProvider
 ) : Authenticator {
+
+    override lateinit var id: String
+        private set
 
     private lateinit var verificationId: String
     private lateinit var activity: Activity
@@ -47,7 +49,7 @@ class FirebaseAuthenticator @Inject constructor(
                         val e = when (exception) {
                             is FirebaseAuthInvalidCredentialsException -> InvalidRequestException()
                             is FirebaseTooManyRequestsException -> TooManyRequestsException()
-                            else -> UnknownException()
+                            else -> exception
                         }
 
                         continuation.resumeWithException(e)
@@ -64,7 +66,7 @@ class FirebaseAuthenticator @Inject constructor(
 
                 val options = PhoneAuthOptions.newBuilder(auth)
                     .setPhoneNumber(phoneNumber)
-                    .setTimeout(60L, TimeUnit.SECONDS)
+                    .setTimeout(Authenticator.SMS_WAIT_TIME.toLong(), TimeUnit.SECONDS)
                     .setActivity(activity)
                     .setCallbacks(callback)
                     .build()
@@ -86,5 +88,6 @@ class FirebaseAuthenticator @Inject constructor(
     private suspend fun signInWithCredential(credential: PhoneAuthCredential): Unit =
         withContext(dispatchers.io) {
             auth.signInWithCredential(credential).await()
+            id = auth.currentUser!!.uid
         }
 }

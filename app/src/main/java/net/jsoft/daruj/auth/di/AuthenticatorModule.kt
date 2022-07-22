@@ -3,11 +3,9 @@ package net.jsoft.daruj.auth.di
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.components.SingletonComponent
-import net.jsoft.daruj.auth.data.FirebaseAuthenticator
-import net.jsoft.daruj.auth.domain.Authenticator
+import net.jsoft.daruj.common.data.FirebaseAuthenticator
+import net.jsoft.daruj.common.domain.Authenticator
 
 @Module
 @InstallIn(SingletonComponent::class)

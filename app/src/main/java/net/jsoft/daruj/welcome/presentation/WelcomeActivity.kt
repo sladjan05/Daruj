@@ -5,8 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
+import net.jsoft.daruj.common.util.setScreenContent
+import net.jsoft.daruj.create_account.presentation.screen.CreateAccountScreen
 import net.jsoft.daruj.introduction.presentation.screen.IntroductionScreen
 import net.jsoft.daruj.welcome.presentation.screen.WelcomeScreen
 
@@ -16,12 +19,8 @@ class WelcomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent {
-            DarujTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    WelcomeScreen()
-                }
-            }
+        setScreenContent {
+            WelcomeScreen()
         }
     }
 }

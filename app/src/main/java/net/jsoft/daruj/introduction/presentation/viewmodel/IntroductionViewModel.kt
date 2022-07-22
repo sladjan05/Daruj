@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.presentation.viewmodel.BasicViewModel
+import net.jsoft.daruj.common.util.plusAssign
 
 class IntroductionViewModel : BasicViewModel<IntroductionEvent, IntroductionTask>() {
 
@@ -18,10 +19,10 @@ class IntroductionViewModel : BasicViewModel<IntroductionEvent, IntroductionTask
 
             is IntroductionEvent.Next -> viewModelScope.launch {
                 if (page == PAGE_COUNT - 1) {
-                    mTaskFlow.emit(IntroductionTask.Finish)
+                    mTaskFlow += IntroductionTask.Finish
                 } else {
                     page += 1
-                    mTaskFlow.emit(IntroductionTask.SwitchPage)
+                    mTaskFlow += IntroductionTask.SwitchPage
                 }
             }
         }

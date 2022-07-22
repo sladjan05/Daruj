@@ -1,8 +1,8 @@
 package net.jsoft.daruj.auth.domain.usecase
 
 import android.util.Patterns
-import net.jsoft.daruj.auth.domain.Authenticator
-import net.jsoft.daruj.auth.exception.InvalidRequestException
+import net.jsoft.daruj.common.domain.Authenticator
+import net.jsoft.daruj.common.exception.InvalidRequestException
 import javax.inject.Inject
 import javax.inject.Singleton
 

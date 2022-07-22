@@ -18,6 +18,7 @@ import androidx.compose.ui.zIndex
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.shape
 import net.jsoft.daruj.common.util.clickable
+import net.jsoft.daruj.common.util.clickableIf
 
 private val ITEM_SIZE = 60.dp
 
@@ -31,6 +32,7 @@ fun ProfilePropertiesDropdownSelectionBox(
     columns: Int,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
+    enabled: Boolean = true,
     labelColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit = {},
     onSelected: (index: Int) -> Unit = {}
@@ -42,6 +44,7 @@ fun ProfilePropertiesDropdownSelectionBox(
         AnimatedContent(targetState = expanded) { targetExpanded ->
             if (targetExpanded) {
                 val shape = RoundedCornerShape(ITEM_SIZE / 2)
+
                 Column(
                     modifier = Modifier
                         .wrapContentSize()
@@ -68,9 +71,7 @@ fun ProfilePropertiesDropdownSelectionBox(
                                             color = MaterialTheme.colorScheme.surface,
                                             shape = MaterialTheme.shape.rounded100p
                                         )
-                                        .clickable(
-                                            shape = MaterialTheme.shape.rounded100p
-                                        ) {
+                                        .clickable(shape = MaterialTheme.shape.rounded100p) {
                                             onSelected(index)
                                         },
                                     contentAlignment = Alignment.Center
@@ -90,7 +91,8 @@ fun ProfilePropertiesDropdownSelectionBox(
                             color = MaterialTheme.colorScheme.surface,
                             shape = MaterialTheme.shape.rounded100p
                         )
-                        .clickable(
+                        .clickableIf(
+                            clickable = enabled,
                             shape = MaterialTheme.shape.rounded100p,
                             onClick = onClick
                         ),

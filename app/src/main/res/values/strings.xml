@@ -249,10 +249,10 @@
     <string name="tx_feb">Feb</string>
     <string name="tx_mar">Mar</string>
     <string name="tx_apr">Apr</string>
-    <string name="tx_maj">Maj</string>
+    <string name="tx_may">Maj</string>
     <string name="tx_jun">Jun</string>
     <string name="tx_jul">Jul</string>
-    <string name="tx_avg">Avg</string>
+    <string name="tx_aug">Avg</string>
     <string name="tx_sep">Sep</string>
     <string name="tx_okt">Okt</string>
     <string name="tx_nov">Nov</string>
@@ -288,7 +288,7 @@
     <string name="tx_finish">Završi</string>
     <string name="tx_code_is_sent_again">Kod je poslan.</string>
     <string name="tx_enter_your_data">Unesite Vaše podatke</string>
-    <string name="tx_enter_your_data_description">Bitno je da tačno unesete Vaše podatke, da biste mogli neometano da koristite aplikaciju.</string>
+    <string name="tx_enter_your_data_description">Bitno je da tačno unesete svoje podatke, da biste mogli neometano da koristite aplikaciju.</string>
     <string name="tx_man">Muškarac</string>
     <string name="tx_woman">Žena</string>
     <string name="tx_blood_type">Krvna grupa</string>
@@ -299,5 +299,8 @@
     <string name="tx_id_number">ID broj</string>
     <string name="tx_create_account">Kreiraj nalog</string>
     <string name="tx_after_this_step_you_will_become_a_memeber">Nakon ovog koraka, pristupićete daruj.ba zajednici dobrovoljnih davalaca krvi.</string>
+    <string name="tx_date_of_birth">Datum rođenja</string>
+    <string name="tx_internal_error">Interna greška! Pokušajte kasnije...</string>
+    <string name="tx_verification_successful">Verifikacija uspješna</string>
 
 </resources>

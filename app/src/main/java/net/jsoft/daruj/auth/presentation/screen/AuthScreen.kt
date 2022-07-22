@@ -1,13 +1,13 @@
 package net.jsoft.daruj.auth.presentation.screen
 
 import android.app.Activity
+import android.content.Intent
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +27,7 @@ import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.component.TextSnackbar
 import net.jsoft.daruj.common.util.rememberSnackbarHostState
 import net.jsoft.daruj.common.util.value
+import net.jsoft.daruj.create_account.presentation.CreateAccountActivity
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -41,28 +42,48 @@ fun AuthScreen(
     val hostState = rememberSnackbarHostState()
     val errorHostState = rememberSnackbarHostState()
 
+    LaunchedEffect(Unit) {
+        viewModel.taskFlow.collectLatest { task ->
+            when (task) {
+                is AuthTask.ShowVerificationScreen -> {
+                    navController.popBackStack()
+                    navController.navigate(Screen.Verification.route)
+                }
+                is AuthTask.Finish -> {
+                    val intent = Intent(
+                        context,
+                        CreateAccountActivity::class.java
+                    )
+
+                    context.startActivity(intent)
+                    (context as Activity).finish()
+                }
+
+                is AuthTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
+                is AuthTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
+            }
+        }
+    }
+
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 70.dp),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        LaunchedEffect(Unit) {
-            viewModel.taskFlow.collectLatest { task ->
-                when (task) {
-                    is AuthTask.ShowVerificationScreen -> {
-                        navController.popBackStack()
-                        navController.navigate(Screen.Verification.route)
-                    }
-                    is AuthTask.Finish -> hostState.showSnackbar("Uspješna prijava") // TODO
-
-                    is AuthTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
-                    is AuthTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
-                }
-            }
+        AnimatedVisibility(
+            visible = (viewModel.screen == Screen.Verification) && (viewModel.waitTimeProgress != 0f)
+        ) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surface,
+                progress = viewModel.waitTimeProgress
+            )
         }
 
         Column(
+            modifier = Modifier.padding(top = 70.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -114,6 +135,8 @@ fun AuthScreen(
                     VerificationCodeScreen(
                         viewModel = verificationViewModel,
                         isLoading = viewModel.isLoading,
+                        waitTime = viewModel.waitTime,
+                        waitTimeProgress = viewModel.waitTimeProgress,
                         onEvent = viewModel::onEvent
                     )
                 }

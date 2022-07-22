@@ -1,6 +1,6 @@
 package net.jsoft.daruj.auth.domain.usecase
 
-import net.jsoft.daruj.auth.domain.Authenticator
+import net.jsoft.daruj.common.domain.Authenticator
 import javax.inject.Inject
 import javax.inject.Singleton
 

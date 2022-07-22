@@ -1,6 +1,7 @@
 package net.jsoft.daruj.common.presentation.component
 
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +20,9 @@ fun TextSnackbar(
 ) {
     SnackbarHost(
         hostState = hostState,
-        modifier = modifier.height(HEIGHT),
+        modifier = modifier
+            .widthIn(max = 400.dp)
+            .height(HEIGHT),
         snackbar = { snackbarData ->
             Snackbar(
                 shape = MaterialTheme.shape.rounded10,

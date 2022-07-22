@@ -16,7 +16,7 @@ import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.util.value
 
-private val HEIGHT = 300.dp
+private val HEIGHT = 320.dp
 private val ILLUSTRATION_HEIGHT = 140.dp
 private val DESCRIPTION_WIDTH = 265.dp
 
@@ -56,7 +56,7 @@ fun IntroductionIllustration(
             text = description,
             modifier = Modifier.widthIn(max = DESCRIPTION_WIDTH),
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
     }

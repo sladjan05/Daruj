@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import net.jsoft.daruj.R
-import net.jsoft.daruj.common.domain.Sex
+import net.jsoft.daruj.common.domain.model.Sex
 import net.jsoft.daruj.common.util.value
 
 @Composable
@@ -17,6 +17,7 @@ fun SexSelectionBox(
     sex: Sex,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit = {},
     onSelected: (sex: Sex) -> Unit = {}
 ) {
@@ -49,6 +50,7 @@ fun SexSelectionBox(
         columns = 2,
         modifier = modifier,
         expanded = expanded,
+        enabled = enabled,
         labelColor = when (sex) {
             Sex.MALE -> MaterialTheme.colorScheme.primary
             Sex.FEMALE -> MaterialTheme.colorScheme.secondary

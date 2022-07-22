@@ -1,4 +1,4 @@
-package net.jsoft.daruj.common.domain
+package net.jsoft.daruj.common.domain.model
 
 class Blood(
     val type: Type,

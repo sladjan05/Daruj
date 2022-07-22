@@ -8,18 +8,15 @@ import androidx.compose.material3.Surface
 import dagger.hilt.android.AndroidEntryPoint
 import net.jsoft.daruj.auth.presentation.screen.AuthScreen
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
+import net.jsoft.daruj.common.util.setScreenContent
 
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent {
-            DarujTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    AuthScreen()
-                }
-            }
+        setScreenContent {
+            AuthScreen()
         }
     }
 }

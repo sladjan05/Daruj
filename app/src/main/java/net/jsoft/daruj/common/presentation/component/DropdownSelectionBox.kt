@@ -1,6 +1,5 @@
 package net.jsoft.daruj.common.presentation.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,7 +19,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
@@ -33,8 +34,7 @@ private val TEXT_HORIZONTAL_PADDING = 30.dp
 
 private val DROPDOWN_ICON_SIZE = 30.dp
 
-private val MAX_LIST_HEIGHT = 300.dp
-private val LIST_TOP_PADDING = 8.dp
+private val MAX_LIST_HEIGHT = 200.dp
 
 @Composable
 fun DropdownSelectionBox(
@@ -44,14 +44,13 @@ fun DropdownSelectionBox(
     expanded: Boolean = false,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
-    onSelected: (index: Int) -> Unit = {}
+    onSelected: (index: Int) -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
     val itemsNotEmpty = items != null && items.isNotEmpty()
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    BoxWithConstraints(
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier
@@ -100,58 +99,57 @@ fun DropdownSelectionBox(
             )
         }
 
-        AnimatedVisibility(visible = expanded && enabled && itemsNotEmpty) {
-            val listState = rememberLazyListState()
-
-            LaunchedEffect(text) {
-                val index = items?.indexOf(text)
-
-                if (index != null && index != -1) {
-                    listState.animateScrollToItem(index)
-                }
-            }
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = MAX_LIST_HEIGHT)
-                    .padding(top = LIST_TOP_PADDING)
-                    .background(
-                        color = MaterialTheme.colorScheme.surface,
-                        shape = MaterialTheme.shape.rounded10
-                    )
-                    .clip(MaterialTheme.shape.rounded5),
-                state = listState,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+        if (expanded && enabled && itemsNotEmpty) {
+            Popup(
+                offset = IntOffset(
+                    x = 0,
+                    y = 136
+                ),
+                onDismissRequest = onDismiss
             ) {
-                items(count = items!!.size) { index ->
-                    val isCurrentItem = items[index] == text
+                val listState = rememberLazyListState()
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(HEIGHT)
-                            .clickableIf(
-                                clickable = !isCurrentItem,
-                                shape = RectangleShape
-                            ) {
-                                onSelected(index)
-                            }
-                            .padding(horizontal = BOX_HORIZONTAL_PADDING),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = items[index],
-                            color = if (isCurrentItem) {
-                                MaterialTheme.colorScheme.onSurfaceDim
-                            } else {
-                                MaterialTheme.colorScheme.onSurface
-                            },
-                            style = MaterialTheme.typography.labelMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                LazyColumn(
+                    modifier = Modifier
+                        .width(this@BoxWithConstraints.maxWidth)
+                        .heightIn(max = MAX_LIST_HEIGHT)
+                        .background(
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = MaterialTheme.shape.rounded10
                         )
+                        .clip(MaterialTheme.shape.rounded5),
+                    state = listState,
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(count = items!!.size) { index ->
+                        val isCurrentItem = items[index] == text
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(HEIGHT)
+                                .clickableIf(
+                                    clickable = !isCurrentItem,
+                                    shape = RectangleShape,
+                                    onClick = {
+                                        onSelected(index)
+                                    }
+                                )
+                                .padding(horizontal = BOX_HORIZONTAL_PADDING),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = items[index],
+                                color = if (isCurrentItem) {
+                                    MaterialTheme.colorScheme.onSurfaceDim
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                },
+                                style = MaterialTheme.typography.labelMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
             }

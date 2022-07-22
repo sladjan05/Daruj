@@ -1,17 +1,32 @@
 package net.jsoft.daruj.create_account.presentation.viewmodel
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import net.jsoft.daruj.R
-import net.jsoft.daruj.common.domain.Blood
-import net.jsoft.daruj.common.domain.Sex
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.launch
+import net.jsoft.daruj.common.domain.model.Blood
+import net.jsoft.daruj.common.domain.model.LocalUser
+import net.jsoft.daruj.common.domain.model.Sex
+import net.jsoft.daruj.common.domain.usecase.UpdateLocalUserUseCase
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
 import net.jsoft.daruj.common.util.UiText
 import net.jsoft.daruj.common.util.asUiText
+import net.jsoft.daruj.common.util.plusAssign
+import net.jsoft.daruj.common.util.uiText
 import java.time.LocalDate
+import javax.inject.Inject
 
-class CreateAccountViewModel : LoadingViewModel<CreateAccountEvent, Nothing>() {
+@HiltViewModel
+class CreateAccountViewModel @Inject constructor(
+    private val updateLocalUser: UpdateLocalUserUseCase
+) : LoadingViewModel<CreateAccountEvent, CreateAccountTask>() {
+
+    var pictureUri: Uri? by mutableStateOf(null)
+        private set
 
     var name by mutableStateOf("".asUiText())
         private set
@@ -59,37 +74,46 @@ class CreateAccountViewModel : LoadingViewModel<CreateAccountEvent, Nothing>() {
             day.toString().asUiText()
         }
 
+    init {
+        setBirth(year = birth.year - 18)
+    }
+
     override fun onEvent(event: CreateAccountEvent) {
         when (event) {
+            is CreateAccountEvent.PictureChange -> pictureUri = event.uri
+
             is CreateAccountEvent.NameChange -> name = event.name.asUiText()
             is CreateAccountEvent.SurnameChange -> surname = event.surname.asUiText()
 
-            is CreateAccountEvent.DayClick -> setExpanded(day = !dayExpanded)
+            is CreateAccountEvent.DayClick -> setExpanded(day = true)
+            is CreateAccountEvent.DayDismiss -> setExpanded(day = false)
             is CreateAccountEvent.DayIndexChange -> {
                 setBirth(day = event.index + 1)
                 setExpanded()
             }
 
-            is CreateAccountEvent.MonthClick -> setExpanded(month = !monthExpanded)
+            is CreateAccountEvent.MonthClick -> setExpanded(month = true)
+            is CreateAccountEvent.MonthDismiss -> setExpanded(month = false)
             is CreateAccountEvent.MonthIndexChange -> {
                 setBirth(month = event.index + 1)
                 setExpanded()
             }
 
-            is CreateAccountEvent.YearClick -> setExpanded(year = !yearExpanded)
+            is CreateAccountEvent.YearClick -> setExpanded(year = true)
+            is CreateAccountEvent.YearDismiss -> setExpanded(year = false)
             is CreateAccountEvent.YearIndexChange -> {
                 setBirth(year = LocalDate.now().year - 18 - event.index)
                 setExpanded()
             }
 
-            is CreateAccountEvent.SexClick -> setExpanded(sex = !sexExpanded)
+            is CreateAccountEvent.SexClick -> setExpanded(sex = true)
 
             is CreateAccountEvent.SexChange -> {
                 sex = event.sex
                 setExpanded()
             }
 
-            is CreateAccountEvent.BloodClick -> setExpanded(blood = !bloodExpanded)
+            is CreateAccountEvent.BloodClick -> setExpanded(blood = true)
 
             is CreateAccountEvent.BloodChange -> {
                 blood = event.blood
@@ -99,7 +123,24 @@ class CreateAccountViewModel : LoadingViewModel<CreateAccountEvent, Nothing>() {
             is CreateAccountEvent.LegalIdChange -> legalId = event.legalId.asUiText()
 
             is CreateAccountEvent.LegalIdInfoClick -> isLegalIdInfoExpanded = !isLegalIdInfoExpanded
-            is CreateAccountEvent.CreateAccount -> TODO()
+
+            is CreateAccountEvent.CreateAccount -> viewModelScope.launch(exceptionHandler) {
+                load {
+                    updateLocalUser(
+                        user = LocalUser.Constructable(
+                            name = name.toString(),
+                            surname = surname.toString(),
+                            sex = sex,
+                            blood = blood,
+                            legalId = legalId.toString().ifEmpty { null },
+                            isPrivate = true
+                        ),
+                        pictureUri = pictureUri
+                    )
+                }
+
+                mTaskFlow += CreateAccountTask.Finish
+            }
         }
     }
 
@@ -123,6 +164,16 @@ class CreateAccountViewModel : LoadingViewModel<CreateAccountEvent, Nothing>() {
         year: Int = birth.year
     ) {
         birth = LocalDate.of(year, month, day)
+    }
+
+    // ============================== EXCEPTION HANDLERS ==============================
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        isLoading = false
+
+        viewModelScope.launch {
+            mTaskFlow += CreateAccountTask.ShowError(throwable.uiText)
+        }
     }
 
     companion object {

@@ -25,8 +25,8 @@ class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
 
     override fun onEvent(event: PhoneNumberEvent) {
         when (event) {
-            is PhoneNumberEvent.CountryDropdownClick -> setExpanded(country = !countryDropdownExpanded)
-
+            is PhoneNumberEvent.CountryClick -> setExpanded(country = true)
+            is PhoneNumberEvent.CountryDismiss -> setExpanded(country = false)
             is PhoneNumberEvent.CountryChange -> {
                 country = event.country
                 setExpanded()
