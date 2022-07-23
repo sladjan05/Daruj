@@ -112,7 +112,7 @@ fun VerificationCodeScreen(
                     },
                     onClick = {
                         if (!isLoading && (waitTimeProgress == 0f)) {
-                            onEvent(AuthEvent.SendVerificationCodeAgain)
+                            onEvent(AuthEvent.SendVerificationCodeAgainClick)
                         }
                     },
                     style = MaterialTheme.typography.bodyMedium

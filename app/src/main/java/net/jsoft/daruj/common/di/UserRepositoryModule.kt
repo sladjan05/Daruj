@@ -14,7 +14,7 @@ import net.jsoft.daruj.common.domain.UserRepository
 abstract class UserRepositoryModule {
 
     @Binds
-    abstract fun bindAuthenticator(
+    abstract fun bindUserRepository(
         firebaseUserRepository: FirebaseUserRepository
     ): UserRepository
 }

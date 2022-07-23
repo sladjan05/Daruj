@@ -38,24 +38,25 @@ fun CreateAccountScreen(
     val hostState = rememberSnackbarHostState()
     val errorHostState = rememberSnackbarHostState()
 
+    LaunchedEffect(Unit) {
+        viewModel.taskFlow.collectLatest { task ->
+            when (task) {
+                is CreateAccountTask.Finish -> {
+                    hostState.showSnackbar("Napravljen nalog") // TODO
+                }
+
+                is CreateAccountTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
+                is CreateAccountTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.TopCenter
     ) {
-        LaunchedEffect(Unit) {
-            viewModel.taskFlow.collectLatest { task ->
-                when (task) {
-                    is CreateAccountTask.Finish -> {
-                        hostState.showSnackbar("Napravljen nalog") // TODO
-                    }
-
-                    is CreateAccountTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
-                    is CreateAccountTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
-                }
-            }
-        }
 
         Column(
             modifier = Modifier.padding(top = 70.dp),

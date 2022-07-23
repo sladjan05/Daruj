@@ -1,7 +1,6 @@
 package net.jsoft.daruj.auth.presentation.screen
 
 import android.app.Activity
-import android.content.Intent
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
@@ -26,6 +25,7 @@ import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCode
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.component.TextSnackbar
 import net.jsoft.daruj.common.util.rememberSnackbarHostState
+import net.jsoft.daruj.common.util.switchActivity
 import net.jsoft.daruj.common.util.value
 import net.jsoft.daruj.create_account.presentation.CreateAccountActivity
 
@@ -49,15 +49,8 @@ fun AuthScreen(
                     navController.popBackStack()
                     navController.navigate(Screen.Verification.route)
                 }
-                is AuthTask.Finish -> {
-                    val intent = Intent(
-                        context,
-                        CreateAccountActivity::class.java
-                    )
 
-                    context.startActivity(intent)
-                    (context as Activity).finish()
-                }
+                is AuthTask.Finish -> context.switchActivity<CreateAccountActivity>()
 
                 is AuthTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
                 is AuthTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
@@ -151,14 +144,14 @@ fun AuthScreen(
                 onClick = {
                     when (viewModel.screen) {
                         is Screen.Phone -> viewModel.onEvent(
-                            AuthEvent.SendVerificationCode(
+                            AuthEvent.SendVerificationCodeClick(
                                 activity = context as Activity,
                                 dialCode = phoneViewModel.dialCode.getValue(context),
                                 phoneNumber = phoneViewModel.phoneNumber.getValue(context)
                             )
                         )
 
-                        is Screen.Verification -> viewModel.onEvent(AuthEvent.VerifyWithCode(verificationViewModel.code.getValue(context)))
+                        is Screen.Verification -> viewModel.onEvent(AuthEvent.VerifyWithCodeClick(verificationViewModel.code.getValue(context)))
                     }
                 }
             )

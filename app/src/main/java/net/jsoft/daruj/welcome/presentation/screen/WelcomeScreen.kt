@@ -1,12 +1,11 @@
 package net.jsoft.daruj.welcome.presentation.screen
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,9 +16,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
+import net.jsoft.daruj.auth.presentation.AuthActivity
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
+import net.jsoft.daruj.common.util.switchActivity
 import net.jsoft.daruj.common.util.value
 import net.jsoft.daruj.introduction.presentation.IntroductionActivity
 
@@ -84,13 +87,7 @@ fun WelcomeScreen() {
                 text = R.string.tx_continue.value,
                 modifier = Modifier.widthIn(300.dp),
                 onClick = {
-                    val intent = Intent(
-                        context,
-                        IntroductionActivity::class.java
-                    )
-
-                    context.startActivity(intent)
-                    (context as Activity).finish()
+                    context.switchActivity<IntroductionActivity>()
                 }
             )
 

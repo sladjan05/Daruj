@@ -1,8 +1,5 @@
 package net.jsoft.daruj.introduction.presentation.screen
 
-import android.app.Activity
-import android.content.Intent
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
@@ -23,6 +20,7 @@ import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.AuthActivity
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
+import net.jsoft.daruj.common.util.switchActivity
 import net.jsoft.daruj.common.util.value
 import net.jsoft.daruj.introduction.presentation.component.IntroductionIllustration
 import net.jsoft.daruj.introduction.presentation.component.PageIndicator
@@ -49,15 +47,7 @@ fun IntroductionScreen(
         viewModel.taskFlow.collectLatest { task ->
             when (task) {
                 is IntroductionTask.SwitchPage -> pagerState.animateScrollToPage(viewModel.page)
-                is IntroductionTask.Finish -> {
-                    val intent = Intent(
-                        context,
-                        AuthActivity::class.java
-                    )
-
-                    context.startActivity(intent)
-                    (context as Activity).finish()
-                }
+                is IntroductionTask.Finish -> context.switchActivity<AuthActivity>()
             }
         }
     }

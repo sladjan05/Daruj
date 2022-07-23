@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.presentation.component.TextBox
@@ -58,6 +59,8 @@ fun VerificationCodeBox(
                     imeAction = if (i == 5) ImeAction.Done else ImeAction.Next
                 ),
                 onValueChange = { value ->
+                    if(!value.isDigitsOnly()) return@TextBox
+
                     onCodeChange(code.substring(0, i) + value)
 
                     if (value.isEmpty()) {

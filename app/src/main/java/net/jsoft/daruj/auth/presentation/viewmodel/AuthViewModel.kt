@@ -15,6 +15,8 @@ import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
 import net.jsoft.daruj.auth.domain.usecase.VerifyWithCodeUseCase
 import net.jsoft.daruj.auth.presentation.screen.Screen
 import net.jsoft.daruj.common.domain.Authenticator
+import net.jsoft.daruj.common.domain.usecase.GetLocalSettingsUseCase
+import net.jsoft.daruj.common.domain.usecase.UpdateLocalSettingsUseCase
 import net.jsoft.daruj.common.exception.RedundantVerificationRequestException
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
 import net.jsoft.daruj.common.util.asUiText
@@ -26,7 +28,10 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val initializeAuthenticator: InitializeAuthenticatorUseCase,
     private val sendSMSVerification: SendSMSVerificationUseCase,
-    private val verifyWithCode: VerifyWithCodeUseCase
+    private val verifyWithCode: VerifyWithCodeUseCase,
+
+    private val getLocalSettings: GetLocalSettingsUseCase,
+    private val updateLocalSettings: UpdateLocalSettingsUseCase
 ) : LoadingViewModel<AuthEvent, AuthTask>() {
 
     var screen: Screen by mutableStateOf(Screen.Phone)
@@ -40,9 +45,20 @@ class AuthViewModel @Inject constructor(
 
     private lateinit var fullPhoneNumber: String
 
+    init {
+        viewModelScope.launch {
+            val settings = getLocalSettings()
+            val newSettings = settings.copy(
+                hasCompletedIntroduction = true
+            )
+
+            updateLocalSettings(newSettings)
+        }
+    }
+
     override fun onEvent(event: AuthEvent) {
         when (event) {
-            is AuthEvent.SendVerificationCode -> viewModelScope.launch(verificationExceptionHandler) {
+            is AuthEvent.SendVerificationCodeClick -> viewModelScope.launch(verificationExceptionHandler) {
                 fullPhoneNumber = "+${event.dialCode}${event.phoneNumber}"
 
                 load {
@@ -56,14 +72,14 @@ class AuthViewModel @Inject constructor(
             }
 
 
-            is AuthEvent.SendVerificationCodeAgain -> viewModelScope.launch(verificationExceptionHandler) {
+            is AuthEvent.SendVerificationCodeAgainClick -> viewModelScope.launch(verificationExceptionHandler) {
                 load { sendSMSVerification(fullPhoneNumber) }
 
                 mTaskFlow += AuthTask.ShowInfo(R.string.tx_code_is_sent_again.asUiText())
                 startSMSWaitTimeCountdown()
             }
 
-            is AuthEvent.VerifyWithCode -> viewModelScope.launch(smsExceptionHandler) {
+            is AuthEvent.VerifyWithCodeClick -> viewModelScope.launch(smsExceptionHandler) {
                 load { verifyWithCode(event.code) }
                 mTaskFlow += AuthTask.Finish
             }
