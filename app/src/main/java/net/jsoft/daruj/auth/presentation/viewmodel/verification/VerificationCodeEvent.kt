@@ -1,5 +1,6 @@
 package net.jsoft.daruj.auth.presentation.viewmodel.verification
 
 sealed class VerificationCodeEvent {
-    class CodeChange(val code: String) : VerificationCodeEvent()
+    class NumberClick(val number: Int) : VerificationCodeEvent()
+    object DeleteClick : VerificationCodeEvent()
 }

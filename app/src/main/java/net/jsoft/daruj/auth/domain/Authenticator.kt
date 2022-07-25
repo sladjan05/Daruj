@@ -1,4 +1,4 @@
-package net.jsoft.daruj.common.domain
+package net.jsoft.daruj.auth.domain
 
 interface Authenticator {
     val id: String

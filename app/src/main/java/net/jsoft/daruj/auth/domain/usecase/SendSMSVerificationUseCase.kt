@@ -1,8 +1,8 @@
 package net.jsoft.daruj.auth.domain.usecase
 
-import android.util.Patterns
-import net.jsoft.daruj.common.domain.Authenticator
+import net.jsoft.daruj.auth.domain.Authenticator
 import net.jsoft.daruj.common.exception.InvalidRequestException
+import net.jsoft.daruj.common.util.RegexPatterns
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,7 +11,7 @@ class SendSMSVerificationUseCase @Inject constructor(
     private val authenticator: Authenticator
 ) {
     suspend operator fun invoke(phoneNumber: String) {
-        if(!Patterns.PHONE.matcher(phoneNumber).matches()) {
+        if (!phoneNumber.matches(RegexPatterns.PHONE_NUMBER_REGEX)) {
             throw InvalidRequestException()
         }
 

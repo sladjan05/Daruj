@@ -13,7 +13,22 @@ class VerificationCodeViewModel : BasicViewModel<VerificationCodeEvent, Nothing>
 
     override fun onEvent(event: VerificationCodeEvent) {
         when (event) {
-            is VerificationCodeEvent.CodeChange -> code = event.code.asUiText()
+            is VerificationCodeEvent.NumberClick -> {
+                val numberString = event.number.toString()
+                val codeString = code.toString()
+
+                if (codeString.length == 6) return
+
+                code = (codeString + numberString).asUiText()
+            }
+
+            is VerificationCodeEvent.DeleteClick -> {
+                val codeString = code.toString()
+
+                if (codeString.isEmpty()) return
+
+                code = codeString.dropLast(1).asUiText()
+            }
         }
     }
 }

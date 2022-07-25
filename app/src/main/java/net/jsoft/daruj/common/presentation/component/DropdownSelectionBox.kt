@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
@@ -154,31 +155,5 @@ fun DropdownSelectionBox(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun DropdownSelectionBoxPreview() {
-    DarujTheme {
-        var expanded by remember { mutableStateOf(false) }
-        var current by remember { mutableStateOf("Afganistan") }
-
-        val countries = Country.values()
-        val countryNames = countries.map { country -> stringResource(country.resId) }
-
-        DropdownSelectionBox(
-            text = current,
-            items = countryNames,
-            modifier = Modifier.width(90.dp),
-            expanded = expanded,
-            onClick = {
-                expanded = !expanded
-            },
-            onSelected = { index ->
-                current = countryNames[index]
-                expanded = false
-            }
-        )
     }
 }

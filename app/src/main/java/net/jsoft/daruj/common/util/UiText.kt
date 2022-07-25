@@ -37,14 +37,14 @@ sealed class UiText {
 }
 
 fun String.asUiText(): UiText = UiText.DynamicString(this)
+
 @JvmName("asUiTextListString")
 fun List<String>.asUiText(): List<UiText> = map { string -> string.asUiText() }
 
 fun Int.asUiText(vararg args: Any): UiText = UiText.StringResource(this, args)
+
 @JvmName("asUiTextListInt")
 fun List<Int>.asUiText(): List<UiText> = map { int -> int.asUiText() }
-
-
 
 val List<UiText>.value: List<String>
     @Composable

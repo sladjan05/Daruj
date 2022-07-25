@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import net.jsoft.daruj.common.data.FirebaseAuthenticator
-import net.jsoft.daruj.common.domain.Authenticator
+import net.jsoft.daruj.auth.data.FirebaseAuthenticator
+import net.jsoft.daruj.auth.domain.Authenticator
 
 @Module
 @InstallIn(SingletonComponent::class)

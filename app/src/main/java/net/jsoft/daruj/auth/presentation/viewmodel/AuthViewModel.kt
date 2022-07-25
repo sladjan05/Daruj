@@ -14,7 +14,7 @@ import net.jsoft.daruj.auth.domain.usecase.InitializeAuthenticatorUseCase
 import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
 import net.jsoft.daruj.auth.domain.usecase.VerifyWithCodeUseCase
 import net.jsoft.daruj.auth.presentation.screen.Screen
-import net.jsoft.daruj.common.domain.Authenticator
+import net.jsoft.daruj.auth.domain.Authenticator
 import net.jsoft.daruj.common.domain.usecase.GetLocalSettingsUseCase
 import net.jsoft.daruj.common.domain.usecase.UpdateLocalSettingsUseCase
 import net.jsoft.daruj.common.exception.RedundantVerificationRequestException
@@ -72,7 +72,7 @@ class AuthViewModel @Inject constructor(
             }
 
 
-            is AuthEvent.SendVerificationCodeAgainClick -> viewModelScope.launch(verificationExceptionHandler) {
+            is AuthEvent.ResendVerificationCodeClick -> viewModelScope.launch(verificationExceptionHandler) {
                 load { sendSMSVerification(fullPhoneNumber) }
 
                 mTaskFlow += AuthTask.ShowInfo(R.string.tx_code_is_sent_again.asUiText())
@@ -87,8 +87,8 @@ class AuthViewModel @Inject constructor(
     }
 
     private suspend fun startSMSWaitTimeCountdown() {
-        val step = 20L // ms
-        val max = Authenticator.SMS_WAIT_TIME * step
+        val step = 50L // ms
+        val max = (Authenticator.SMS_WAIT_TIME * 1000f / step).toInt()
 
         for (time in max downTo 0) {
             waitTimeProgress = time.toFloat() / max

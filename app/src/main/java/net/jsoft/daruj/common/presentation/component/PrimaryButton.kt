@@ -47,15 +47,3 @@ fun PrimaryButton(
         )
     }
 }
-
-@Preview
-@Composable
-private fun PrimaryButtonPreview() {
-    DarujTheme {
-        PrimaryButton(
-            text = "Sign in",
-            enabled = false,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}

@@ -47,6 +47,7 @@ fun ProfilePicture(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -103,7 +104,7 @@ fun ProfilePicture(
                         color = Color.White,
                         shape = MaterialTheme.shape.rounded100p
                     )
-                    .clickable(shape = MaterialTheme.shape.rounded100p) {
+                    .clickable(MaterialTheme.shape.rounded100p) {
                         launcher.launch("image/*")
                     }
                     .border(
@@ -115,15 +116,5 @@ fun ProfilePicture(
                 tint = MaterialTheme.colorScheme.primary
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun ProfilePicturePreview() {
-    DarujTheme {
-        ProfilePicture(
-            pictureChangeEnabled = true
-        )
     }
 }

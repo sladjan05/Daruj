@@ -1,4 +1,4 @@
-package net.jsoft.daruj.common.data
+package net.jsoft.daruj.auth.data
 
 import android.app.Activity
 import com.google.firebase.FirebaseException
@@ -7,7 +7,7 @@ import com.google.firebase.auth.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import net.jsoft.daruj.common.domain.Authenticator
+import net.jsoft.daruj.auth.domain.Authenticator
 import net.jsoft.daruj.common.exception.*
 import net.jsoft.daruj.common.util.DispatcherProvider
 import java.util.concurrent.TimeUnit

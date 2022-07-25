@@ -37,8 +37,7 @@ fun TextBox(
     contentAlignment: Alignment = Alignment.CenterStart,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions(),
-    onValueChange: (value: String) -> Unit = {},
-    onCustomClick: (() -> Unit)? = null
+    onValueChange: (value: String) -> Unit = {}
 ) {
     BasicTextField(
         value = text,
@@ -72,14 +71,6 @@ fun TextBox(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = MaterialTheme.shape.rounded10
-                )
-                .thenIf(
-                    statement = onCustomClick != null,
-                    modifier = Modifier.clickable(
-                        interactionSource = rememberMutableInteractionSource(),
-                        indication = null,
-                        onClick = onCustomClick ?: {}
-                    )
                 )
                 .padding(horizontal = BOX_HORIZONTAL_PADDING),
             contentAlignment = contentAlignment

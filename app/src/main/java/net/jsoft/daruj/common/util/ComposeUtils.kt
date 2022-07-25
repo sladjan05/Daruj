@@ -3,6 +3,7 @@ package net.jsoft.daruj.common.util
 import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
@@ -42,6 +43,17 @@ fun Modifier.clickable(
     )
 }
 
+fun Modifier.clickable(
+    ripple: Indication,
+    onClick: () -> Unit
+): Modifier = composed {
+    clickable(
+        interactionSource = rememberMutableInteractionSource(),
+        indication = ripple,
+        onClick = onClick
+    )
+}
+
 fun Modifier.clickableIf(
     clickable: Boolean,
     shape: Shape,
@@ -49,6 +61,15 @@ fun Modifier.clickableIf(
 ): Modifier = thenIf(
     statement = clickable,
     modifier = Modifier.clickable(shape, onClick)
+)
+
+fun Modifier.clickableIf(
+    clickable: Boolean,
+    ripple: Indication,
+    onClick: () -> Unit
+): Modifier = thenIf(
+    statement = clickable,
+    modifier = clickable(ripple, onClick)
 )
 
 val Int.value: String

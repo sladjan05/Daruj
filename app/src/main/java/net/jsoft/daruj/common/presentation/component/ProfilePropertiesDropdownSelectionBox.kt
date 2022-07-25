@@ -71,7 +71,7 @@ fun ProfilePropertiesDropdownSelectionBox(
                                             color = MaterialTheme.colorScheme.surface,
                                             shape = MaterialTheme.shape.rounded100p
                                         )
-                                        .clickable(shape = MaterialTheme.shape.rounded100p) {
+                                        .clickable(MaterialTheme.shape.rounded100p) {
                                             onSelected(index)
                                         },
                                     contentAlignment = Alignment.Center
@@ -110,55 +110,6 @@ fun ProfilePropertiesDropdownSelectionBox(
                 color = labelColor,
                 style = MaterialTheme.typography.bodyMedium
             )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun ProfilePropertiesDropdownSelectionBoxPreview() {
-    val items = mutableListOf<@Composable BoxScope.() -> Unit>()
-
-    for (i in 1..20) {
-        items.add {
-            Text(
-                text = Char(i + 64).toString()
-            )
-        }
-    }
-
-    var index by remember { mutableStateOf(0) }
-    var expanded by remember { mutableStateOf(false) }
-
-    DarujTheme {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            ProfilePropertiesDropdownSelectionBox(
-                selectedIndex = index,
-                label = "Krvna grupa",
-                items = items,
-                rows = 4,
-                columns = 5,
-                modifier = Modifier
-                    .padding(end = 20.dp)
-                    .zIndex(1f)
-                    .align(Alignment.CenterEnd),
-                expanded = expanded,
-                onClick = {
-                    expanded = !expanded
-                },
-                onSelected = { newIndex ->
-                    index = newIndex
-                    expanded = false
-                }
-            )
-
-            Text(
-                text = "lalalal",
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
-
         }
     }
 }

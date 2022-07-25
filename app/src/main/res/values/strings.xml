@@ -300,7 +300,9 @@
     <string name="tx_create_account">Kreiraj nalog</string>
     <string name="tx_after_this_step_you_will_become_a_memeber">Nakon ovog koraka, pristupićete daruj.ba zajednici dobrovoljnih davalaca krvi.</string>
     <string name="tx_date_of_birth">Datum rođenja</string>
-    <string name="tx_internal_error">Interna greška! Pokušajte kasnije...</string>
+    <string name="tx_internal_error">Interna greška! Pokušajte kasnije…</string>
     <string name="tx_verification_successful">Verifikacija uspješna</string>
+    <string name="tx_name_cannot_be_empty">Ime ne može biti prazno!</string>
+    <string name="tx_surname_cannot_be_empty">Prezime ne može biti prazno!</string>
 
 </resources>

@@ -12,13 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.component.*
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
 import net.jsoft.daruj.common.util.getBitmap
 import net.jsoft.daruj.common.util.getValues
@@ -52,16 +50,17 @@ fun CreateAccountScreen(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-
         Column(
-            modifier = Modifier.padding(top = 70.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(70.dp))
+
             TitleSubtitle(
                 title = R.string.tx_enter_your_data.value,
                 subtitle = R.string.tx_enter_your_data_description.value
@@ -71,13 +70,13 @@ fun CreateAccountScreen(
 
             Box(
                 modifier = Modifier
-                    .heightIn(
-                        min = 200.dp,
-                        max = 200.dp
-                    )
                     .widthIn(
                         min = 300.dp,
                         max = 300.dp
+                    )
+                    .heightIn(
+                        min = 200.dp,
+                        max = 200.dp
                     )
             ) {
                 ProfilePicture(
@@ -254,24 +253,28 @@ fun CreateAccountScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            Text(
-                text = R.string.tx_legal_id_optional.value,
-                modifier = Modifier.align(Alignment.Start),
-                color = MaterialTheme.colorScheme.onBackgroundDim,
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            TextBox(
+            Column(
                 modifier = Modifier.width(300.dp),
-                text = viewModel.legalId.value,
-                hint = R.string.tx_id_number.value,
-                enabled = !viewModel.isLoading,
-                onValueChange = { value ->
-                    viewModel.onEvent(CreateAccountEvent.LegalIdChange(value))
-                }
-            )
+            ) {
+                Text(
+                    text = R.string.tx_legal_id_optional.value,
+                    modifier = Modifier.align(Alignment.Start),
+                    color = MaterialTheme.colorScheme.onBackgroundDim,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                TextBox(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = viewModel.legalId.value,
+                    hint = R.string.tx_id_number.value,
+                    enabled = !viewModel.isLoading,
+                    onValueChange = { value ->
+                        viewModel.onEvent(CreateAccountEvent.LegalIdChange(value))
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(60.dp))
 
@@ -297,38 +300,9 @@ fun CreateAccountScreen(
             Spacer(modifier = Modifier.height(30.dp))
         }
 
-        TextSnackbar(
-            hostState = hostState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 8.dp
-                )
-                .align(Alignment.BottomCenter),
-            backgroundColor = MaterialTheme.colorScheme.surface,
-            textColor = MaterialTheme.colorScheme.onSurface
+        ErrorInfoSnackbars(
+            infoHostState = hostState,
+            errorHostState = errorHostState
         )
-
-        TextSnackbar(
-            hostState = errorHostState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 8.dp
-                )
-                .align(Alignment.BottomCenter),
-            backgroundColor = MaterialTheme.colorScheme.error,
-            textColor = MaterialTheme.colorScheme.onError
-        )
-    }
-}
-
-@Preview
-@Composable
-fun CreateAccountScreenPreview() {
-    DarujTheme {
-        CreateAccountScreen()
     }
 }

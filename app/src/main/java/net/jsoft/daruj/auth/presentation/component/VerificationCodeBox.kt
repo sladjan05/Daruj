@@ -1,114 +1,79 @@
 package net.jsoft.daruj.auth.presentation.component
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.text.isDigitsOnly
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import net.jsoft.daruj.common.presentation.component.TextBox
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
-import net.jsoft.daruj.common.util.thenIf
-import java.lang.Integer.min
+import net.jsoft.daruj.common.presentation.ui.theme.shape
 
-private val WIDTH = 40.dp
+private val SIZE = 40.dp
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun VerificationCodeBox(
-    focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
     code: String = "",
-    enabled: Boolean = true,
-    onCodeChange: (code: String) -> Unit = {}
 ) {
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     Row(
-        modifier = modifier,
+        modifier = modifier.wrapContentHeight(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        for (i in 0 until 6) {
-            TextBox(
+        repeat(6) { i ->
+            Box(
                 modifier = Modifier
-                    .width(WIDTH)
-                    .thenIf(
-                        statement = i == min(code.length, 5),
-                        modifier = Modifier.focusRequester(focusRequester)
+                    .size(SIZE)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = MaterialTheme.shape.rounded10
                     ),
-                text = if (i < code.length) code[i].toString() else "",
-                maxLength = 1,
-                enabled = enabled,
-                contentAlignment = Alignment.Center,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Phone,
-                    imeAction = if (i == 5) ImeAction.Done else ImeAction.Next
-                ),
-                onValueChange = { value ->
-                    if(!value.isDigitsOnly()) return@TextBox
+                contentAlignment = Alignment.Center
+            ) {
+                AnimatedContent(
+                    targetState = if (i < code.length) code[i].toString() else "",
+                    transitionSpec = {
+                        val tweenSpec = tween<IntOffset>(durationMillis = 100)
 
-                    onCodeChange(code.substring(0, i) + value)
+                        fun slideInVertically(initialOffsetY: (fullHeight: Int) -> Int) = slideInVertically(
+                            animationSpec = tweenSpec,
+                            initialOffsetY = initialOffsetY
+                        )
 
-                    if (value.isEmpty()) {
-                        if (i != 0) focusManager.moveFocus(FocusDirection.Previous)
-                    } else if (i != 5) {
-                        focusManager.moveFocus(FocusDirection.Next)
+                        fun slideOutVertically(targetOffsetY: (fullHeight: Int) -> Int) = slideOutVertically(
+                            animationSpec = tweenSpec,
+                            targetOffsetY = targetOffsetY
+                        )
+
+                        if (targetState.isEmpty()) {
+                            slideInVertically { -it } with slideOutVertically { it }
+                        } else {
+                            slideInVertically { it } with slideOutVertically { -it }
+                        } using SizeTransform { _, _ ->
+                            keyframes {
+                                durationMillis = 100
+                            }
+                        }
                     }
-                },
-                onCustomClick = {
-                    focusRequester.requestFocus()
-                    keyboardController?.show()
+                ) { targetText ->
+                    Text(
+                        text = targetText,
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.labelMedium,
+                        textAlign = TextAlign.Center
+                    )
                 }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun VerificationCodeInputBoxPreview() {
-    DarujTheme {
-        var code by remember { mutableStateOf("") }
-
-        val focusRequester = remember { FocusRequester() }
-
-        val scope = rememberCoroutineScope()
-
-        LaunchedEffect(Unit) {
-            scope.launch {
-                delay(2000)
-                focusRequester.requestFocus()
             }
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 50.dp),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            VerificationCodeBox(
-                focusRequester,
-                modifier = Modifier.width(300.dp),
-                code = code,
-                onCodeChange = { newCode ->
-                    code = newCode
-                }
-            )
         }
     }
 }

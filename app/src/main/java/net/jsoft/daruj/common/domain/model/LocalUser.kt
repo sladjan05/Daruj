@@ -19,7 +19,7 @@ class LocalUser(
     sex = sex,
     blood = blood
 ) {
-    class Constructable(
+    data class Constructable(
         val name: String,
         val surname: String,
         val sex: Sex,

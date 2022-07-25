@@ -1,7 +1,6 @@
 package net.jsoft.daruj.auth.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
@@ -19,13 +18,11 @@ import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.component.VerificationCodeBox
 import net.jsoft.daruj.auth.presentation.viewmodel.AuthEvent
-import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeViewModel
 import net.jsoft.daruj.common.presentation.component.TitleSubtitle
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
 import net.jsoft.daruj.common.util.formatSMSWaitTime
 import net.jsoft.daruj.common.util.rememberFocusRequester
-import net.jsoft.daruj.common.util.rememberMutableInteractionSource
 import net.jsoft.daruj.common.util.value
 
 @Composable
@@ -33,12 +30,9 @@ fun VerificationCodeScreen(
     viewModel: VerificationCodeViewModel,
     isLoading: Boolean,
     waitTime: Int,
-    waitTimeProgress: Float,
-    onEvent: (event: AuthEvent) -> Unit
+    canResendVerificationCode: Boolean,
+    resendVerificationCode: () -> Unit
 ) {
-    val focusRequester = rememberFocusRequester()
-    val focusManager = LocalFocusManager.current
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,14 +40,6 @@ fun VerificationCodeScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LaunchedEffect(isLoading) {
-            if (isLoading) {
-                focusManager.clearFocus()
-            } else {
-                focusRequester.requestFocus()
-            }
-        }
-
         TitleSubtitle(
             title = R.string.tx_check_sms.value,
             subtitle = R.string.tx_code_is_sent.value
@@ -62,20 +48,8 @@ fun VerificationCodeScreen(
         Spacer(modifier = Modifier.height(45.dp))
 
         VerificationCodeBox(
-            focusRequester = focusRequester,
-            modifier = Modifier
-                .width(300.dp)
-                .clickable(
-                    interactionSource = rememberMutableInteractionSource(),
-                    indication = null
-                ) {
-                    focusRequester.requestFocus()
-                },
-            code = viewModel.code.value,
-            enabled = !isLoading,
-            onCodeChange = { code ->
-                viewModel.onEvent(VerificationCodeEvent.CodeChange(code))
-            }
+            modifier = Modifier.width(300.dp),
+            code = viewModel.code.value
         )
 
         Spacer(modifier = Modifier.height(26.dp))
@@ -99,7 +73,7 @@ fun VerificationCodeScreen(
                     text = buildAnnotatedString {
                         withStyle(
                             SpanStyle(
-                                color = if (isLoading || (waitTimeProgress != 0f)) {
+                                color = if (isLoading || !canResendVerificationCode) {
                                     MaterialTheme.colorScheme.onBackgroundDim
                                 } else {
                                     MaterialTheme.colorScheme.onBackground
@@ -111,14 +85,14 @@ fun VerificationCodeScreen(
                         }
                     },
                     onClick = {
-                        if (!isLoading && (waitTimeProgress == 0f)) {
-                            onEvent(AuthEvent.SendVerificationCodeAgainClick)
+                        if (!isLoading && canResendVerificationCode) {
+                            resendVerificationCode()
                         }
                     },
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                AnimatedVisibility(visible = waitTimeProgress != 0f) {
+                AnimatedVisibility(visible = !canResendVerificationCode) {
                     Text(
                         text = formatSMSWaitTime(waitTime),
                         color = MaterialTheme.colorScheme.onBackgroundDim,

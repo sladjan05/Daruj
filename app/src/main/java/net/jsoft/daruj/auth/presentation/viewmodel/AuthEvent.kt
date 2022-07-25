@@ -10,5 +10,5 @@ sealed class AuthEvent {
     ) : AuthEvent()
 
     class VerifyWithCodeClick(val code: String) : AuthEvent()
-    object SendVerificationCodeAgainClick : AuthEvent()
+    object ResendVerificationCodeClick : AuthEvent()
 }
