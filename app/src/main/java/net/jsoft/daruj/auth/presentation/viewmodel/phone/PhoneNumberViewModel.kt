@@ -9,14 +9,14 @@ import net.jsoft.daruj.common.util.asUiText
 
 class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
 
-    var country: Country? by mutableStateOf(Country.BOSNIA_AND_HERZEGOVINA)
+    var country: Country? by mutableStateOf(Country.BA)
         private set
 
-    var countryDropdownExpanded by mutableStateOf(false)
+    var countryExpanded by mutableStateOf(false)
         private set
 
     var dialCode by mutableStateOf(
-        Country.BOSNIA_AND_HERZEGOVINA.dialCode.removePrefix("+").asUiText()
+        Country.BA.dialCode.removePrefix("+").asUiText()
     )
         private set
 
@@ -25,8 +25,9 @@ class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
 
     override fun onEvent(event: PhoneNumberEvent) {
         when (event) {
-            is PhoneNumberEvent.CountryClick -> setExpanded(country = true)
-            is PhoneNumberEvent.CountryDismiss -> setExpanded(country = false)
+            is PhoneNumberEvent.Dismiss -> setExpanded()
+
+            is PhoneNumberEvent.CountryClick -> setExpanded(country = !countryExpanded)
             is PhoneNumberEvent.CountryChange -> {
                 country = event.country
                 setExpanded()
@@ -50,6 +51,6 @@ class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
     private fun setExpanded(
         country: Boolean = false
     ) {
-        countryDropdownExpanded = country
+        countryExpanded = country
     }
 }

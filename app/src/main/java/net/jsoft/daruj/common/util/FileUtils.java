@@ -19,7 +19,11 @@ import java.io.OutputStream;
  * Author       : zetbaitsu
  * Name         : Zetra
  * GitHub       : https://github.com/zetbaitsu
- * Modified by  : Slađan Stevanović
+ *
+ * Modified on  : July 20, 2022
+ * Modified by  : sladjan05
+ * Name         : Slađan Stevanović
+ * GitHub       : https://github.com/sladjan05
  */
 public class FileUtils {
     private static final int EOF = -1;

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -30,6 +31,7 @@ import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCode
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeViewModel
 import net.jsoft.daruj.common.presentation.component.ErrorInfoSnackbars
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
+import net.jsoft.daruj.common.util.MainTestTags
 import net.jsoft.daruj.common.util.rememberSnackbarHostState
 import net.jsoft.daruj.common.util.switchActivity
 import net.jsoft.daruj.common.util.value
@@ -43,6 +45,8 @@ fun AuthScreen(
     verificationViewModel: VerificationCodeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+
+    val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val navController = rememberAnimatedNavController()
@@ -54,8 +58,6 @@ fun AuthScreen(
         viewModel.taskFlow.collectLatest { task ->
             when (task) {
                 is AuthTask.ShowVerificationScreen -> {
-                    keyboardController?.hide()
-
                     navController.popBackStack()
                     navController.navigate(Screen.Verification.route)
                 }
@@ -75,6 +77,13 @@ fun AuthScreen(
             if (codeString.length == 6) {
                 viewModel.onEvent(AuthEvent.VerifyWithCodeClick(codeString))
             }
+        }
+    }
+
+    LaunchedEffect(viewModel.isLoading) {
+        if (viewModel.isLoading) {
+            keyboardController?.hide()
+            focusManager.clearFocus()
         }
     }
 
@@ -169,7 +178,9 @@ fun AuthScreen(
                 PrimaryButton(
                     text = R.string.tx_confirm.value,
                     enabled = !viewModel.isLoading,
-                    modifier = Modifier.width(300.dp),
+                    modifier = Modifier
+                        .testTag(MainTestTags.Auth.NEXT_BUTTON)
+                        .width(300.dp),
                     onClick = {
                         viewModel.onEvent(
                             AuthEvent.SendVerificationCodeClick(

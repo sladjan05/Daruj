@@ -10,23 +10,23 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
-import net.jsoft.daruj.common.util.Country
+import net.jsoft.daruj.common.util.MainTestTags
+import net.jsoft.daruj.common.util.PopupTestTags
 import net.jsoft.daruj.common.util.clickableIf
 
 private val HEIGHT = 40.dp
@@ -45,8 +45,7 @@ fun DropdownSelectionBox(
     expanded: Boolean = false,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
-    onSelected: (index: Int) -> Unit = {},
-    onDismiss: () -> Unit = {}
+    onSelected: (index: Int) -> Unit = {}
 ) {
     val itemsNotEmpty = items != null && items.isNotEmpty()
 
@@ -87,6 +86,7 @@ fun DropdownSelectionBox(
             Text(
                 text = text,
                 modifier = Modifier
+                    .testTag(MainTestTags.Dropdown.TEXT)
                     .align(Alignment.Center)
                     .padding(horizontal = TEXT_HORIZONTAL_PADDING),
                 maxLines = 1,
@@ -106,12 +106,16 @@ fun DropdownSelectionBox(
                     x = 0,
                     y = 136
                 ),
-                onDismissRequest = onDismiss
+                properties = PopupProperties(
+                    dismissOnClickOutside = false,
+                    dismissOnBackPress = false
+                )
             ) {
                 val listState = rememberLazyListState()
 
                 LazyColumn(
                     modifier = Modifier
+                        .testTag(PopupTestTags.Dropdown.LIST)
                         .width(this@BoxWithConstraints.maxWidth)
                         .heightIn(max = MAX_LIST_HEIGHT)
                         .background(

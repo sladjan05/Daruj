@@ -85,7 +85,7 @@ fun ProfilePicture(
         } else {
             Image(
                 bitmap = bitmap.asImageBitmap(),
-                contentDescription = "Picture",
+                contentDescription = "Profile Picture",
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(MaterialTheme.shape.rounded100p)

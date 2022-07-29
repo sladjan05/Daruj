@@ -11,7 +11,7 @@ class SendSMSVerificationUseCase @Inject constructor(
     private val authenticator: Authenticator
 ) {
     suspend operator fun invoke(phoneNumber: String) {
-        if (!phoneNumber.matches(RegexPatterns.PHONE_NUMBER_REGEX)) {
+        if (!phoneNumber.matches(RegexPatterns.PHONE_NUMBER)) {
             throw InvalidRequestException()
         }
 

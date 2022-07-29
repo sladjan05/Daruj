@@ -12,14 +12,12 @@ fun BoxScope.ErrorInfoSnackbars(
     errorHostState: SnackbarHostState
 ) {
     TextSnackbar(
-        hostState = infoHostState,
-        backgroundColor = MaterialTheme.colorScheme.surface,
-        textColor = MaterialTheme.colorScheme.onSurfaceDim
+        hostState = errorHostState,
+        isError = true
     )
 
     TextSnackbar(
-        hostState = errorHostState,
-        backgroundColor = MaterialTheme.colorScheme.error,
-        textColor = MaterialTheme.colorScheme.onError
+        hostState = infoHostState,
+        isError = false
     )
 }

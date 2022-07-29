@@ -80,27 +80,26 @@ class CreateAccountViewModel @Inject constructor(
 
     override fun onEvent(event: CreateAccountEvent) {
         when (event) {
+            is CreateAccountEvent.Dismiss -> setExpanded()
+
             is CreateAccountEvent.PictureChange -> pictureUri = event.uri
 
             is CreateAccountEvent.NameChange -> name = event.name.asUiText()
             is CreateAccountEvent.SurnameChange -> surname = event.surname.asUiText()
 
-            is CreateAccountEvent.DayClick -> setExpanded(day = true)
-            is CreateAccountEvent.DayDismiss -> setExpanded(day = false)
+            is CreateAccountEvent.DayClick -> setExpanded(day = !dayExpanded)
             is CreateAccountEvent.DayIndexChange -> {
                 setBirth(day = event.index + 1)
                 setExpanded()
             }
 
-            is CreateAccountEvent.MonthClick -> setExpanded(month = true)
-            is CreateAccountEvent.MonthDismiss -> setExpanded(month = false)
+            is CreateAccountEvent.MonthClick -> setExpanded(month = !monthExpanded)
             is CreateAccountEvent.MonthIndexChange -> {
                 setBirth(month = event.index + 1)
                 setExpanded()
             }
 
-            is CreateAccountEvent.YearClick -> setExpanded(year = true)
-            is CreateAccountEvent.YearDismiss -> setExpanded(year = false)
+            is CreateAccountEvent.YearClick -> setExpanded(year = !yearExpanded)
             is CreateAccountEvent.YearIndexChange -> {
                 setBirth(year = LocalDate.now().year - 18 - event.index)
                 setExpanded()

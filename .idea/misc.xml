@@ -39,7 +39,11 @@
         <entry key="../../../../layout/compose-model-1658753784898.xml" value="0.30447635135135137" />
         <entry key="app/src/main/res/drawable/ic_dropdown.xml" value="0.2985" />
         <entry key="app/src/main/res/drawable/ic_full_logo.xml" value="0.165" />
+        <entry key="app/src/main/res/drawable/ic_full_logo_launcher_foreground.xml" value="0.3495" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3495" />
+        <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.3495" />
         <entry key="app/src/main/res/drawable/ic_splash_logo.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/bg_splash.xml" value="0.2866847826086957" />
       </map>
     </option>
   </component>

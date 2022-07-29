@@ -11,7 +11,7 @@ class VerifyWithCodeUseCase @Inject constructor(
     private val authenticator: Authenticator
 ) {
     suspend operator fun invoke(code: String) {
-        if (!code.matches(RegexPatterns.VERIFICATION_CODE_REGEX)) {
+        if (!code.matches(RegexPatterns.VERIFICATION_CODE)) {
             throw WrongCodeException()
         }
 

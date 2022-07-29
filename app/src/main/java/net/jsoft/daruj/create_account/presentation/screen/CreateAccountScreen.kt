@@ -18,10 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.component.*
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
-import net.jsoft.daruj.common.util.getBitmap
-import net.jsoft.daruj.common.util.getValues
-import net.jsoft.daruj.common.util.rememberSnackbarHostState
-import net.jsoft.daruj.common.util.value
+import net.jsoft.daruj.common.util.*
 import net.jsoft.daruj.create_account.presentation.component.ProfilePicture
 import net.jsoft.daruj.create_account.presentation.viewmodel.CreateAccountEvent
 import net.jsoft.daruj.create_account.presentation.viewmodel.CreateAccountTask
@@ -50,7 +47,11 @@ fun CreateAccountScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .indicationlessClickable {
+                viewModel.onEvent(CreateAccountEvent.Dismiss)
+            },
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
@@ -186,9 +187,6 @@ fun CreateAccountScreen(
                         },
                         onSelected = { index ->
                             viewModel.onEvent(CreateAccountEvent.DayIndexChange(index))
-                        },
-                        onDismiss = {
-                            viewModel.onEvent(CreateAccountEvent.DayDismiss)
                         }
                     )
 
@@ -224,9 +222,6 @@ fun CreateAccountScreen(
                         },
                         onSelected = { index ->
                             viewModel.onEvent(CreateAccountEvent.MonthIndexChange(index))
-                        },
-                        onDismiss = {
-                            viewModel.onEvent(CreateAccountEvent.MonthDismiss)
                         }
                     )
                 }
@@ -244,9 +239,6 @@ fun CreateAccountScreen(
                     },
                     onSelected = { index ->
                         viewModel.onEvent(CreateAccountEvent.YearIndexChange(index))
-                    },
-                    onDismiss = {
-                        viewModel.onEvent(CreateAccountEvent.YearDismiss)
                     }
                 )
             }

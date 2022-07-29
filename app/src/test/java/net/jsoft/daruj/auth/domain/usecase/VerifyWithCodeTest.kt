@@ -1,7 +1,7 @@
 package net.jsoft.daruj.auth.domain.usecase
 
 import kotlinx.coroutines.runBlocking
-import net.jsoft.daruj.auth.domain.data.FakeAuthenticator
+import net.jsoft.daruj.auth.data.FakeAuthenticator
 import net.jsoft.daruj.common.exception.WrongCodeException
 import org.junit.Test
 
@@ -20,7 +20,7 @@ class VerifyWithCodeTest {
     }
 
     @Test(expected = WrongCodeException::class)
-    fun codeContainingIllegalBCharacters_throwsException() = runBlocking {
+    fun codeContainingIllegalCharacters_throwsException() = runBlocking {
         verifyWithCode("12345a")
     }
 

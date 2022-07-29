@@ -72,6 +72,16 @@ fun Modifier.clickableIf(
     modifier = clickable(ripple, onClick)
 )
 
+fun Modifier.indicationlessClickable(
+    onClick: () -> Unit
+): Modifier = composed {
+    Modifier.clickable(
+        interactionSource = rememberMutableInteractionSource(),
+        indication = null,
+        onClick = onClick
+    )
+}
+
 val Int.value: String
     @Composable get() = stringResource(this)
 

@@ -1,978 +1,977 @@
 package net.jsoft.daruj.common.util
 
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
 import net.jsoft.daruj.R
 
 enum class Country(
     val dialCode: String,
     @StringRes val resId: Int
 ) {
-    AFGHANISTAN(
+    AF(
         dialCode = "+93",
         resId = R.string.tx_country_af
     ),
-    ALAND_ISLANDS(
+    AX(
         dialCode = "+358",
         resId = R.string.tx_country_ax
     ),
-    ALBANIA(
+    AL(
         dialCode = "+355",
         resId = R.string.tx_country_al
     ),
-    ALGERIA(
+    DZ(
         dialCode = "+213",
         resId = R.string.tx_country_dz
     ),
-    AMERICAN_SAMOA(
+    AS(
         dialCode = "+1684",
         resId = R.string.tx_country_as
     ),
-    ANDORRA(
+    AD(
         dialCode = "+376",
         resId = R.string.tx_country_ad
     ),
-    ANGOLA(
+    AO(
         dialCode = "+244",
         resId = R.string.tx_country_ao
     ),
-    ANGUILLA(
+    AI(
         dialCode = "+1264",
         resId = R.string.tx_country_ai
     ),
-    ANTARCTICA(
+    AQ(
         dialCode = "+672",
         resId = R.string.tx_country_aq
     ),
-    ANTIGUA_AND_BARBUDA(
+    AG(
         dialCode = "+1268",
         resId = R.string.tx_country_ag
     ),
-    ARGENTINA(
+    AR(
         dialCode = "+54",
         resId = R.string.tx_country_ar
     ),
-    ARMENIA(
+    AM(
         dialCode = "+374",
         resId = R.string.tx_country_am
     ),
-    ARUBA(
+    AW(
         dialCode = "+297",
         resId = R.string.tx_country_aw
     ),
-    AUSTRALIA(
+    AU(
         dialCode = "+61",
         resId = R.string.tx_country_au
     ),
-    AUSTRIA(
+    AT(
         dialCode = "+43",
         resId = R.string.tx_country_at
     ),
-    AZERBAIJAN(
+    AZ(
         dialCode = "+994",
         resId = R.string.tx_country_az
     ),
-    BAHAMAS(
+    BS(
         dialCode = "+1242",
         resId = R.string.tx_country_bs
     ),
-    BAHRAIN(
+    BH(
         dialCode = "+973",
         resId = R.string.tx_country_bh
     ),
-    BANGLADESH(
+    BD(
         dialCode = "+880",
         resId = R.string.tx_country_bd
     ),
-    BARBADOS(
+    BB(
         dialCode = "+1246",
         resId = R.string.tx_country_bb
     ),
-    BELARUS(
+    BY(
         dialCode = "+375",
         resId = R.string.tx_country_by
     ),
-    BELGIUM(
+    BE(
         dialCode = "+32",
         resId = R.string.tx_country_be
     ),
-    BELIZE(
+    BZ(
         dialCode = "+501",
         resId = R.string.tx_country_bz
     ),
-    BENIN(
+    BJ(
         dialCode = "+229",
         resId = R.string.tx_country_bj
     ),
-    BERMUDA(
+    BM(
         dialCode = "+1441",
         resId = R.string.tx_country_bm
     ),
-    BHUTAN(
+    BT(
         dialCode = "+975",
         resId = R.string.tx_country_bt
     ),
-    BOLIVIA_PLURINATIONAL_STATE_OF(
+    BO(
         dialCode = "+591",
         resId = R.string.tx_country_bo
     ),
-    BOSNIA_AND_HERZEGOVINA(
+    BA(
         dialCode = "+387",
         resId = R.string.tx_country_ba
     ),
-    BOTSWANA(
+    BW(
         dialCode = "+267",
         resId = R.string.tx_country_bw
     ),
-    BRAZIL(
+    BR(
         dialCode = "+55",
         resId = R.string.tx_country_br
     ),
-    BRITISH_INDIAN_OCEAN_TERRITORY(
+    IO(
         dialCode = "+246",
         resId = R.string.tx_country_io
     ),
-    BRUNEI_DARUSSALAM(
+    BN(
         dialCode = "+673",
         resId = R.string.tx_country_bn
     ),
-    BULGARIA(
+    BG(
         dialCode = "+359",
         resId = R.string.tx_country_bg
     ),
-    BURKINA_FASO(
+    BF(
         dialCode = "+226",
         resId = R.string.tx_country_bf
     ),
-    BURUNDI(
+    BI(
         dialCode = "+257",
         resId = R.string.tx_country_bi
     ),
-    CAMBODIA(
+    KH(
         dialCode = "+855",
         resId = R.string.tx_country_kh
     ),
-    CAMEROON(
+    CM(
         dialCode = "+237",
         resId = R.string.tx_country_cm
     ),
-    CANADA(
+    CA(
         dialCode = "+1",
         resId = R.string.tx_country_ca
     ),
-    CAPE_VERDE(
+    CV(
         dialCode = "+238",
         resId = R.string.tx_country_cv
     ),
-    CAYMAN_ISLANDS(
+    KY(
         dialCode = "+ 345",
         resId = R.string.tx_country_ky
     ),
-    CENTRAL_AFRICAN_REPUBLIC(
+    CF(
         dialCode = "+236",
         resId = R.string.tx_country_cf
     ),
-    CHAD(
+    TD(
         dialCode = "+235",
         resId = R.string.tx_country_td
     ),
-    CHILE(
+    CL(
         dialCode = "+56",
         resId = R.string.tx_country_cl
     ),
-    CHINA(
+    CN(
         dialCode = "+86",
         resId = R.string.tx_country_cn
     ),
-    CHRISTMAS_ISLAND(
+    CX(
         dialCode = "+61",
         resId = R.string.tx_country_cx
     ),
-    COCOS_KEELING_ISLANDS(
+    CC(
         dialCode = "+61",
         resId = R.string.tx_country_cc
     ),
-    COLOMBIA(
+    CO(
         dialCode = "+57",
         resId = R.string.tx_country_co
     ),
-    COMOROS(
+    KM(
         dialCode = "+269",
         resId = R.string.tx_country_km
     ),
-    CONGO(
+    CG(
         dialCode = "+242",
         resId = R.string.tx_country_cg
     ),
-    CONGO_THE_DEMOCRATIC_REPUBLIC_OF_THE_CONGO(
+    CD(
         dialCode = "+243",
         resId = R.string.tx_country_cd
     ),
-    COOK_ISLANDS(
+    CK(
         dialCode = "+682",
         resId = R.string.tx_country_ck
     ),
-    COSTA_RICA(
+    CR(
         dialCode = "+506",
         resId = R.string.tx_country_cr
     ),
-    COTE_DIVOIRE(
+    CI(
         dialCode = "+225",
         resId = R.string.tx_country_ci
     ),
-    CROATIA(
+    HR(
         dialCode = "+385",
         resId = R.string.tx_country_hr
     ),
-    CUBA(
+    CU(
         dialCode = "+53",
         resId = R.string.tx_country_cu
     ),
-    CYPRUS(
+    CY(
         dialCode = "+357",
         resId = R.string.tx_country_cy
     ),
-    CZECH_REPUBLIC(
+    CZ(
         dialCode = "+420",
         resId = R.string.tx_country_cz
     ),
-    DENMARK(
+    DK(
         dialCode = "+45",
         resId = R.string.tx_country_dk
     ),
-    DJIBOUTI(
+    DJ(
         dialCode = "+253",
         resId = R.string.tx_country_dj
     ),
-    DOMINICA(
+    DM(
         dialCode = "+1767",
         resId = R.string.tx_country_dm
     ),
-    DOMINICAN_REPUBLIC(
+    DO(
         dialCode = "+1849",
         resId = R.string.tx_country_do
     ),
-    ECUADOR(
+    EC(
         dialCode = "+593",
         resId = R.string.tx_country_ec
     ),
-    EGYPT(
+    EG(
         dialCode = "+20",
         resId = R.string.tx_country_eg
     ),
-    EL_SALVADOR(
+    SV(
         dialCode = "+503",
         resId = R.string.tx_country_sv
     ),
-    EQUATORIAL_GUINEA(
+    GQ(
         dialCode = "+240",
         resId = R.string.tx_country_gq
     ),
-    ERITREA(
+    ER(
         dialCode = "+291",
         resId = R.string.tx_country_er
     ),
-    ESTONIA(
+    EE(
         dialCode = "+372",
         resId = R.string.tx_country_ee
     ),
-    ETHIOPIA(
+    ET(
         dialCode = "+251",
         resId = R.string.tx_country_et
     ),
-    FALKLAND_ISLANDS_MALVINAS(
+    FK(
         dialCode = "+500",
         resId = R.string.tx_country_fk
     ),
-    FAROE_ISLANDS(
+    FO(
         dialCode = "+298",
         resId = R.string.tx_country_fo
     ),
-    FIJI(
+    FJ(
         dialCode = "+679",
         resId = R.string.tx_country_fj
     ),
-    FINLAND(
+    FI(
         dialCode = "+358",
         resId = R.string.tx_country_fi
     ),
-    FRANCE(
+    FR(
         dialCode = "+33",
         resId = R.string.tx_country_fr
     ),
-    FRENCH_GUIANA(
+    GF(
         dialCode = "+594",
         resId = R.string.tx_country_gf
     ),
-    FRENCH_POLYNESIA(
+    PF(
         dialCode = "+689",
         resId = R.string.tx_country_pf
     ),
-    GABON(
+    GA(
         dialCode = "+241",
         resId = R.string.tx_country_ga
     ),
-    GAMBIA(
+    GM(
         dialCode = "+220",
         resId = R.string.tx_country_gm
     ),
-    GEORGIA(
+    GE(
         dialCode = "+995",
         resId = R.string.tx_country_ge
     ),
-    GERMANY(
+    DE(
         dialCode = "+49",
         resId = R.string.tx_country_de
     ),
-    GHANA(
+    GH(
         dialCode = "+233",
         resId = R.string.tx_country_gh
     ),
-    GIBRALTAR(
+    GI(
         dialCode = "+350",
         resId = R.string.tx_country_gi
     ),
-    GREECE(
+    GR(
         dialCode = "+30",
         resId = R.string.tx_country_gr
     ),
-    GREENLAND(
+    GL(
         dialCode = "+299",
         resId = R.string.tx_country_gl
     ),
-    GRENADA(
+    GD(
         dialCode = "+1473",
         resId = R.string.tx_country_gd
     ),
-    GUADELOUPE(
+    GP(
         dialCode = "+590",
         resId = R.string.tx_country_gp
     ),
-    GUAM(
+    GU(
         dialCode = "+1671",
         resId = R.string.tx_country_gu
     ),
-    GUATEMALA(
+    GT(
         dialCode = "+502",
         resId = R.string.tx_country_gt
     ),
-    GUERNSEY(
+    GG(
         dialCode = "+44",
         resId = R.string.tx_country_gg
     ),
-    GUINEA(
+    GN(
         dialCode = "+224",
         resId = R.string.tx_country_gn
     ),
-    GUINEA_BISSAU(
+    GW(
         dialCode = "+245",
         resId = R.string.tx_country_gw
     ),
-    GUYANA(
+    GY(
         dialCode = "+595",
         resId = R.string.tx_country_gy
     ),
-    HAITI(
+    HT(
         dialCode = "+509",
         resId = R.string.tx_country_ht
     ),
-    HOLY_SEE_VATICAN_CITY_STATE(
+    VA(
         dialCode = "+379",
         resId = R.string.tx_country_va
     ),
-    HONDURAS(
+    HN(
         dialCode = "+504",
         resId = R.string.tx_country_hn
     ),
-    HONG_KONG(
+    HK(
         dialCode = "+852",
         resId = R.string.tx_country_hk
     ),
-    HUNGARY(
+    HU(
         dialCode = "+36",
         resId = R.string.tx_country_hu
     ),
-    ICELAND(
+    IS(
         dialCode = "+354",
         resId = R.string.tx_country_is
     ),
-    INDIA(
+    IN(
         dialCode = "+91",
         resId = R.string.tx_country_in
     ),
-    INDONESIA(
+    ID(
         dialCode = "+62",
         resId = R.string.tx_country_id
     ),
-    IRAN_ISLAMIC_REPUBLIC_OF_PERSIAN_GULF(
+    IR(
         dialCode = "+98",
         resId = R.string.tx_country_ir
     ),
-    IRAQ(
+    IQ(
         dialCode = "+964",
         resId = R.string.tx_country_iq
     ),
-    IRELAND(
+    IE(
         dialCode = "+353",
         resId = R.string.tx_country_ie
     ),
-    ISLE_OF_MAN(
+    IM(
         dialCode = "+44",
         resId = R.string.tx_country_im
     ),
-    ISRAEL(
+    IL(
         dialCode = "+972",
         resId = R.string.tx_country_il
     ),
-    ITALY(
+    IT(
         dialCode = "+39",
         resId = R.string.tx_country_it
     ),
-    JAMAICA(
+    JM(
         dialCode = "+1876",
         resId = R.string.tx_country_jm
     ),
-    JAPAN(
+    JP(
         dialCode = "+81",
         resId = R.string.tx_country_jp
     ),
-    JERSEY(
+    JE(
         dialCode = "+44",
         resId = R.string.tx_country_je
     ),
-    JORDAN(
+    JO(
         dialCode = "+962",
         resId = R.string.tx_country_jo
     ),
-    KAZAKHSTAN(
+    KZ(
         dialCode = "+77",
         resId = R.string.tx_country_kz
     ),
-    KENYA(
+    KE(
         dialCode = "+254",
         resId = R.string.tx_country_ke
     ),
-    KIRIBATI(
+    KI(
         dialCode = "+686",
         resId = R.string.tx_country_ki
     ),
-    KOREA_DEMOCRATIC_PEOPLES_REPUBLIC_OF_KOREA(
+    KP(
         dialCode = "+850",
         resId = R.string.tx_country_kp
     ),
-    KOREA_REPUBLIC_OF_SOUTH_KOREA(
+    KR(
         dialCode = "+82",
         resId = R.string.tx_country_kr
     ),
-    KUWAIT(
+    KW(
         dialCode = "+965",
         resId = R.string.tx_country_kw
     ),
-    KYRGYZSTAN(
+    KG(
         dialCode = "+996",
         resId = R.string.tx_country_kg
     ),
-    LAOS(
+    LA(
         dialCode = "+856",
         resId = R.string.tx_country_la
     ),
-    LATVIA(
+    LV(
         dialCode = "+371",
         resId = R.string.tx_country_lv
     ),
-    LEBANON(
+    LB(
         dialCode = "+961",
         resId = R.string.tx_country_lb
     ),
-    LESOTHO(
+    LS(
         dialCode = "+266",
         resId = R.string.tx_country_ls
     ),
-    LIBERIA(
+    LR(
         dialCode = "+231",
         resId = R.string.tx_country_lr
     ),
-    LIBYAN_ARAB_JAMAHIRIYA(
+    LY(
         dialCode = "+218",
         resId = R.string.tx_country_ly
     ),
-    LIECHTENSTEIN(
+    LI(
         dialCode = "+423",
         resId = R.string.tx_country_li
     ),
-    LITHUANIA(
+    LT(
         dialCode = "+370",
         resId = R.string.tx_country_lt
     ),
-    LUXEMBOURG(
+    LU(
         dialCode = "+352",
         resId = R.string.tx_country_lu
     ),
-    MACAO(
+    MO(
         dialCode = "+853",
         resId = R.string.tx_country_mo
     ),
-    MACEDONIA(
+    MK(
         dialCode = "+389",
         resId = R.string.tx_country_mk
     ),
-    MADAGASCAR(
+    MG(
         dialCode = "+261",
         resId = R.string.tx_country_mg
     ),
-    MALAWI(
+    MW(
         dialCode = "+265",
         resId = R.string.tx_country_mw
     ),
-    MALAYSIA(
+    MY(
         dialCode = "+60",
         resId = R.string.tx_country_my
     ),
-    MALDIVES(
+    MV(
         dialCode = "+960",
         resId = R.string.tx_country_mv
     ),
-    MALI(
+    ML(
         dialCode = "+223",
         resId = R.string.tx_country_ml
     ),
-    MALTA(
+    MT(
         dialCode = "+356",
         resId = R.string.tx_country_mt
     ),
-    MARSHALL_ISLANDS(
+    MH(
         dialCode = "+692",
         resId = R.string.tx_country_mh
     ),
-    MARTINIQUE(
+    MQ(
         dialCode = "+596",
         resId = R.string.tx_country_mq
     ),
-    MAURITANIA(
+    MR(
         dialCode = "+222",
         resId = R.string.tx_country_mr
     ),
-    MAURITIUS(
+    MU(
         dialCode = "+230",
         resId = R.string.tx_country_mu
     ),
-    MAYOTTE(
+    YT(
         dialCode = "+262",
         resId = R.string.tx_country_yt
     ),
-    MEXICO(
+    MX(
         dialCode = "+52",
         resId = R.string.tx_country_mx
     ),
-    MICRONESIA_FEDERATED_STATES_OF_MICRONESIA(
+    FM(
         dialCode = "+691",
         resId = R.string.tx_country_fm
     ),
-    MOLDOVA(
+    MD(
         dialCode = "+373",
         resId = R.string.tx_country_md
     ),
-    MONACO(
+    MC(
         dialCode = "+377",
         resId = R.string.tx_country_mc
     ),
-    MONGOLIA(
+    MN(
         dialCode = "+976",
         resId = R.string.tx_country_mn
     ),
-    MONTENEGRO(
+    ME(
         dialCode = "+382",
         resId = R.string.tx_country_me
     ),
-    MONTSERRAT(
+    MS(
         dialCode = "+1664",
         resId = R.string.tx_country_ms
     ),
-    MOROCCO(
+    MA(
         dialCode = "+212",
         resId = R.string.tx_country_ma
     ),
-    MOZAMBIQUE(
+    MZ(
         dialCode = "+258",
         resId = R.string.tx_country_mz
     ),
-    MYANMAR(
+    MM(
         dialCode = "+95",
         resId = R.string.tx_country_mm
     ),
-    NAMIBIA(
+    NA(
         dialCode = "+264",
         resId = R.string.tx_country_na
     ),
-    NAURU(
+    NR(
         dialCode = "+674",
         resId = R.string.tx_country_nr
     ),
-    NEPAL(
+    NP(
         dialCode = "+977",
         resId = R.string.tx_country_np
     ),
-    NETHERLANDS(
+    NL(
         dialCode = "+31",
         resId = R.string.tx_country_nl
     ),
-    NETHERLANDS_ANTILLES(
+    AN(
         dialCode = "+599",
         resId = R.string.tx_country_an
     ),
-    NEW_CALEDONIA(
+    NC(
         dialCode = "+687",
         resId = R.string.tx_country_nc
     ),
-    NEW_ZEALAND(
+    NZ(
         dialCode = "+64",
         resId = R.string.tx_country_nz
     ),
-    NICARAGUA(
+    NI(
         dialCode = "+505",
         resId = R.string.tx_country_ni
     ),
-    NIGER(
+    NE(
         dialCode = "+227",
         resId = R.string.tx_country_ne
     ),
-    NIGERIA(
+    NG(
         dialCode = "+234",
         resId = R.string.tx_country_ng
     ),
-    NIUE(
+    NU(
         dialCode = "+683",
         resId = R.string.tx_country_nu
     ),
-    NORFOLK_ISLAND(
+    NF(
         dialCode = "+672",
         resId = R.string.tx_country_nf
     ),
-    NORTHERN_MARIANA_ISLANDS(
+    MP(
         dialCode = "+1670",
         resId = R.string.tx_country_mp
     ),
-    NORWAY(
+    NO(
         dialCode = "+47",
         resId = R.string.tx_country_no
     ),
-    OMAN(
+    OM(
         dialCode = "+968",
         resId = R.string.tx_country_om
     ),
-    PAKISTAN(
+    PK(
         dialCode = "+92",
         resId = R.string.tx_country_pk
     ),
-    PALAU(
+    PW(
         dialCode = "+680",
         resId = R.string.tx_country_pw
     ),
-    PALESTINIAN_TERRITORY_OCCUPIED(
+    PS(
         dialCode = "+970",
         resId = R.string.tx_country_ps
     ),
-    PANAMA(
+    PA(
         dialCode = "+507",
         resId = R.string.tx_country_pa
     ),
-    PAPUA_NEW_GUINEA(
+    PG(
         dialCode = "+675",
         resId = R.string.tx_country_pg
     ),
-    PARAGUAY(
+    PY(
         dialCode = "+595",
         resId = R.string.tx_country_py
     ),
-    PERU(
+    PE(
         dialCode = "+51",
         resId = R.string.tx_country_pe
     ),
-    PHILIPPINES(
+    PH(
         dialCode = "+63",
         resId = R.string.tx_country_ph
     ),
-    PITCAIRN(
+    PN(
         dialCode = "+872",
         resId = R.string.tx_country_pn
     ),
-    POLAND(
+    PL(
         dialCode = "+48",
         resId = R.string.tx_country_pl
     ),
-    PORTUGAL(
+    PT(
         dialCode = "+351",
         resId = R.string.tx_country_pt
     ),
-    PUERTO_RICO(
+    PR(
         dialCode = "+1939",
         resId = R.string.tx_country_pr
     ),
-    QATAR(
+    QA(
         dialCode = "+974",
         resId = R.string.tx_country_qa
     ),
-    ROMANIA(
+    RO(
         dialCode = "+40",
         resId = R.string.tx_country_ro
     ),
-    RUSSIA(
+    RU(
         dialCode = "+7",
         resId = R.string.tx_country_ru
     ),
-    RWANDA(
+    RW(
         dialCode = "+250",
         resId = R.string.tx_country_rw
     ),
-    REUNION(
+    RE(
         dialCode = "+262",
         resId = R.string.tx_country_re
     ),
-    SAINT_BARTHELEMY(
+    BL(
         dialCode = "+590",
         resId = R.string.tx_country_bl
     ),
-    SAINT_HELENA_ASCENSION_AND_TRISTAN_DA_CUNHA(
+    SH(
         dialCode = "+290",
         resId = R.string.tx_country_sh
     ),
-    SAINT_KITTS_AND_NEVIS(
+    KN(
         dialCode = "+1869",
         resId = R.string.tx_country_kn
     ),
-    SAINT_LUCIA(
+    LC(
         dialCode = "+1758",
         resId = R.string.tx_country_lc
     ),
-    SAINT_MARTIN(
+    MF(
         dialCode = "+590",
         resId = R.string.tx_country_mf
     ),
-    SAINT_PIERRE_AND_MIQUELON(
+    PM(
         dialCode = "+508",
         resId = R.string.tx_country_pm
     ),
-    SAINT_VINCENT_AND_THE_GRENADINES(
+    VC(
         dialCode = "+1784",
         resId = R.string.tx_country_vc
     ),
-    SAMOA(
+    WS(
         dialCode = "+685",
         resId = R.string.tx_country_ws
     ),
-    SAN_MARINO(
+    SM(
         dialCode = "+378",
         resId = R.string.tx_country_sm
     ),
-    SAO_TOME_AND_PRINCIPE(
+    ST(
         dialCode = "+239",
         resId = R.string.tx_country_st
     ),
-    SAUDI_ARABIA(
+    SA(
         dialCode = "+966",
         resId = R.string.tx_country_sa
     ),
-    SENEGAL(
+    SN(
         dialCode = "+221",
         resId = R.string.tx_country_sn
     ),
-    SERBIA(
+    RS(
         dialCode = "+381",
         resId = R.string.tx_country_rs
     ),
-    SEYCHELLES(
+    SC(
         dialCode = "+248",
         resId = R.string.tx_country_sc
     ),
-    SIERRA_LEONE(
+    SL(
         dialCode = "+232",
         resId = R.string.tx_country_sl
     ),
-    SINGAPORE(
+    SG(
         dialCode = "+65",
         resId = R.string.tx_country_sg
     ),
-    SLOVAKIA(
+    SK(
         dialCode = "+421",
         resId = R.string.tx_country_sk
     ),
-    SLOVENIA(
+    SI(
         dialCode = "+386",
         resId = R.string.tx_country_si
     ),
-    SOLOMON_ISLANDS(
+    SB(
         dialCode = "+677",
         resId = R.string.tx_country_sb
     ),
-    SOMALIA(
+    SO(
         dialCode = "+252",
         resId = R.string.tx_country_so
     ),
-    SOUTH_AFRICA(
+    ZA(
         dialCode = "+27",
         resId = R.string.tx_country_za
     ),
-    SOUTH_SUDAN(
+    SS(
         dialCode = "+211",
         resId = R.string.tx_country_ss
     ),
-    SOUTH_GEORGIA_AND_THE_SOUTH_SANDWICH_ISLANDS(
+    GS(
         dialCode = "+500",
         resId = R.string.tx_country_gs
     ),
-    SPAIN(
+    ES(
         dialCode = "+34",
         resId = R.string.tx_country_es
     ),
-    SRI_LANKA(
+    LK(
         dialCode = "+94",
         resId = R.string.tx_country_lk
     ),
-    SUDAN(
+    SD(
         dialCode = "+249",
         resId = R.string.tx_country_sd
     ),
-    SURINAME(
+    SR(
         dialCode = "+597",
         resId = R.string.tx_country_sr
     ),
-    SVALBARD_AND_JAN_MAYEN(
+    SJ(
         dialCode = "+47",
         resId = R.string.tx_country_sj
     ),
-    SWAZILAND(
+    SZ(
         dialCode = "+268",
         resId = R.string.tx_country_sz
     ),
-    SWEDEN(
+    SE(
         dialCode = "+46",
         resId = R.string.tx_country_se
     ),
-    SWITZERLAND(
+    CH(
         dialCode = "+41",
         resId = R.string.tx_country_ch
     ),
-    SYRIAN_ARAB_REPUBLIC(
+    SY(
         dialCode = "+963",
         resId = R.string.tx_country_sy
     ),
-    TAIWAN(
+    TW(
         dialCode = "+886",
         resId = R.string.tx_country_tw
     ),
-    TAJIKISTAN(
+    TJ(
         dialCode = "+992",
         resId = R.string.tx_country_tj
     ),
-    TANZANIA_UNITED_REPUBLIC_OF_TANZANIA(
+    TZ(
         dialCode = "+255",
         resId = R.string.tx_country_tz
     ),
-    THAILAND(
+    TH(
         dialCode = "+66",
         resId = R.string.tx_country_th
     ),
-    TIMOR_LESTE(
+    TL(
         dialCode = "+670",
         resId = R.string.tx_country_tl
     ),
-    TOGO(
+    TG(
         dialCode = "+228",
         resId = R.string.tx_country_tg
     ),
-    TOKELAU(
+    TK(
         dialCode = "+690",
         resId = R.string.tx_country_tk
     ),
-    TONGA(
+    TO(
         dialCode = "+676",
         resId = R.string.tx_country_to
     ),
-    TRINIDAD_AND_TOBAGO(
+    TT(
         dialCode = "+1868",
         resId = R.string.tx_country_tt
     ),
-    TUNISIA(
+    TN(
         dialCode = "+216",
         resId = R.string.tx_country_tn
     ),
-    TURKEY(
+    TR(
         dialCode = "+90",
         resId = R.string.tx_country_tr
     ),
-    TURKMENISTAN(
+    TM(
         dialCode = "+993",
         resId = R.string.tx_country_tm
     ),
-    TURKS_AND_CAICOS_ISLANDS(
+    TC(
         dialCode = "+1649",
         resId = R.string.tx_country_tc
     ),
-    TUVALU(
+    TV(
         dialCode = "+688",
         resId = R.string.tx_country_tv
     ),
-    UGANDA(
+    UG(
         dialCode = "+256",
         resId = R.string.tx_country_ug
     ),
-    UKRAINE(
+    UA(
         dialCode = "+380",
         resId = R.string.tx_country_ua
     ),
-    UNITED_ARAB_EMIRATES(
+    AE(
         dialCode = "+971",
         resId = R.string.tx_country_ae
     ),
-    UNITED_KINGDOM(
+    GB(
         dialCode = "+44",
         resId = R.string.tx_country_gb
     ),
-    UNITED_STATES(
+    US(
         dialCode = "+1",
         resId = R.string.tx_country_us
     ),
-    URUGUAY(
+    UY(
         dialCode = "+598",
         resId = R.string.tx_country_uy
     ),
-    UZBEKISTAN(
+    UZ(
         dialCode = "+998",
         resId = R.string.tx_country_uz
     ),
-    VANUATU(
+    VU(
         dialCode = "+678",
         resId = R.string.tx_country_vu
     ),
-    VENEZUELA_BOLIVARIAN_REPUBLIC_OF_VENEZUELA(
+    VE(
         dialCode = "+58",
         resId = R.string.tx_country_ve
     ),
-    VIETNAM(
+    VN(
         dialCode = "+84",
         resId = R.string.tx_country_vn
     ),
-    VIRGIN_ISLANDS_BRITISH(
+    VG(
         dialCode = "+1284",
         resId = R.string.tx_country_vg
     ),
-    VIRGIN_ISLANDS_US(
+    VI(
         dialCode = "+1340",
         resId = R.string.tx_country_vi
     ),
-    WALLIS_AND_FUTUNA(
+    WF(
         dialCode = "+681",
         resId = R.string.tx_country_wf
     ),
-    YEMEN(
+    YE(
         dialCode = "+967",
         resId = R.string.tx_country_ye
     ),
-    ZAMBIA(
+    ZM(
         dialCode = "+260",
         resId = R.string.tx_country_zm
     ),
-    ZIMBABWE(
+    ZW(
         dialCode = "+263",
         resId = R.string.tx_country_zw
     )

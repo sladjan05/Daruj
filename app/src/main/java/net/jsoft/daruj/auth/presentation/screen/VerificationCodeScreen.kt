@@ -6,10 +6,9 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
@@ -17,12 +16,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.component.VerificationCodeBox
-import net.jsoft.daruj.auth.presentation.viewmodel.AuthEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.verification.VerificationCodeViewModel
 import net.jsoft.daruj.common.presentation.component.TitleSubtitle
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
+import net.jsoft.daruj.common.util.MainTestTags
 import net.jsoft.daruj.common.util.formatSMSWaitTime
-import net.jsoft.daruj.common.util.rememberFocusRequester
 import net.jsoft.daruj.common.util.value
 
 @Composable
@@ -35,6 +33,7 @@ fun VerificationCodeScreen(
 ) {
     Column(
         modifier = Modifier
+            .testTag(MainTestTags.Auth.VERIFICATION_SCREEN)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Top,

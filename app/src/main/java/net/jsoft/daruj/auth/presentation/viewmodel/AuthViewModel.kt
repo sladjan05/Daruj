@@ -6,19 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import net.jsoft.daruj.R
+import net.jsoft.daruj.auth.domain.Authenticator
 import net.jsoft.daruj.auth.domain.usecase.InitializeAuthenticatorUseCase
 import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
 import net.jsoft.daruj.auth.domain.usecase.VerifyWithCodeUseCase
 import net.jsoft.daruj.auth.presentation.screen.Screen
-import net.jsoft.daruj.auth.domain.Authenticator
 import net.jsoft.daruj.common.domain.usecase.GetLocalSettingsUseCase
 import net.jsoft.daruj.common.domain.usecase.UpdateLocalSettingsUseCase
 import net.jsoft.daruj.common.exception.RedundantVerificationRequestException
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
+import net.jsoft.daruj.common.util.DispatcherProvider
 import net.jsoft.daruj.common.util.asUiText
 import net.jsoft.daruj.common.util.plusAssign
 import net.jsoft.daruj.common.util.uiText
@@ -31,13 +30,15 @@ class AuthViewModel @Inject constructor(
     private val verifyWithCode: VerifyWithCodeUseCase,
 
     private val getLocalSettings: GetLocalSettingsUseCase,
-    private val updateLocalSettings: UpdateLocalSettingsUseCase
+    private val updateLocalSettings: UpdateLocalSettingsUseCase,
+
+    private val dispatcherProvider: DispatcherProvider
 ) : LoadingViewModel<AuthEvent, AuthTask>() {
 
     var screen: Screen by mutableStateOf(Screen.Phone)
         private set
 
-    var waitTime by mutableStateOf(1)
+    var waitTime by mutableStateOf(0)
         private set
 
     var waitTimeProgress by mutableStateOf(0.0f)
@@ -86,7 +87,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private suspend fun startSMSWaitTimeCountdown() {
+    private suspend fun startSMSWaitTimeCountdown() = withContext(dispatcherProvider.io) {
         val step = 50L // ms
         val max = (Authenticator.SMS_WAIT_TIME * 1000f / step).toInt()
 

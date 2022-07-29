@@ -1,7 +1,6 @@
 package net.jsoft.daruj.common.presentation.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,7 +18,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
-import net.jsoft.daruj.common.util.rememberMutableInteractionSource
 import net.jsoft.daruj.common.util.thenIf
 
 private val HEIGHT = 40.dp
@@ -62,8 +60,7 @@ fun TextBox(
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceDim),
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        interactionSource = rememberMutableInteractionSource()
+        keyboardActions = keyboardActions
     ) { innerTextField ->
         Box(
             modifier = Modifier
@@ -85,16 +82,12 @@ fun TextBox(
 
             Row(
                 modifier = Modifier
-                    .width(IntrinsicSize.Min)
-
-                    // A fix for Compose's default min size for BasicTextField
                     .layout { measurable, constraints ->
                         val placeable = measurable.measure(constraints)
                         layout(placeable.width + 5, placeable.height) {
                             placeable.placeRelative(5, 0)
                         }
                     }
-
                     .widthIn(min = 0.dp, max = Dp.Infinity)
                     .horizontalScroll(
                         state = rememberScrollState(0),

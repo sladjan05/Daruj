@@ -4,36 +4,12 @@ import android.content.Context
 
 fun Context.countriesSortedBySerbianAlphabet(): List<Country> {
     val alphabet = arrayOf(
-        "A",
-        "B",
-        "C",
-        "Č",
-        "Ć",
-        "D",
-        "DŽ",
-        "Đ",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "LJ",
-        "M",
-        "N",
-        "NJ",
-        "O",
-        "P",
-        "R",
-        "S",
-        "Š",
-        "T",
-        "U",
-        "V",
-        "Z",
-        "Ž"
+        "A", "B", "C", "Č", "Ć",
+        "D", "DŽ", "Đ", "E", "F",
+        "G", "H", "I", "J", "K",
+        "L", "LJ", "M", "N", "NJ",
+        "O", "P", "R", "S", "Š",
+        "T", "U", "V", "Z", "Ž"
     )
 
     val countries = Country.values().sortedBy { country ->

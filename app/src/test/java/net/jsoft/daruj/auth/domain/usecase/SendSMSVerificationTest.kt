@@ -1,7 +1,7 @@
 package net.jsoft.daruj.auth.domain.usecase
 
 import kotlinx.coroutines.runBlocking
-import net.jsoft.daruj.auth.domain.data.FakeAuthenticator
+import net.jsoft.daruj.auth.data.FakeAuthenticator
 import net.jsoft.daruj.common.exception.InvalidRequestException
 import org.junit.Test
 
