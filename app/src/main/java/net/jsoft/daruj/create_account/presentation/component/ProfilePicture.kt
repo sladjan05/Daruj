@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -37,6 +38,7 @@ import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
 import net.jsoft.daruj.common.util.FileUtils
 import net.jsoft.daruj.common.util.clickable
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun ProfilePicture(
@@ -75,7 +77,7 @@ fun ProfilePicture(
         if (bitmap == null) {
             Image(
                 painter = painterResource(R.drawable.ic_logo),
-                contentDescription = "Placeholder",
+                contentDescription = R.string.tx_profile_picture.value,
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(MaterialTheme.shape.rounded100p)
@@ -85,7 +87,7 @@ fun ProfilePicture(
         } else {
             Image(
                 bitmap = bitmap.asImageBitmap(),
-                contentDescription = "Profile Picture",
+                contentDescription = R.string.tx_profile_picture.value,
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(MaterialTheme.shape.rounded100p)
@@ -95,7 +97,7 @@ fun ProfilePicture(
         if (pictureChangeEnabled) {
             Icon(
                 painter = painterResource(R.drawable.ic_camera),
-                contentDescription = "Camera",
+                contentDescription = R.string.tx_change_profile_photo.value,
                 modifier = Modifier
                     .size(38.dp)
                     .align(Alignment.BottomEnd)

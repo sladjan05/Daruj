@@ -29,7 +29,10 @@ fun SexSelectionBox(
                         Sex.MALE -> Icons.Default.Male
                         Sex.FEMALE -> Icons.Default.Female
                     },
-                    contentDescription = "Sex",
+                    contentDescription = when (sex) {
+                        Sex.MALE -> R.string.tx_man.value
+                        Sex.FEMALE -> R.string.tx_woman.value
+                    },
                     tint = when (sex) {
                         Sex.MALE -> MaterialTheme.colorScheme.primary
                         Sex.FEMALE -> MaterialTheme.colorScheme.secondary

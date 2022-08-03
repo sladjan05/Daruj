@@ -74,7 +74,7 @@ fun DropdownSelectionBox(
 
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown",
+                    contentDescription = null,
                     modifier = Modifier
                         .rotate(rotation)
                         .size(DROPDOWN_ICON_SIZE)

@@ -16,7 +16,6 @@ import net.jsoft.daruj.welcome.presentation.WelcomeActivity
 
 @AndroidEntryPoint
 class StartingActivity : ComponentActivity() {
-
     private val viewModel by viewModels<StartingViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {

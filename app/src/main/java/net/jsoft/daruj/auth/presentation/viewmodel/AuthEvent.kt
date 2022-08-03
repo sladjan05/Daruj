@@ -9,6 +9,6 @@ sealed class AuthEvent {
         val phoneNumber: String
     ) : AuthEvent()
 
-    class VerifyWithCodeClick(val code: String) : AuthEvent()
+    class VerifyWithCode(val code: String) : AuthEvent()
     object ResendVerificationCodeClick : AuthEvent()
 }

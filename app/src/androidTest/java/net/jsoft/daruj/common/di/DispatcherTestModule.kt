@@ -5,23 +5,23 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import net.jsoft.daruj.common.util.DispatcherProvider
+import net.jsoft.daruj.common.util.TestDispatchers
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DispatcherTestModule {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Provides
     @Singleton
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun provideDispatcherProvider(): DispatcherProvider {
         return DispatcherProvider(
-            io = StandardTestDispatcher(),
-            default = StandardTestDispatcher(),
-            main = StandardTestDispatcher(),
-            unconfined = StandardTestDispatcher()
+            io = TestDispatchers.IO,
+            default = TestDispatchers.Default,
+            main = TestDispatchers.Main,
+            unconfined = TestDispatchers.Unconfined
         )
     }
 }

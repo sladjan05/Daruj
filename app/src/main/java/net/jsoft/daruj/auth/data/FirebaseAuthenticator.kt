@@ -8,7 +8,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import net.jsoft.daruj.auth.domain.Authenticator
-import net.jsoft.daruj.common.exception.*
+import net.jsoft.daruj.common.exception.InvalidRequestException
+import net.jsoft.daruj.common.exception.MissingArgumentException
+import net.jsoft.daruj.common.exception.TooManyRequestsException
+import net.jsoft.daruj.common.exception.WrongCodeException
 import net.jsoft.daruj.common.util.DispatcherProvider
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -34,14 +37,14 @@ class FirebaseAuthenticator @Inject constructor(
         activity = (map[Activity::class] ?: throw MissingArgumentException()) as Activity
     }
 
-    override suspend fun sendSMSVerification(phoneNumber: String): Unit =
+    override suspend fun sendSMSVerification(phoneNumber: String): Authenticator.State =
         withContext(dispatchers.io) {
             suspendCoroutine { continuation ->
                 val callback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                         launch(dispatchers.io) {
                             signInWithCredential(credential)
-                            continuation.resumeWithException(RedundantVerificationRequestException())
+                            continuation.resume(Authenticator.State.AUTHENTICATED)
                         }
                     }
 
@@ -60,7 +63,7 @@ class FirebaseAuthenticator @Inject constructor(
                         token: PhoneAuthProvider.ForceResendingToken
                     ) {
                         this@FirebaseAuthenticator.verificationId = verificationId
-                        continuation.resume(Unit)
+                        continuation.resume(Authenticator.State.SENT_SMS)
                     }
                 }
 
@@ -75,7 +78,7 @@ class FirebaseAuthenticator @Inject constructor(
             }
         }
 
-    override suspend fun verifyWithCode(code: String): Unit = withContext(dispatchers.io) {
+    override suspend fun verifyWithCode(code: String) = withContext(dispatchers.io) {
         val credential = PhoneAuthProvider.getCredential(verificationId, code)
 
         try {

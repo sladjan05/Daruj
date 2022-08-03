@@ -9,5 +9,7 @@ import javax.inject.Singleton
 class GetLocalSettingsUseCase @Inject constructor(
     private val localSettingsRepository: LocalSettingsRepository
 ) {
-    suspend operator fun invoke(): LocalSettings = localSettingsRepository.getSettings()
+    suspend operator fun invoke(): LocalSettings {
+        return localSettingsRepository.getSettings()
+    }
 }

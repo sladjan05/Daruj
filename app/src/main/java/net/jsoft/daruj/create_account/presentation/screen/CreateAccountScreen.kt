@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +49,7 @@ fun CreateAccountScreen(
 
     Box(
         modifier = Modifier
+            .testTag(MainTestTags.CreateAccount.SCREEN)
             .fillMaxSize()
             .indicationlessClickable {
                 viewModel.onEvent(CreateAccountEvent.Dismiss)
@@ -134,7 +136,9 @@ fun CreateAccountScreen(
                 Spacer(modifier = Modifier.height(2.dp))
 
                 TextBox(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .testTag(MainTestTags.CreateAccount.NAME_TEXTBOX)
+                        .fillMaxWidth(),
                     text = viewModel.name.value,
                     hint = R.string.tx_name.value,
                     enabled = !viewModel.isLoading,
@@ -147,7 +151,9 @@ fun CreateAccountScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextBox(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .testTag(MainTestTags.CreateAccount.SURNAME_TEXTBOX)
+                        .fillMaxWidth(),
                     text = viewModel.surname.value,
                     hint = R.string.tx_surname.value,
                     enabled = !viewModel.isLoading,
@@ -194,18 +200,12 @@ fun CreateAccountScreen(
 
                     val months = remember {
                         listOf(
-                            R.string.tx_jan,
-                            R.string.tx_feb,
-                            R.string.tx_mar,
-                            R.string.tx_apr,
-                            R.string.tx_may,
-                            R.string.tx_jun,
-                            R.string.tx_jul,
-                            R.string.tx_aug,
-                            R.string.tx_sep,
-                            R.string.tx_okt,
-                            R.string.tx_nov,
-                            R.string.tx_dec
+                            R.string.tx_jan, R.string.tx_feb,
+                            R.string.tx_mar, R.string.tx_apr,
+                            R.string.tx_may, R.string.tx_jun,
+                            R.string.tx_jul, R.string.tx_aug,
+                            R.string.tx_sep, R.string.tx_okt,
+                            R.string.tx_nov, R.string.tx_dec
                         ).getValues(context)
                     }
 
@@ -273,7 +273,9 @@ fun CreateAccountScreen(
             PrimaryButton(
                 text = R.string.tx_create_account.value,
                 enabled = !viewModel.isLoading,
-                modifier = Modifier.width(300.dp),
+                modifier = Modifier
+                    .testTag(MainTestTags.CreateAccount.CREATE_ACCOUNT_BUTTON)
+                    .width(300.dp),
                 onClick = {
                     viewModel.onEvent(CreateAccountEvent.CreateAccount)
                 }

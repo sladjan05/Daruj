@@ -47,7 +47,9 @@ fun VerificationCodeScreen(
         Spacer(modifier = Modifier.height(45.dp))
 
         VerificationCodeBox(
-            modifier = Modifier.width(300.dp),
+            modifier = Modifier
+                .testTag(MainTestTags.Auth.VERIFICATION_CODE_BOX)
+                .width(300.dp),
             code = viewModel.code.value
         )
 

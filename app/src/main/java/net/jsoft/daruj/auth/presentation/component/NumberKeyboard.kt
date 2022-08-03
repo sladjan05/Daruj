@@ -4,12 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,12 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
+import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.shape
+import net.jsoft.daruj.common.util.MainTestTags
 import net.jsoft.daruj.common.util.clickableIf
+import net.jsoft.daruj.common.util.value
 
 private val HEIGHT = 60.dp
 private val MAX_WIDTH = 400.dp
@@ -37,7 +36,9 @@ fun BoxScope.NumberKeyboard(
 ) {
     AnimatedVisibility(
         visible = visible,
-        modifier = Modifier.align(Alignment.BottomCenter),
+        modifier = Modifier
+            .testTag(MainTestTags.NUMBER_KEYBOARD)
+            .align(Alignment.BottomCenter),
         enter = slideInVertically { it },
         exit = slideOutVertically { it }
     ) {
@@ -90,7 +91,7 @@ fun BoxScope.NumberKeyboard(
                                 if (index == 11) {
                                     Icon(
                                         imageVector = Icons.Default.Backspace,
-                                        contentDescription = "Delete",
+                                        contentDescription = R.string.tx_delete.value,
                                         modifier = Modifier.size(20.dp),
                                         tint = MaterialTheme.colorScheme.onSurfaceDim
                                     )

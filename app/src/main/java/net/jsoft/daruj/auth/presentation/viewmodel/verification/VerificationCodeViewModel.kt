@@ -3,10 +3,10 @@ package net.jsoft.daruj.auth.presentation.viewmodel.verification
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import net.jsoft.daruj.common.presentation.viewmodel.BasicViewModel
+import net.jsoft.daruj.common.presentation.viewmodel.BaseViewModel
 import net.jsoft.daruj.common.util.asUiText
 
-class VerificationCodeViewModel : BasicViewModel<VerificationCodeEvent, Nothing>() {
+class VerificationCodeViewModel : BaseViewModel<VerificationCodeEvent, Nothing>() {
 
     var code by mutableStateOf("".asUiText())
         private set

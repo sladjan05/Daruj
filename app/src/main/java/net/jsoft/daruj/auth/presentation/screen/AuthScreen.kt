@@ -1,12 +1,14 @@
 package net.jsoft.daruj.auth.presentation.screen
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -20,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.component.NumberKeyboard
@@ -75,7 +78,7 @@ fun AuthScreen(
             val codeString = code.getValue(context)
 
             if (codeString.length == 6) {
-                viewModel.onEvent(AuthEvent.VerifyWithCodeClick(codeString))
+                viewModel.onEvent(AuthEvent.VerifyWithCode(codeString))
             }
         }
     }
@@ -98,9 +101,9 @@ fun AuthScreen(
         ) {
             LinearProgressIndicator(
                 modifier = Modifier
+                    .testTag(MainTestTags.Auth.WAIT_TIME_PROGRESS_BAR)
                     .fillMaxWidth()
                     .align(Alignment.TopCenter),
-                color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surface,
                 progress = viewModel.waitTimeProgress
             )

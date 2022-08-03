@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.domain.Authenticator
 import net.jsoft.daruj.auth.domain.usecase.InitializeAuthenticatorUseCase
@@ -15,9 +17,7 @@ import net.jsoft.daruj.auth.domain.usecase.VerifyWithCodeUseCase
 import net.jsoft.daruj.auth.presentation.screen.Screen
 import net.jsoft.daruj.common.domain.usecase.GetLocalSettingsUseCase
 import net.jsoft.daruj.common.domain.usecase.UpdateLocalSettingsUseCase
-import net.jsoft.daruj.common.exception.RedundantVerificationRequestException
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.util.DispatcherProvider
 import net.jsoft.daruj.common.util.asUiText
 import net.jsoft.daruj.common.util.plusAssign
 import net.jsoft.daruj.common.util.uiText
@@ -31,63 +31,78 @@ class AuthViewModel @Inject constructor(
 
     private val getLocalSettings: GetLocalSettingsUseCase,
     private val updateLocalSettings: UpdateLocalSettingsUseCase,
-
-    private val dispatcherProvider: DispatcherProvider
 ) : LoadingViewModel<AuthEvent, AuthTask>() {
 
     var screen: Screen by mutableStateOf(Screen.Phone)
         private set
 
-    var waitTime by mutableStateOf(0)
+    var waitTime by mutableStateOf(Authenticator.SMS_WAIT_TIME)
         private set
 
-    var waitTimeProgress by mutableStateOf(0.0f)
+    var waitTimeProgress by mutableStateOf(1f)
         private set
 
     private lateinit var fullPhoneNumber: String
 
     init {
-        viewModelScope.launch {
-            val settings = getLocalSettings()
-            val newSettings = settings.copy(
-                hasCompletedIntroduction = true
-            )
+        viewModelScope.registerExceptionHandler { e ->
+            mTaskFlow += AuthTask.ShowError(e.uiText)
+        }
 
-            updateLocalSettings(newSettings)
+        viewModelScope.launch {
+            loadSafely {
+                val settings = getLocalSettings()
+                val newSettings = settings.copy(
+                    hasCompletedIntroduction = true
+                )
+
+                updateLocalSettings(newSettings)
+            }
         }
     }
 
     override fun onEvent(event: AuthEvent) {
         when (event) {
-            is AuthEvent.SendVerificationCodeClick -> viewModelScope.launch(verificationExceptionHandler) {
+            is AuthEvent.SendVerificationCodeClick -> viewModelScope.launch {
                 fullPhoneNumber = "+${event.dialCode}${event.phoneNumber}"
 
-                load {
+                loadSafely {
                     initializeAuthenticator(Activity::class to event.activity)
                     sendSMSVerification(fullPhoneNumber)
+                } ifSuccessful { state ->
+                    when (state) {
+                        Authenticator.State.SENT_SMS -> {
+                            screen = Screen.Verification
+                            mTaskFlow += AuthTask.ShowVerificationScreen
+                            startSMSWaitTimeCountdown()
+                        }
+
+                        Authenticator.State.AUTHENTICATED -> mTaskFlow += AuthTask.Finish
+                    }
                 }
-
-                screen = Screen.Verification
-                mTaskFlow += AuthTask.ShowVerificationScreen
-                startSMSWaitTimeCountdown()
             }
 
 
-            is AuthEvent.ResendVerificationCodeClick -> viewModelScope.launch(verificationExceptionHandler) {
-                load { sendSMSVerification(fullPhoneNumber) }
-
-                mTaskFlow += AuthTask.ShowInfo(R.string.tx_code_is_sent_again.asUiText())
-                startSMSWaitTimeCountdown()
+            is AuthEvent.ResendVerificationCodeClick -> viewModelScope.launch {
+                loadSafely {
+                    sendSMSVerification(fullPhoneNumber)
+                } ifSuccessful {
+                    mTaskFlow += AuthTask.ShowInfo(R.string.tx_code_is_sent_again.asUiText())
+                    startSMSWaitTimeCountdown()
+                }
             }
 
-            is AuthEvent.VerifyWithCodeClick -> viewModelScope.launch(smsExceptionHandler) {
-                load { verifyWithCode(event.code) }
-                mTaskFlow += AuthTask.Finish
+            is AuthEvent.VerifyWithCode -> viewModelScope.launch {
+                loadSafely {
+                    verifyWithCode(event.code)
+                } ifSuccessful {
+                    mTaskFlow += AuthTask.Finish
+                }
             }
         }
     }
 
-    private suspend fun startSMSWaitTimeCountdown() = withContext(dispatcherProvider.io) {
+    private suspend fun startSMSWaitTimeCountdown() = withContext(dispatcherProvider.main) {
         val step = 50L // ms
         val max = (Authenticator.SMS_WAIT_TIME * 1000f / step).toInt()
 
@@ -95,29 +110,6 @@ class AuthViewModel @Inject constructor(
             waitTimeProgress = time.toFloat() / max
             waitTime = (Authenticator.SMS_WAIT_TIME * waitTimeProgress).toInt()
             delay(step)
-        }
-    }
-
-    // ======================================== EXCEPTION HANDLERS ========================================
-
-    private val verificationExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        isLoading = false
-
-        if (throwable is RedundantVerificationRequestException) viewModelScope.launch {
-            mTaskFlow += AuthTask.Finish
-            return@launch
-        }
-
-        viewModelScope.launch {
-            mTaskFlow += AuthTask.ShowError(throwable.uiText)
-        }
-    }
-
-    private val smsExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        isLoading = false
-
-        viewModelScope.launch {
-            mTaskFlow += AuthTask.ShowError(throwable.uiText)
         }
     }
 }

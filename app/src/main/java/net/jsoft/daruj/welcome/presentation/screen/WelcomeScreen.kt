@@ -35,7 +35,7 @@ fun WelcomeScreen() {
     ) {
         Image(
             painter = painterResource(R.drawable.ic_full_logo),
-            contentDescription = "Logo",
+            contentDescription = null,
             modifier = Modifier
                 .width(157.dp)
                 .height(68.dp)

@@ -304,5 +304,8 @@
     <string name="tx_verification_successful">Verifikacija uspješna</string>
     <string name="tx_name_cannot_be_empty">Ime ne može biti prazno!</string>
     <string name="tx_surname_cannot_be_empty">Prezime ne može biti prazno!</string>
+    <string name="tx_delete">Izbriši</string>
+    <string name="tx_profile_picture">Profilna fotografija</string>
+    <string name="tx_change_profile_photo">Promijenite profilnu fotografiju</string>
 
 </resources>

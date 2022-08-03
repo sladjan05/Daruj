@@ -3,11 +3,11 @@ package net.jsoft.daruj.auth.presentation.viewmodel.phone
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import net.jsoft.daruj.common.presentation.viewmodel.BasicViewModel
+import net.jsoft.daruj.common.presentation.viewmodel.BaseViewModel
 import net.jsoft.daruj.common.util.Country
 import net.jsoft.daruj.common.util.asUiText
 
-class PhoneNumberViewModel : BasicViewModel<PhoneNumberEvent, Nothing>() {
+class PhoneNumberViewModel : BaseViewModel<PhoneNumberEvent, Nothing>() {
 
     var country: Country? by mutableStateOf(Country.BA)
         private set

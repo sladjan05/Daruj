@@ -85,10 +85,12 @@ fun Modifier.indicationlessClickable(
 val Int.value: String
     @Composable get() = stringResource(this)
 
+fun Int.getValue(context: Context) = context.getString(this)
+
 val List<Int>.values: List<String>
     @Composable get() = map { resId -> resId.value }
 
-fun List<Int>.getValues(context: Context) = map { resId -> context.getString(resId) }
+fun List<Int>.getValues(context: Context) = map { resId -> resId.getValue(context) }
 
 @Composable
 fun <T> rememberMutableStateOf(initialValue: T): MutableState<T> = remember {

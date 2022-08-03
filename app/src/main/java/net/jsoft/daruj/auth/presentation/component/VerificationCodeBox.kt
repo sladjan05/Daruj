@@ -2,7 +2,6 @@ package net.jsoft.daruj.auth.presentation.component
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

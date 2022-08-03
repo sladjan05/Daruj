@@ -10,11 +10,11 @@ import javax.inject.Singleton
 class SendSMSVerificationUseCase @Inject constructor(
     private val authenticator: Authenticator
 ) {
-    suspend operator fun invoke(phoneNumber: String) {
+    suspend operator fun invoke(phoneNumber: String): Authenticator.State {
         if (!phoneNumber.matches(RegexPatterns.PHONE_NUMBER)) {
             throw InvalidRequestException()
         }
 
-        authenticator.sendSMSVerification(phoneNumber)
+        return authenticator.sendSMSVerification(phoneNumber)
     }
 }

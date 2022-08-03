@@ -6,7 +6,7 @@ class FakeAuthenticator : Authenticator {
     override val id = ID
 
     override fun initialize(vararg args: Pair<Any, Any>) = Unit
-    override suspend fun sendSMSVerification(phoneNumber: String) = Unit
+    override suspend fun sendSMSVerification(phoneNumber: String) = Authenticator.State.SENT_SMS
     override suspend fun verifyWithCode(code: String) = Unit
 
     companion object {

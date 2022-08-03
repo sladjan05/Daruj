@@ -36,7 +36,7 @@ fun IntroductionIllustration(
     ) {
         Image(
             painter = painter,
-            contentDescription = "Illustration",
+            contentDescription = null,
             modifier = Modifier.height(ILLUSTRATION_HEIGHT)
         )
 

@@ -6,17 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.domain.model.LocalUser
 import net.jsoft.daruj.common.domain.model.Sex
 import net.jsoft.daruj.common.domain.usecase.UpdateLocalUserUseCase
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.util.UiText
-import net.jsoft.daruj.common.util.asUiText
-import net.jsoft.daruj.common.util.plusAssign
-import net.jsoft.daruj.common.util.uiText
+import net.jsoft.daruj.common.util.*
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -75,6 +71,10 @@ class CreateAccountViewModel @Inject constructor(
         }
 
     init {
+        viewModelScope.registerExceptionHandler { e ->
+            mTaskFlow += CreateAccountTask.ShowError(e.uiText)
+        }
+
         setBirth(year = birth.year - 18)
     }
 
@@ -123,8 +123,8 @@ class CreateAccountViewModel @Inject constructor(
 
             is CreateAccountEvent.LegalIdInfoClick -> isLegalIdInfoExpanded = !isLegalIdInfoExpanded
 
-            is CreateAccountEvent.CreateAccount -> viewModelScope.launch(exceptionHandler) {
-                load {
+            is CreateAccountEvent.CreateAccount -> viewModelScope.launch {
+                loadSafely {
                     updateLocalUser(
                         user = LocalUser.Constructable(
                             name = name.toString(),
@@ -136,9 +136,9 @@ class CreateAccountViewModel @Inject constructor(
                         ),
                         pictureUri = pictureUri
                     )
+                } ifSuccessful {
+                    mTaskFlow += CreateAccountTask.Finish
                 }
-
-                mTaskFlow += CreateAccountTask.Finish
             }
         }
     }
@@ -163,16 +163,6 @@ class CreateAccountViewModel @Inject constructor(
         year: Int = birth.year
     ) {
         birth = LocalDate.of(year, month, day)
-    }
-
-    // ============================== EXCEPTION HANDLERS ==============================
-
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        isLoading = false
-
-        viewModelScope.launch {
-            mTaskFlow += CreateAccountTask.ShowError(throwable.uiText)
-        }
     }
 
     companion object {

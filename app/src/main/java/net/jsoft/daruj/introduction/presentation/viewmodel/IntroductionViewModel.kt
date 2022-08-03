@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import net.jsoft.daruj.common.presentation.viewmodel.BasicViewModel
+import net.jsoft.daruj.common.presentation.viewmodel.BaseViewModel
 import net.jsoft.daruj.common.util.plusAssign
 
-class IntroductionViewModel : BasicViewModel<IntroductionEvent, IntroductionTask>() {
+class IntroductionViewModel : BaseViewModel<IntroductionEvent, IntroductionTask>() {
 
     var page by mutableStateOf(0)
         private set

@@ -15,10 +15,10 @@ class StartingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            load {
-                val settings = getLocalSettings()
-
-                mTaskFlow += if(settings.hasCompletedIntroduction) {
+            loadSafely {
+                getLocalSettings()
+            } ifSuccessful { settings ->
+                mTaskFlow += if (settings.hasCompletedIntroduction) {
                     StartingTask.ShowAuthScreen
                 } else {
                     StartingTask.ShowWelcomeScreen
