@@ -1,6 +1,7 @@
 package net.jsoft.daruj.auth.presentation.viewmodel.phone
 
-import net.jsoft.daruj.common.util.Country
+import android.app.Activity
+import net.jsoft.daruj.common.misc.Country
 
 sealed class PhoneNumberEvent {
     object Dismiss : PhoneNumberEvent()
@@ -10,4 +11,6 @@ sealed class PhoneNumberEvent {
 
     class DialCodeChange(val dialCode: String) : PhoneNumberEvent()
     class PhoneNumberChange(val phoneNumber: String) : PhoneNumberEvent()
+
+    class SendVerificationCodeClick(val activity: Activity) : PhoneNumberEvent()
 }

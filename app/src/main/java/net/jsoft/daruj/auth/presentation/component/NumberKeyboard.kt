@@ -17,40 +17,33 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.R
+import net.jsoft.daruj.common.misc.MainTestTags
+import net.jsoft.daruj.common.presentation.ui.theme.mShapes
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
-import net.jsoft.daruj.common.presentation.ui.theme.shape
-import net.jsoft.daruj.common.util.MainTestTags
-import net.jsoft.daruj.common.util.clickableIf
-import net.jsoft.daruj.common.util.value
-
-private val HEIGHT = 60.dp
-private val MAX_WIDTH = 400.dp
-
-private val PADDING = 5.dp
+import net.jsoft.daruj.common.utils.clickableIf
+import net.jsoft.daruj.common.utils.value
 
 @Composable
-fun BoxScope.NumberKeyboard(
-    visible: Boolean = true,
-    onNumber: (number: Int) -> Unit = {},
-    onDelete: () -> Unit = {}
+fun NumberKeyboard(
+    onNumberClick: (number: Int) -> Unit,
+    onDeleteClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    visible: Boolean = true
 ) {
     AnimatedVisibility(
         visible = visible,
-        modifier = Modifier
-            .testTag(MainTestTags.NUMBER_KEYBOARD)
-            .align(Alignment.BottomCenter),
+        modifier = modifier.testTag(MainTestTags.NUMBER_KEYBOARD),
         enter = slideInVertically { it },
         exit = slideOutVertically { it }
     ) {
         Column(
             modifier = Modifier
-                .widthIn(max = MAX_WIDTH)
-                .wrapContentHeight()
+                .fillMaxWidth()
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RectangleShape
                 )
-                .padding(PADDING),
+                .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             repeat(4) { y ->
@@ -68,23 +61,22 @@ fun BoxScope.NumberKeyboard(
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth()
-                                .height(HEIGHT)
                                 .background(
                                     color = MaterialTheme.colorScheme.surface,
                                     shape = RectangleShape
                                 )
                                 .clickableIf(
                                     clickable = number != null,
-                                    shape = MaterialTheme.shape.rounded5
+                                    shape = MaterialTheme.mShapes.small
                                 ) {
-                                    onNumber(number!!)
+                                    onNumberClick(number!!)
                                 }
                                 .clickableIf(
                                     clickable = (number == null) && (index == 11),
-                                    shape = MaterialTheme.shape.rounded5,
-                                    onClick = onDelete
-                                ),
+                                    shape = MaterialTheme.mShapes.small,
+                                    onClick = onDeleteClick
+                                )
+                                .padding(20.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             if (number == null) {
@@ -93,13 +85,13 @@ fun BoxScope.NumberKeyboard(
                                         imageVector = Icons.Default.Backspace,
                                         contentDescription = R.string.tx_delete.value,
                                         modifier = Modifier.size(20.dp),
-                                        tint = MaterialTheme.colorScheme.onSurfaceDim
+                                        tint = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                             } else {
                                 Text(
                                     text = number.toString(),
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                    color = MaterialTheme.colorScheme.onSurfaceDim,
                                     style = MaterialTheme.typography.labelMedium
                                 )
                             }

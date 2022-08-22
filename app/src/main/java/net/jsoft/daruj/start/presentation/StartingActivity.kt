@@ -6,10 +6,11 @@ import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.auth.presentation.AuthActivity
-import net.jsoft.daruj.common.util.switchActivity
+import net.jsoft.daruj.common.utils.switchActivity
+import net.jsoft.daruj.create_account.presentation.CreateAccountActivity
+import net.jsoft.daruj.main.presentation.MainActivity
 import net.jsoft.daruj.start.presentation.viewmodel.StartingTask
 import net.jsoft.daruj.start.presentation.viewmodel.StartingViewModel
 import net.jsoft.daruj.welcome.presentation.WelcomeActivity
@@ -26,10 +27,12 @@ class StartingActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.taskFlow.collectLatest { task ->
+            viewModel.taskFlow.collect { task ->
                 when (task) {
                     is StartingTask.ShowWelcomeScreen -> switchActivity<WelcomeActivity>()
                     is StartingTask.ShowAuthScreen -> switchActivity<AuthActivity>()
+                    is StartingTask.ShowCreateAccountScreen -> switchActivity<CreateAccountActivity>()
+                    is StartingTask.ShowMainScreen -> switchActivity<MainActivity>()
                 }
             }
         }

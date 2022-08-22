@@ -13,28 +13,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import net.jsoft.daruj.common.presentation.ui.theme.shape
+import net.jsoft.daruj.common.presentation.ui.theme.mShapes
+import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 
-private val SIZE = 40.dp
-
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
+@OptIn(ExperimentalAnimationApi::class)
 fun VerificationCodeBox(
+    code: String,
     modifier: Modifier = Modifier,
-    code: String = "",
 ) {
     Row(
-        modifier = modifier.wrapContentHeight(),
+        modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(6) { i ->
             Box(
                 modifier = Modifier
-                    .size(SIZE)
+                    .size(40.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = MaterialTheme.shape.rounded10
+                        shape = MaterialTheme.mShapes.medium
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -67,7 +66,7 @@ fun VerificationCodeBox(
                     Text(
                         text = targetText,
                         modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = MaterialTheme.colorScheme.onSurfaceDim,
                         style = MaterialTheme.typography.labelMedium,
                         textAlign = TextAlign.Center
                     )

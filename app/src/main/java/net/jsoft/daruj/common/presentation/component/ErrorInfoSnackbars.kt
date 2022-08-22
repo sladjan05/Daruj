@@ -1,23 +1,33 @@
 package net.jsoft.daruj.common.presentation.component
 
-import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
-fun BoxScope.ErrorInfoSnackbars(
+fun ErrorInfoSnackbars(
     infoHostState: SnackbarHostState,
-    errorHostState: SnackbarHostState
+    errorHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Start
 ) {
-    TextSnackbar(
-        hostState = errorHostState,
-        isError = true
-    )
+    Box(modifier = modifier) {
+        TextSnackbar(
+            hostState = errorHostState,
+            color = MaterialTheme.colorScheme.error,
+            textColor = MaterialTheme.colorScheme.onError,
+            textAlign = textAlign
+        )
 
-    TextSnackbar(
-        hostState = infoHostState,
-        isError = false
-    )
+        TextSnackbar(
+            hostState = infoHostState,
+            textAlign = textAlign
+        )
+    }
 }

@@ -5,19 +5,24 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
     id "com.google.protobuf" version "0.8.17"
+    id 'kotlin-parcelize'
 }
 
 android {
     signingConfigs {
         release {
-            storeFile file("/home/sladjan/jsoft.jks")
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias "jsoft"
-            keyPassword System.getenv("KEY_PASSWORD")
+            def propertiesFile = rootProject.file("keystore.properties")
+            def properties = new Properties()
+            properties.load(new FileInputStream(propertiesFile))
+
+            storeFile file(properties['storeFile'])
+            keyAlias properties['keyAlias']
+            keyPassword properties['keyPassword']
+            storePassword properties['storePassword']
         }
     }
 
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "net.jsoft.daruj"
@@ -67,22 +72,23 @@ android {
 dependencies {
 
     // AndroidX
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+
+    // Android Appcompat
+    implementation 'androidx.appcompat:appcompat:1.4.2'
 
     // Compose
     implementation "androidx.compose.ui:ui:1.3.0-alpha02"
-    implementation 'androidx.compose.material3:material3:1.0.0-alpha14'
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.activity:activity-compose:1.3.1'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0"
-    implementation "androidx.navigation:navigation-compose:2.5.0"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation 'androidx.compose.material3:material3:1.0.0-alpha15'
+    implementation "androidx.compose.ui:ui-tooling-preview:1.2.0"
+    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+    implementation "androidx.navigation:navigation-compose:2.5.1"
+    implementation "androidx.compose.material:material-icons-extended:1.2.0"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
-    implementation "androidx.navigation:navigation-compose:2.5.0"
-    implementation "com.google.accompanist:accompanist-navigation-animation:0.24.13-rc"
-    implementation "com.google.accompanist:accompanist-pager:0.22.0-rc"
+    implementation "androidx.navigation:navigation-compose:2.5.1"
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
@@ -93,7 +99,6 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:1.3.0-alpha02"
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.3.0-alpha02"
     androidTestImplementation "com.google.truth:truth:1.1.3"
-
 
     // Dagger - Hilt
     implementation 'com.google.dagger:hilt-android:2.42'
@@ -116,8 +121,8 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.1'
 
     // Coroutine Lifecycle Scopes
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:30.2.0')
@@ -125,15 +130,28 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-functions-ktx'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
-    // Image Compression
-    implementation 'id.zelory:compressor:3.0.1'
-
     // Splash Screen
     implementation 'androidx.core:core-splashscreen:1.0.0'
+
+    // Coil
+    implementation 'io.coil-kt:coil-compose:2.1.0'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    // Cropping Library
+    implementation 'com.github.krokyze:ucropnedit:2.2.8'
+
+    // Accompanist
+    implementation 'com.google.accompanist:accompanist-swiperefresh:0.26.1-alpha'
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.24.13-rc"
+    implementation "com.google.accompanist:accompanist-pager:0.22.0-rc"
 }
 
 kapt {

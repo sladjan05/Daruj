@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.presentation.viewmodel.BaseViewModel
-import net.jsoft.daruj.common.util.plusAssign
+import net.jsoft.daruj.common.utils.plusAssign
 
 class IntroductionViewModel : BaseViewModel<IntroductionEvent, IntroductionTask>() {
 

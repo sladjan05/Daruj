@@ -1,7 +1,7 @@
 package net.jsoft.daruj.common.exception
 
 import net.jsoft.daruj.R
-import net.jsoft.daruj.common.util.asUiText
+import net.jsoft.daruj.common.misc.asUiText
 
 class BlankNameException : AuthException(
     message = "Specified name is empty!",

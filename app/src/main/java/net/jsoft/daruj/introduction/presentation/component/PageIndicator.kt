@@ -8,7 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import net.jsoft.daruj.common.presentation.ui.theme.shape
+import net.jsoft.daruj.common.presentation.ui.theme.full
+import net.jsoft.daruj.common.presentation.ui.theme.mShapes
 
 private val WIDTH = 35.dp
 private val HEIGHT = 5.dp
@@ -38,7 +39,7 @@ fun PageIndicator(
                     .fillMaxHeight()
                     .background(
                         color = color,
-                        shape = MaterialTheme.shape.rounded100p
+                        shape = MaterialTheme.mShapes.full
                     )
             )
         }

@@ -1,21 +1,18 @@
 package net.jsoft.daruj.introduction.presentation.screen
 
+import android.app.Activity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.OverscrollEffect
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.overscroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -25,20 +22,22 @@ import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.AuthActivity
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
-import net.jsoft.daruj.common.util.switchActivity
-import net.jsoft.daruj.common.util.value
+import net.jsoft.daruj.common.presentation.ui.theme.spacing
+import net.jsoft.daruj.common.utils.switchActivity
+import net.jsoft.daruj.common.utils.value
 import net.jsoft.daruj.introduction.presentation.component.IntroductionIllustration
 import net.jsoft.daruj.introduction.presentation.component.PageIndicator
 import net.jsoft.daruj.introduction.presentation.viewmodel.IntroductionEvent
 import net.jsoft.daruj.introduction.presentation.viewmodel.IntroductionTask
 import net.jsoft.daruj.introduction.presentation.viewmodel.IntroductionViewModel
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
+@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 fun IntroductionScreen(
     viewModel: IntroductionViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    context as Activity
 
     val pagerState = rememberPagerState()
 
@@ -49,7 +48,7 @@ fun IntroductionScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collectLatest { task ->
+        viewModel.taskFlow.collect { task ->
             when (task) {
                 is IntroductionTask.SwitchPage -> pagerState.animateScrollToPage(viewModel.page)
                 is IntroductionTask.Finish -> context.switchActivity<AuthActivity>()
@@ -57,9 +56,10 @@ fun IntroductionScreen(
         }
     }
 
-    Box(
+    Column(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val illustrations = arrayOf(
             R.drawable.ic_tutorial_illustration_1,
@@ -84,24 +84,25 @@ fun IntroductionScreen(
         ) {
             HorizontalPager(
                 count = IntroductionViewModel.PAGE_COUNT,
-                state = pagerState
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                state = pagerState,
+                verticalAlignment = Alignment.CenterVertically
             ) { page ->
                 IntroductionIllustration(
                     painter = painterResource(illustrations[page]),
                     title = titles[page].value,
                     description = descriptions[page].value,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = (-20).dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
 
         Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .offset(y = (-32).dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(bottom = MaterialTheme.spacing.large),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             PageIndicator(
                 pageCount = IntroductionViewModel.PAGE_COUNT,
@@ -109,18 +110,16 @@ fun IntroductionScreen(
                 modifier = Modifier.width(125.dp)
             )
 
-            Spacer(modifier = Modifier.height(15.dp))
-
             PrimaryButton(
                 text = if (viewModel.page == IntroductionViewModel.PAGE_COUNT - 1) {
                     R.string.tx_finish.value
                 } else {
                     R.string.tx_next.value
                 },
-                modifier = Modifier.widthIn(300.dp),
                 onClick = {
                     viewModel.onEvent(IntroductionEvent.Next)
-                }
+                },
+                modifier = Modifier.width(300.dp)
             )
         }
     }

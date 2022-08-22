@@ -1,9 +1,9 @@
 package net.jsoft.daruj.create_account.presentation.viewmodel
 
-import net.jsoft.daruj.common.util.UiText
+import net.jsoft.daruj.common.misc.UiText
 
 sealed class CreateAccountTask {
-    object Finish : CreateAccountTask()
+    object CreateAccountClick : CreateAccountTask()
 
     class ShowError(val message: UiText) : CreateAccountTask()
     class ShowInfo(val message: UiText) : CreateAccountTask()

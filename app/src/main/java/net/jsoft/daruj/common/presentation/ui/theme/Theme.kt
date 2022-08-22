@@ -6,6 +6,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColorScheme = lightColorScheme(
     primary = Blue13,
@@ -14,12 +15,12 @@ private val LightColorScheme = lightColorScheme(
     secondary = Red26,
 
     background = Color.White,
-    onBackground = Gray28,
-    // onBackgroundDim = Gray50,
+    onBackground = Gray50,
+    // onBackgroundDim = Gray28,
 
     surface = Gray91,
-    onSurface = Gray28,
-    // onSurfaceDim = Gray52,
+    onSurface = Gray52,
+    // onSurfaceDim = Gray28,
 
     error = Red66,
     onError = Color.White,
@@ -28,21 +29,31 @@ private val LightColorScheme = lightColorScheme(
 )
 
 val ColorScheme.onBackgroundDim: Color
-    get() = Gray50
+    get() = Gray28
 
 val ColorScheme.onSurfaceDim: Color
-    get() = Gray52
+    get() = Gray28
+
+val ColorScheme.onSurfaceLight: Color
+    get() = Gray78
 
 @Composable
 fun DarujTheme(
     content: @Composable () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
+
+    systemUiController.setSystemBarsColor(
+        color = MaterialTheme.colorScheme.background
+    )
+
     CompositionLocalProvider(
-        LocalShape provides Shape()
+        LocalSpacing provides PhoneSpacing,
+        LocalShapes provides PhoneShapes
     ) {
         MaterialTheme(
             colorScheme = LightColorScheme,
-            typography = Typography,
+            typography = DarujTypography,
             content = content
         )
     }

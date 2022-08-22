@@ -1,8 +1,7 @@
 package net.jsoft.daruj.common.presentation.component
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -10,39 +9,50 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
-import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
-import net.jsoft.daruj.common.presentation.ui.theme.shape
-
-private val HEIGHT = 50.dp
+import net.jsoft.daruj.common.presentation.ui.theme.mShapes
 
 @Composable
 fun PrimaryButton(
     text: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onClick: () -> Unit = {}
+    leadingIcon: (@Composable BoxScope.() -> Unit)? = null,
+    color: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.height(HEIGHT),
-        shape = MaterialTheme.shape.rounded10,
+        modifier = modifier,
+        shape = MaterialTheme.mShapes.medium,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = color,
+            contentColor = textColor,
             disabledContainerColor = MaterialTheme.colorScheme.surface,
-            disabledContentColor = MaterialTheme.colorScheme.onSurfaceDim
+            disabledContentColor = MaterialTheme.colorScheme.onSurface
         ),
         enabled = enabled,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(vertical = 15.dp)
     ) {
+        if (leadingIcon != null) {
+            Box(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.CenterVertically),
+                content = leadingIcon
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+        }
+
         Text(
             text = text,
             modifier = Modifier.align(Alignment.CenterVertically),
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center
         )
     }

@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
-import net.jsoft.daruj.common.util.DispatcherProvider
+import net.jsoft.daruj.common.misc.DispatcherProvider
 import javax.inject.Singleton
 
 @Module

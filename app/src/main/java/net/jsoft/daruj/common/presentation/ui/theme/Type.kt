@@ -7,81 +7,53 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import net.jsoft.daruj.R
+import net.jsoft.daruj.common.utils.size
+import net.jsoft.daruj.common.utils.weight
 
-private val Roboto = FontFamily(
+val Roboto = FontFamily(
     Font(
         resId = R.font.ft_roboto_regular,
         weight = FontWeight.Normal
     ),
-
     Font(
         resId = R.font.ft_roboto_medium,
         weight = FontWeight.Medium
     ),
-
     Font(
         resId = R.font.ft_roboto_light,
         weight = FontWeight.Light
+    ),
+    Font(
+        resId = R.font.ft_roboto_thin,
+        weight = FontWeight.Thin
     )
 )
 
-private val Cookie = FontFamily(
+val Cookie = FontFamily(
     Font(
         resId = R.font.ft_cookie,
         weight = FontWeight.Normal
     )
 )
 
-val Typography = Typography(
-    titleSmall = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp
-    ),
-    titleMedium = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Medium,
-        fontSize = 20.sp
-    ),
-    titleLarge = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Medium,
-        fontSize = 26.sp
-    ),
+val DarujTypography = Typography(
+    labelMedium = Roboto weight FontWeight.Normal size 18.sp,
+    labelSmall = Roboto weight FontWeight.Medium size 11.sp,
 
-    labelSmall = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Normal,
-        fontSize = 15.sp
-    ),
-    labelMedium = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp
-    ),
+    bodyLarge = Roboto weight FontWeight.Normal size 20.sp,
+    bodyMedium = Roboto weight FontWeight.Normal size 16.sp,
+    bodySmall = Roboto weight FontWeight.Normal size 14.sp,
 
-    bodySmall = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Normal,
-        fontSize = 10.sp
-    ),
-    bodyMedium = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Light,
-        fontSize = 14.sp
-    )
+    headlineSmall = Roboto weight FontWeight.Medium size 24.sp,
+
+    titleMedium = Roboto weight FontWeight.Medium size 22.sp
 )
 
+val Typography.bodySmaller: TextStyle
+    get() = Roboto weight FontWeight.Normal size 10.sp
+
 val Typography.bloodType: TextStyle
-    get() = TextStyle(
-        fontFamily = Cookie,
-        fontWeight = FontWeight.Light,
-        fontSize = 28.sp
-    )
+    get() = Cookie weight FontWeight.Light size 28.sp
 
 val Typography.bloodRh: TextStyle
-    get() = TextStyle(
-        fontFamily = Cookie,
-        fontWeight = FontWeight.Light,
-        fontSize = 20.sp
-    )
+    get() = Cookie weight FontWeight.Light size 20.sp

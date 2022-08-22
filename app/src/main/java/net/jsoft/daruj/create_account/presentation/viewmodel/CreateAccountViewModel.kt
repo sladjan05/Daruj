@@ -6,19 +6,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.domain.model.LocalUser
 import net.jsoft.daruj.common.domain.model.Sex
-import net.jsoft.daruj.common.domain.usecase.UpdateLocalUserUseCase
+import net.jsoft.daruj.common.domain.usecase.user.UpdateLocalUserUseCase
+import net.jsoft.daruj.common.domain.usecase.user.UpdateProfilePictureUseCase
+import net.jsoft.daruj.common.misc.asUiText
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.util.*
-import java.time.LocalDate
+import net.jsoft.daruj.common.utils.plusAssign
+import net.jsoft.daruj.common.utils.uiText
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class CreateAccountViewModel @Inject constructor(
-    private val updateLocalUser: UpdateLocalUserUseCase
+    private val updateLocalUser: UpdateLocalUserUseCase,
+    private val updateProfilePicture: UpdateProfilePictureUseCase
 ) : LoadingViewModel<CreateAccountEvent, CreateAccountTask>() {
 
     var pictureUri: Uri? by mutableStateOf(null)
@@ -28,18 +33,6 @@ class CreateAccountViewModel @Inject constructor(
         private set
 
     var surname by mutableStateOf("".asUiText())
-        private set
-
-    var birth: LocalDate by mutableStateOf(LocalDate.now())
-        private set
-
-    var dayExpanded by mutableStateOf(false)
-        private set
-
-    var monthExpanded by mutableStateOf(false)
-        private set
-
-    var yearExpanded by mutableStateOf(false)
         private set
 
     var sex by mutableStateOf(Sex.MALE)
@@ -65,17 +58,10 @@ class CreateAccountViewModel @Inject constructor(
     var isLegalIdInfoExpanded by mutableStateOf(false)
         private set
 
-    val days: List<UiText>
-        get() = (1..birth.month.length(birth.isLeapYear)).toList().map { day ->
-            day.toString().asUiText()
-        }
-
     init {
         viewModelScope.registerExceptionHandler { e ->
             mTaskFlow += CreateAccountTask.ShowError(e.uiText)
         }
-
-        setBirth(year = birth.year - 18)
     }
 
     override fun onEvent(event: CreateAccountEvent) {
@@ -86,24 +72,6 @@ class CreateAccountViewModel @Inject constructor(
 
             is CreateAccountEvent.NameChange -> name = event.name.asUiText()
             is CreateAccountEvent.SurnameChange -> surname = event.surname.asUiText()
-
-            is CreateAccountEvent.DayClick -> setExpanded(day = !dayExpanded)
-            is CreateAccountEvent.DayIndexChange -> {
-                setBirth(day = event.index + 1)
-                setExpanded()
-            }
-
-            is CreateAccountEvent.MonthClick -> setExpanded(month = !monthExpanded)
-            is CreateAccountEvent.MonthIndexChange -> {
-                setBirth(month = event.index + 1)
-                setExpanded()
-            }
-
-            is CreateAccountEvent.YearClick -> setExpanded(year = !yearExpanded)
-            is CreateAccountEvent.YearIndexChange -> {
-                setBirth(year = LocalDate.now().year - 18 - event.index)
-                setExpanded()
-            }
 
             is CreateAccountEvent.SexClick -> setExpanded(sex = true)
 
@@ -123,52 +91,37 @@ class CreateAccountViewModel @Inject constructor(
 
             is CreateAccountEvent.LegalIdInfoClick -> isLegalIdInfoExpanded = !isLegalIdInfoExpanded
 
-            is CreateAccountEvent.CreateAccount -> viewModelScope.launch {
-                loadSafely {
-                    updateLocalUser(
-                        user = LocalUser.Constructable(
-                            name = name.toString(),
-                            surname = surname.toString(),
-                            sex = sex,
-                            blood = blood,
-                            legalId = legalId.toString().ifEmpty { null },
-                            isPrivate = true
-                        ),
-                        pictureUri = pictureUri
-                    )
-                } ifSuccessful {
-                    mTaskFlow += CreateAccountTask.Finish
+            is CreateAccountEvent.CreateAccount -> viewModelScope.loadSafely {
+                val user = LocalUser.Mutable(
+                    name = name.toString(),
+                    surname = surname.toString(),
+                    sex = sex,
+                    blood = blood,
+                    legalId = legalId.toString().ifEmpty { null },
+                    isPrivate = true,
+                    savedPosts = emptyList()
+                )
+
+                val updateUserJob = launch { updateLocalUser(user) }
+                val updateProfilePictureJob = pictureUri?.let { pictureUri ->
+                    launch { updateProfilePicture(pictureUri) }
                 }
+
+                updateUserJob.join()
+                updateProfilePictureJob?.join()
+
+                // Waiting for server to complete user creation
+                delay(1.seconds)
+                mTaskFlow += CreateAccountTask.CreateAccountClick
             }
         }
     }
 
     private fun setExpanded(
-        day: Boolean = false,
-        month: Boolean = false,
-        year: Boolean = false,
         sex: Boolean = false,
         blood: Boolean = false
     ) {
-        dayExpanded = day
-        monthExpanded = month
-        yearExpanded = year
         sexExpanded = sex
         bloodExpanded = blood
-    }
-
-    private fun setBirth(
-        day: Int = birth.dayOfMonth,
-        month: Int = birth.month.ordinal + 1,
-        year: Int = birth.year
-    ) {
-        birth = LocalDate.of(year, month, day)
-    }
-
-    companion object {
-        val years: List<UiText>
-            get() = ((LocalDate.now().year - 18) downTo 1900).toList().map { year ->
-                year.toString().asUiText()
-            }
     }
 }

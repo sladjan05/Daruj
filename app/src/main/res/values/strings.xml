@@ -258,19 +258,19 @@
     <string name="tx_nov">Nov</string>
     <string name="tx_dec">Dec</string>
 
-    <string name="tx_welcome_to">"Dobro došli u "</string>
-    <string name="tx_read_privacy_policy">"Pročitajte "</string>
-    <string name="tx_privacy_policy">Politiku privatnosti</string>
-    <string name="tx_terms_of_use_acceptance">"Pritiskom na \"Nastavi\" prihvatate naše "</string>
-    <string name="tx_terms_of_use">Uslove korištenja</string>
+    <string name="tx_welcome_to">Dobro došli u</string>
+    <string name="tx_read_privacy_policy_1">Pročitajte</string>
+    <string name="tx_read_privacy_policy_2">Politiku privatnosti</string>
+    <string name="tx_terms_of_use_acceptance_1">Pritiskom na \"Nastavi\" prihvatate naše</string>
+    <string name="tx_terms_of_use_acceptance_2">Uslove korištenja</string>
     <string name="tx_continue">Nastavi</string>
     <string name="tx_join_the_community_and_save_lives">Učlanite se u zajednicu i spasite ljudske živote.</string>
     <string name="tx_enter_your_phone_number">Unesite Vaš broj telefona</string>
-    <string name="tx_enter_your_phone_number_desc">Vaš broj telefona se koristi samo u svrhu potvrde Vašeg identiteta.</string>
+    <string name="tx_enter_your_phone_number_desc">Vaš broj telefona se koristi samo\nu svrhu potvrde Vašeg identiteta.</string>
     <string name="tx_unknown">Nepoznato</string>
     <string name="tx_phone_number">Broj telefona</string>
     <string name="tx_check_sms">Provjerite SMS poruke</string>
-    <string name="tx_code_is_sent">Na Vaš broj telefona poslan je verifikacioni kod, koji je potrebno unijeti kao potvrdu.</string>
+    <string name="tx_check_sms_desc">Na Vaš broj telefona poslan je verifikacioni\nkod, koji je potrebno unijeti kao potvrdu.</string>
     <string name="tx_no_code_question">Niste dobili kod?</string>
     <string name="tx_send_again">Pošalji ponovo</string>
     <string name="tx_confirm">Potvrdi</string>
@@ -278,17 +278,17 @@
     <string name="tx_too_many_requests">Previše zahtjeva! Pokušajte kasnije…</string>
     <string name="tx_unknown_error">Nepoznata greška! Pokušajte kasnije…</string>
     <string name="tx_invalid_code">Kod je neispravan…</string>
-    <string name="tx_tutorial_illustration_title_1">Želiš da pomogneš ili ti je potrebna pomoć?</string>
-    <string name="tx_tutorial_illustration_description_1">Napravi nalog na najvećoj platformi u regionu, koja spaja donatore krvi sa onima kojima je ta krv potrebna.</string>
-    <string name="tx_tutorial_illustration_title_2">\"Niko nije postao siromašan darovanjem\"</string>
-    <string name="tx_tutorial_illustration_description_2">Mi ćemo ti pomoći da postaneš dobrovoljni davalac krvi. Uputićemo te u to šta treba da uradiš kako bi uspješno darovao krv.</string>
-    <string name="tx_tutorial_illustration_title_3">Ti pomažeš - mi te nagrađujemo</string>
-    <string name="tx_tutorial_illustration_description_3">Dijeljenjem objava, darovanjem krvi i ostalim aktivnostima u aplikaciji sakupljaš bodove i ostvaruješ pravo na nagrade.</string>
+    <string name="tx_tutorial_illustration_title_1">Želiš da pomogneš ili\nti je potrebna pomoć?</string>
+    <string name="tx_tutorial_illustration_description_1">Napravi nalog na najvećoj platformi u regionu,\nkoja spaja donatore krvi sa onima kojima je\nta krv potrebna.</string>
+    <string name="tx_tutorial_illustration_title_2">\"Niko nije postao\nsiromašan darovanjem\"</string>
+    <string name="tx_tutorial_illustration_description_2">Mi ćemo ti pomoći da postaneš dobrovoljni\ndavalac krvi. Uputićemo te u to šta treba da\nuradiš kako bi uspješno darovao krv.</string>
+    <string name="tx_tutorial_illustration_title_3">Ti pomažeš.\nMi te nagrađujemo.</string>
+    <string name="tx_tutorial_illustration_description_3">Dijeljenjem objava, darovanjem krvi i ostalim\n aktivnostima u aplikaciji sakupljaš bodove\ni ostvaruješ pravo na nagrade.</string>
     <string name="tx_next">Dalje</string>
     <string name="tx_finish">Završi</string>
     <string name="tx_code_is_sent_again">Kod je poslan.</string>
     <string name="tx_enter_your_data">Unesite Vaše podatke</string>
-    <string name="tx_enter_your_data_description">Bitno je da tačno unesete svoje podatke, da biste mogli neometano da koristite aplikaciju.</string>
+    <string name="tx_enter_your_data_description">Bitno je da tačno unesete svoje podatke, da\nbiste mogli neometano da koristite aplikaciju.</string>
     <string name="tx_man">Muškarac</string>
     <string name="tx_woman">Žena</string>
     <string name="tx_blood_type">Krvna grupa</string>
@@ -296,9 +296,9 @@
     <string name="tx_name">Ime</string>
     <string name="tx_surname">Prezime</string>
     <string name="tx_legal_id_optional">ID dobrovoljnog davaoca krvi(opcionalno)</string>
-    <string name="tx_id_number">ID broj</string>
+    <string name="tx_id_number">ID broj(sa knjižice)</string>
     <string name="tx_create_account">Kreiraj nalog</string>
-    <string name="tx_after_this_step_you_will_become_a_memeber">Nakon ovog koraka, pristupićete daruj.ba zajednici dobrovoljnih davalaca krvi.</string>
+    <string name="tx_after_this_step_you_will_become_a_memeber">Nakon ovog koraka, pristupićete daruj.ba zajednici\ndobrovoljnih davalaca krvi.</string>
     <string name="tx_date_of_birth">Datum rođenja</string>
     <string name="tx_internal_error">Interna greška! Pokušajte kasnije…</string>
     <string name="tx_verification_successful">Verifikacija uspješna</string>
@@ -307,5 +307,70 @@
     <string name="tx_delete">Izbriši</string>
     <string name="tx_profile_picture">Profilna fotografija</string>
     <string name="tx_change_profile_photo">Promijenite profilnu fotografiju</string>
+    <string name="tx_home">Početna</string>
+    <string name="tx_search">Pretraga</string>
+    <string name="tx_saved">Sačuvano</string>
+    <string name="tx_profile">Profil</string>
+    <string name="tx_needs_blood">traži krv.</string>
+    <string name="tx_soon">Uskoro!</string>
+    <string name="tx_recipient">Primalac</string>
+    <string name="tx_donors_required_1">Potrebno davalaca</string>
+    <string name="tx_donate_blood">Daruj krv</string>
+    <string name="tx_just_now">upravo sada</string>
+    <string name="tx_comments">Komentari</string>
+    <string name="tx_share">Podijeli</string>
+    <string name="tx_save">Sačuvaj</string>
+    <string name="tx_unsave">Ukloni iz sačuvanih</string>
+    <string name="tx_edit_picture">Izmijeni fotografiju</string>
+    <string name="tx_no_saved_posts">Nemate sačuvanih objava</string>
+    <string name="tx_back">Nazad</string>
+    <string name="tx_create_new_post">Kreiraj novu objavu</string>
+    <string name="tx_post_picture">Fotografija objave</string>
+    <string name="tx_picture">Fotografija</string>
+    <string name="tx_parent_name">Ime oca</string>
+    <string name="tx_other_data">Ostali podaci</string>
+    <string name="tx_located_at">Nalazi se u…</string>
+    <string name="tx_donors_required_2">Broj davalaca</string>
+    <string name="tx_short_description">Kratak opis</string>
+    <string name="tx_create_post">Kreiraj objavu</string>
+    <string name="tx_check">Čekiraj</string>
+    <string name="tx_create_post_agreement_1">Ovu objavu pravim u svoje ime ili u ime drugog lica uz njegovu saglasnost.</string>
+    <string name="tx_create_post_agreement_2">Preuzimam svu odgovornost za moguće posljedice kreiranjem ove objave i oslobađam daruj.ba bilo kakve odgovornosti.</string>
+    <string name="tx_parent_name_cannot_be_empty">Ime oca ne može biti prazno!</string>
+    <string name="tx_description_cannot_be_empty">Opis ne može biti prazan!</string>
+    <string name="tx_location_cannot_be_empty">Lokacija ne može biti prazna!</string>
+    <string name="tx_edit_post">Izmijeni objavu</string>
+    <string name="tx_donors_required_cannot_be_empty">Broj davalaca ne može biti prazan!</string>
+    <string name="tx_donors_required_cannot_be_zero">Broj davalaca ne može biti 0!</string>
+    <string name="tx_no_posts">Nema objava</string>
 
+    <plurals name="tx_minutes_ago">
+        <item quantity="one">prije %d minut</item>
+        <item quantity="few">prije %d minuta</item>
+        <item quantity="other">prije %d minuta</item>
+    </plurals>
+
+    <plurals name="tx_hours_ago">
+        <item quantity="one">prije %d sat</item>
+        <item quantity="few">prije %d sata</item>
+        <item quantity="other">prije %d sati</item>
+    </plurals>
+
+    <plurals name="tx_days_ago">
+        <item quantity="one">prije %d dan</item>
+        <item quantity="few">prije %d dana</item>
+        <item quantity="other">prije %d dana</item>
+    </plurals>
+
+    <plurals name="tx_months_ago">
+        <item quantity="one">prije %d mjesec</item>
+        <item quantity="few">prije %d mjeseca</item>
+        <item quantity="other">prije %d mjeseci</item>
+    </plurals>
+
+    <plurals name="tx_years_ago">
+        <item quantity="one">prije %d godinu</item>
+        <item quantity="few">prije %d godine</item>
+        <item quantity="other">prije %d godina</item>
+    </plurals>
 </resources>
