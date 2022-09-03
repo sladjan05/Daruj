@@ -5,7 +5,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="net.jsoft.daruj.DarujApplication"
@@ -21,6 +20,27 @@
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="31">
 
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+
         <activity
             android:name="net.jsoft.daruj.start.presentation.StartingActivity"
             android:exported="true"
@@ -28,7 +48,6 @@
             android:theme="@style/Theme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,33 +55,39 @@
         <activity
             android:name="net.jsoft.daruj.welcome.presentation.WelcomeActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Daruj" />
 
         <activity
             android:name="net.jsoft.daruj.introduction.presentation.IntroductionActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Daruj" />
 
         <activity
             android:name="net.jsoft.daruj.auth.presentation.AuthActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Daruj"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="net.jsoft.daruj.create_account.presentation.CreateAccountActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Daruj"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="net.jsoft.daruj.main.presentation.MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Daruj" />
 
         <activity
             android:name=".modify_post.presentation.ModifyPostActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Daruj" />
 
         <activity
@@ -75,5 +100,4 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Daruj" />
     </application>
-
 </manifest>

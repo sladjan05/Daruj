@@ -4,10 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,9 +22,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import net.jsoft.daruj.R
+import net.jsoft.daruj.common.presentation.component.AnimatedClickableIcon
 import net.jsoft.daruj.common.presentation.ui.theme.*
 import net.jsoft.daruj.common.utils.formatPostTimestamp
 import net.jsoft.daruj.common.utils.thenIf
@@ -36,14 +31,13 @@ import net.jsoft.daruj.common.utils.value
 import net.jsoft.daruj.main.presentation.component.DonateButton
 import net.jsoft.daruj.main.presentation.component.PostHeader
 import net.jsoft.daruj.main.presentation.component.RobotoLight18
+import net.jsoft.daruj.main.presentation.screen.viewmodel.post.DetailedPostEvent
 import net.jsoft.daruj.main.presentation.screen.viewmodel.post.DetailedPostViewModel
 
 @Composable
 fun DetailedPostScreen(
     viewModel: DetailedPostViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-
     val post = viewModel.post
     val mutable = post?.mutable
     val immutable = post?.immutable
@@ -57,13 +51,63 @@ fun DetailedPostScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            PostHeader(
-                user = immutable?.user,
-                timestamp = if (immutable?.timestamp != null) {
-                    formatPostTimestamp(immutable.timestamp).value
-                } else "",
+            Box(
                 modifier = Modifier.fillMaxWidth()
-            )
+            ) {
+                PostHeader(
+                    user = immutable?.user,
+                    timestamp = if (immutable?.timestamp != null) {
+                        formatPostTimestamp(immutable.timestamp).value
+                    } else "",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .align(Alignment.CenterEnd),
+                    horizontalArrangement = Arrangement.spacedBy(13.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_comments),
+                        contentDescription = R.string.tx_comments.value,
+                        modifier = Modifier.size(22.dp),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+
+                    Icon(
+                        painter = painterResource(R.drawable.ic_share),
+                        contentDescription = R.string.tx_share.value,
+                        modifier = Modifier.size(22.dp),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+
+                    AnimatedClickableIcon(
+                        painter = painterResource(
+                            if (viewModel.isSaved) {
+                                R.drawable.ic_saved_filled
+                            } else {
+                                R.drawable.ic_saved
+                            }
+                        ),
+                        contentDescription = if (viewModel.isSaved) {
+                            R.string.tx_unsave.value
+                        } else {
+                            R.string.tx_save.value
+                        },
+                        onClick = {
+                            viewModel.onEvent(DetailedPostEvent.SaveClick)
+                        },
+                        modifier = Modifier.size(22.dp),
+                        tint = if (viewModel.isSaved) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground
+                        }
+                    )
+                }
+            }
 
             var isLoaded by rememberSaveable {
                 mutableStateOf(false)

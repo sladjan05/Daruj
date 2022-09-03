@@ -11,19 +11,19 @@ import kotlinx.coroutines.launch
 import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.domain.model.LocalUser
 import net.jsoft.daruj.common.domain.model.Sex
-import net.jsoft.daruj.common.domain.usecase.user.UpdateLocalUserUseCase
-import net.jsoft.daruj.common.domain.usecase.user.UpdateProfilePictureUseCase
+import net.jsoft.daruj.common.domain.usecase.UpdateLocalUserUseCase
+import net.jsoft.daruj.common.domain.usecase.UpdateProfilePictureUseCase
 import net.jsoft.daruj.common.misc.asUiText
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
 import net.jsoft.daruj.common.utils.plusAssign
 import net.jsoft.daruj.common.utils.uiText
+import net.jsoft.daruj.create_account.domain.usecase.CreateUserUseCase
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class CreateAccountViewModel @Inject constructor(
-    private val updateLocalUser: UpdateLocalUserUseCase,
-    private val updateProfilePicture: UpdateProfilePictureUseCase
+    private val createUser: CreateUserUseCase
 ) : LoadingViewModel<CreateAccountEvent, CreateAccountTask>() {
 
     var pictureUri: Uri? by mutableStateOf(null)
@@ -53,9 +53,6 @@ class CreateAccountViewModel @Inject constructor(
         private set
 
     var legalId by mutableStateOf("".asUiText())
-        private set
-
-    var isLegalIdInfoExpanded by mutableStateOf(false)
         private set
 
     init {
@@ -89,29 +86,19 @@ class CreateAccountViewModel @Inject constructor(
 
             is CreateAccountEvent.LegalIdChange -> legalId = event.legalId.asUiText()
 
-            is CreateAccountEvent.LegalIdInfoClick -> isLegalIdInfoExpanded = !isLegalIdInfoExpanded
-
             is CreateAccountEvent.CreateAccount -> viewModelScope.loadSafely {
-                val user = LocalUser.Mutable(
-                    name = name.toString(),
-                    surname = surname.toString(),
-                    sex = sex,
-                    blood = blood,
-                    legalId = legalId.toString().ifEmpty { null },
-                    isPrivate = true,
-                    savedPosts = emptyList()
+                createUser(
+                    user = LocalUser.Mutable(
+                        name = name.toString(),
+                        surname = surname.toString(),
+                        sex = sex,
+                        blood = blood,
+                        legalId = legalId.toString().ifEmpty { null },
+                        isPrivate = true
+                    ),
+                    pictureUri = pictureUri
                 )
 
-                val updateUserJob = launch { updateLocalUser(user) }
-                val updateProfilePictureJob = pictureUri?.let { pictureUri ->
-                    launch { updateProfilePicture(pictureUri) }
-                }
-
-                updateUserJob.join()
-                updateProfilePictureJob?.join()
-
-                // Waiting for server to complete user creation
-                delay(1.seconds)
                 mTaskFlow += CreateAccountTask.CreateAccountClick
             }
         }

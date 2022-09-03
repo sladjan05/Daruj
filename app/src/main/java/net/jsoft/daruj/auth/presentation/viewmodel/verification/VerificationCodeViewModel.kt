@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.screen.Screen
 import net.jsoft.daruj.common.domain.repository.AuthRepository
-import net.jsoft.daruj.common.domain.usecase.auth.SendSMSVerificationUseCase
-import net.jsoft.daruj.common.domain.usecase.auth.VerifyWithCodeUseCase
-import net.jsoft.daruj.common.domain.usecase.user.HasCompletedRegistrationUseCase
+import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
+import net.jsoft.daruj.auth.domain.usecase.VerifyWithCodeUseCase
+import net.jsoft.daruj.common.domain.usecase.HasCompletedRegistrationUseCase
 import net.jsoft.daruj.common.misc.asUiText
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
 import net.jsoft.daruj.common.utils.plusAssign

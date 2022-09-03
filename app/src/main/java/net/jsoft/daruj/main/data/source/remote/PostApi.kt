@@ -4,7 +4,7 @@ import android.net.Uri
 import net.jsoft.daruj.main.domain.model.Post
 
 interface PostApi {
-    suspend fun getPost(id: String): Post
+    suspend fun getPosts(vararg ids: String): List<Post>
 
     suspend fun createPost(post: Post.Mutable): String
     suspend fun updatePost(
@@ -19,4 +19,6 @@ interface PostApi {
 
     suspend fun getRecommendedPosts(reset: Boolean): List<Post>
     suspend fun getSavedPosts(reset: Boolean): List<Post>
+    suspend fun getMyPosts(reset: Boolean): List<Post>
+    suspend fun getMyDonations(reset: Boolean): List<Post>
 }

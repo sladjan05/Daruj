@@ -2,22 +2,20 @@ package net.jsoft.daruj.auth.presentation.screen
 
 import android.app.Activity
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.auth.presentation.viewmodel.AuthTask
 import net.jsoft.daruj.auth.presentation.viewmodel.AuthViewModel
 import net.jsoft.daruj.common.presentation.component.ErrorInfoSnackbars
@@ -37,7 +35,7 @@ fun AuthScreen(
     val errorHostState = rememberSnackbarHostState()
 
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
+        viewModel.taskFlow.collectLatest { task ->
             when (task) {
                 is AuthTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
                 is AuthTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))

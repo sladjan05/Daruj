@@ -1,14 +1,15 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
-import { configureUser } from "./configureUser";
-
 export const configureUserUpdate = functions.firestore
     .document("users/{userId}")
     .onUpdate(async (change, context) => {
+        if(change.after.isEqual(change.before)) return null;
+
         const userId = context.params.userId;
         const user = change.after.data();
         const prevUser = change.before.data();
+        const userRef = change.after.ref;
 
         const isPrimaryDataChanged = user.name !== prevUser.name || user.surname !== prevUser.surname;
         const isPrivateChanged = user.private !== prevUser.private;
@@ -19,7 +20,25 @@ export const configureUserUpdate = functions.firestore
         console.log(`Detected changes on user ${userId}.`);
 
         let promises: Promise<any>[] = [];
-        promises.push(configureUser(user, change.after.ref));
+
+        // Display Name
+        promises.push((async () => {
+            let displayName: string;
+
+            if (user.private) {
+                displayName = `Korisnik ${userRef.id.substring(0, 5).toUpperCase()}`;
+            } else {
+                displayName = user.name + " " + user.surname;
+            }
+
+            await userRef.set({
+                displayName: displayName
+            }, {
+                merge: true
+            });
+
+            console.log(`User ${userRef.id}'s display name has been changed to "${displayName}".`);
+        })());
 
         // Change profile picture metadata property `private` to match `user.private`
         if(isPrivateChanged) {

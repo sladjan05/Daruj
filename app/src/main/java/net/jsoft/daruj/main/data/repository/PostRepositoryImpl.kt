@@ -6,19 +6,15 @@ import net.jsoft.daruj.common.misc.DispatcherProvider
 import net.jsoft.daruj.main.data.source.remote.PostApi
 import net.jsoft.daruj.main.domain.model.Post
 import net.jsoft.daruj.main.domain.repository.PostRepository
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class PostRepositoryImpl @Inject constructor(
+class PostRepositoryImpl(
     private val postApi: PostApi,
-
     private val dispatcherProvider: DispatcherProvider
 ) : PostRepository {
 
-    override suspend fun getPost(id: String): Post =
+    override suspend fun getPosts(vararg ids: String): List<Post> =
         withContext(dispatcherProvider.io) {
-            postApi.getPost(id)
+            postApi.getPosts(*ids)
         }
 
     override suspend fun createPost(post: Post.Mutable): String =
@@ -48,5 +44,10 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun getSavedPosts(reset: Boolean): List<Post> =
         withContext(dispatcherProvider.io) {
             postApi.getSavedPosts(reset)
+        }
+
+    override suspend fun getMyPosts(reset: Boolean): List<Post> =
+        withContext(dispatcherProvider.io) {
+            postApi.getMyPosts(reset)
         }
 }

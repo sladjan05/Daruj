@@ -4,11 +4,9 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,38 +14,54 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
-import net.jsoft.daruj.common.misc.asUiText
 import net.jsoft.daruj.common.presentation.component.AnimatedClickableIcon
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
+import net.jsoft.daruj.common.utils.showShortToast
 import net.jsoft.daruj.common.utils.startActivity
 import net.jsoft.daruj.common.utils.value
-import net.jsoft.daruj.main.presentation.component.LoadingLazyColumn
-import net.jsoft.daruj.main.presentation.component.LoadingLazyColumnState
-import net.jsoft.daruj.main.presentation.component.Post
-import net.jsoft.daruj.main.presentation.screen.viewmodel.home.HomeEvent
-import net.jsoft.daruj.main.presentation.screen.viewmodel.home.HomeTask
+import net.jsoft.daruj.main.presentation.component.PostLazyColumn
 import net.jsoft.daruj.main.presentation.screen.viewmodel.home.HomeViewModel
+import net.jsoft.daruj.main.presentation.screen.viewmodel.posts.PostsEvent
+import net.jsoft.daruj.main.presentation.screen.viewmodel.posts.PostsTask
 import net.jsoft.daruj.modify_post.presentation.ModifyPostActivity
+
+class HomeScreenController {
+    var scrollToTop by mutableStateOf(false)
+        private set
+
+    suspend fun scrollToTop() {
+        scrollToTop = true
+        delay(1000L)
+        scrollToTop = false
+    }
+}
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    controller: HomeScreenController = remember { HomeScreenController() }
 ) {
     val context = LocalContext.current
     context as Activity
 
+    val lazyListState = rememberLazyListState()
+
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
+        viewModel.taskFlow.collectLatest { task ->
             when (task) {
-                is HomeTask.ShowError -> Toast.makeText(
-                    context,
-                    task.uiText.getValue(context),
-                    Toast.LENGTH_SHORT
-                ).show()
+                is PostsTask.ShowError -> context.showShortToast(task.message.getValue(context))
             }
+        }
+    }
+
+    LaunchedEffect(controller.scrollToTop) {
+        if (controller.scrollToTop) {
+            lazyListState.animateScrollToItem(0)
         }
     }
 
@@ -86,49 +100,31 @@ fun HomeScreen(
             }
         }
 
-        LoadingLazyColumn(
-            lazyColumnState = when {
-                viewModel.isLoading && viewModel.posts.isEmpty() -> LoadingLazyColumnState.LOADING
-                viewModel.posts.isEmpty() && !viewModel.isLoading -> LoadingLazyColumnState.NO_CONTENT
-                else -> LoadingLazyColumnState.LOADED
-            },
-            onRefresh = {
-                viewModel.onEvent(HomeEvent.Refresh)
-            },
+        PostLazyColumn(
+            posts = viewModel.posts,
+            isLoading = viewModel.isLoading,
             noContentText = R.string.tx_no_posts.value,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(count = viewModel.posts.size) { index ->
-                val post = viewModel.posts[index]
-
-                Post(
-                    post = post,
-                    modifier = Modifier.fillMaxWidth(),
-                    onExpand = {
-                        val route = Screen.DetailedPost.route(
-                            Screen.DetailedPost.POST_ID to post.data.id
-                        )
-
-                        navController.navigate(route)
-                    },
-                    onDonateClick = {
-
-                    },
-                    onCommentClick = {
-
-                    },
-                    onShareClick = {
-
-                    },
-                    onSaveClick = {
-                        viewModel.onEvent(HomeEvent.SaveClick(post))
-                    }
+            onRefresh = {
+                viewModel.onEvent(PostsEvent.Refresh)
+            },
+            onEndReached = {
+                viewModel.onEvent(PostsEvent.ReachedEnd)
+            },
+            onExpand = { post ->
+                val route = Screen.DetailedPost.route(
+                    Screen.DetailedPost.POST_ID to post.data.id
                 )
-            }
 
-            item {
-                Spacer(modifier = Modifier.height(60.dp))
-            }
-        }
+                navController.navigate(route)
+            },
+            onDonateClick = {},
+            onCommentClick = {},
+            onShareClick = {},
+            onSaveClick = { post ->
+                viewModel.onEvent(PostsEvent.SaveClick(post))
+            },
+            modifier = Modifier.fillMaxSize(),
+            lazyListState = lazyListState
+        )
     }
 }

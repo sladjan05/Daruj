@@ -1,9 +1,13 @@
 package net.jsoft.daruj.common.data.source.remote
 
 import android.app.Activity
+import android.util.Log
+import com.google.firebase.FirebaseError
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
+import com.google.firebase.firestore.auth.User
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -32,14 +36,14 @@ class FirebaseAuthApi @Inject constructor(
         activity = (map[Activity::class] ?: throw MissingArgumentException()) as Activity
     }
 
-    override suspend fun sendSMSVerification(phoneNumber: String): AuthRepository.State {
+    override suspend fun sendSMSVerification(phoneNumber: String): AuthRepository.VerificationState {
         return coroutineScope {
             suspendCoroutine { continuation ->
                 val callback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                         launch {
                             signInWithCredential(credential)
-                            continuation.resume(AuthRepository.State.AUTHENTICATED)
+                            continuation.resume(AuthRepository.VerificationState.AUTHENTICATED)
                         }
                     }
 
@@ -58,7 +62,7 @@ class FirebaseAuthApi @Inject constructor(
                         token: PhoneAuthProvider.ForceResendingToken
                     ) {
                         this@FirebaseAuthApi.verificationId = verificationId
-                        continuation.resume(AuthRepository.State.SENT_SMS)
+                        continuation.resume(AuthRepository.VerificationState.SENT_SMS)
                     }
                 }
 
@@ -84,8 +88,21 @@ class FirebaseAuthApi @Inject constructor(
         }
     }
 
-    override suspend fun isLoggedIn(): Boolean {
-        return auth.currentUser != null
+    override suspend fun getAuthState(): AuthRepository.AuthState {
+        return try {
+            if (auth.currentUser == null) {
+                AuthRepository.AuthState.LOGGED_OUT
+            } else {
+                auth.currentUser!!.reload().await()
+                AuthRepository.AuthState.LOGGED_IN
+            }
+        } catch (e: FirebaseAuthInvalidUserException) {
+            when (e.errorCode) {
+                FirebaseError::ERROR_USER_DISABLED.name -> AuthRepository.AuthState.DISABLED
+                FirebaseError::ERROR_USER_NOT_FOUND.name -> AuthRepository.AuthState.DELETED
+                else -> AuthRepository.AuthState.LOGGED_OUT
+            }
+        }
     }
 
     private suspend fun signInWithCredential(credential: PhoneAuthCredential) {

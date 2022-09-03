@@ -280,8 +280,8 @@
     <string name="tx_invalid_code">Kod je neispravan…</string>
     <string name="tx_tutorial_illustration_title_1">Želiš da pomogneš ili\nti je potrebna pomoć?</string>
     <string name="tx_tutorial_illustration_description_1">Napravi nalog na najvećoj platformi u regionu,\nkoja spaja donatore krvi sa onima kojima je\nta krv potrebna.</string>
-    <string name="tx_tutorial_illustration_title_2">\"Niko nije postao\nsiromašan darovanjem\"</string>
-    <string name="tx_tutorial_illustration_description_2">Mi ćemo ti pomoći da postaneš dobrovoljni\ndavalac krvi. Uputićemo te u to šta treba da\nuradiš kako bi uspješno darovao krv.</string>
+    <string name="tx_tutorial_illustration_title_2">\"Niko nije postao\nsiromašan darivanjem\"</string>
+    <string name="tx_tutorial_illustration_description_2">Mi ćemo ti pomoći da postaneš dobrovoljni\ndavalac krvi. Vodićemo te korak po korak,\nkako bi darovao krv.</string>
     <string name="tx_tutorial_illustration_title_3">Ti pomažeš.\nMi te nagrađujemo.</string>
     <string name="tx_tutorial_illustration_description_3">Dijeljenjem objava, darovanjem krvi i ostalim\n aktivnostima u aplikaciji sakupljaš bodove\ni ostvaruješ pravo na nagrade.</string>
     <string name="tx_next">Dalje</string>
@@ -301,7 +301,6 @@
     <string name="tx_after_this_step_you_will_become_a_memeber">Nakon ovog koraka, pristupićete daruj.ba zajednici\ndobrovoljnih davalaca krvi.</string>
     <string name="tx_date_of_birth">Datum rođenja</string>
     <string name="tx_internal_error">Interna greška! Pokušajte kasnije…</string>
-    <string name="tx_verification_successful">Verifikacija uspješna</string>
     <string name="tx_name_cannot_be_empty">Ime ne može biti prazno!</string>
     <string name="tx_surname_cannot_be_empty">Prezime ne može biti prazno!</string>
     <string name="tx_delete">Izbriši</string>
@@ -329,7 +328,7 @@
     <string name="tx_picture">Fotografija</string>
     <string name="tx_parent_name">Ime oca</string>
     <string name="tx_other_data">Ostali podaci</string>
-    <string name="tx_located_at">Nalazi se u…</string>
+    <string name="tx_located_at">Nalazi se u</string>
     <string name="tx_donors_required_2">Broj davalaca</string>
     <string name="tx_short_description">Kratak opis</string>
     <string name="tx_create_post">Kreiraj objavu</string>
@@ -343,6 +342,16 @@
     <string name="tx_donors_required_cannot_be_empty">Broj davalaca ne može biti prazan!</string>
     <string name="tx_donors_required_cannot_be_zero">Broj davalaca ne može biti 0!</string>
     <string name="tx_no_posts">Nema objava</string>
+    <string name="tx_settings">Podešavanja</string>
+    <string name="tx_no_donations">Nemate prošlih donacija</string>
+    <string name="tx_my_posts">Objave</string>
+    <string name="tx_donations">Donacije</string>
+    <string name="tx_take_picture_now">Uslikajte odmah</string>
+    <string name="tx_choose_from_gallery">Izaberite sliku iz galerije</string>
+    <string name="tx_thank_you_for_donation">Hvala Vam što želite darovati krv!</string>
+    <string name="tx_donate_blood_step_1">Prvi korak je da odete u Vaš lokalni zavod za transfuzijsku medicinu, te neglasite da želite darovati krv za sljedeću osobu</string>
+    <string name="tx_donate_blood_step_2">Ukoliko ste uspješno darovali krv neophodno je da fotografišete potvrdu o darovanju krvi ili Vašu knjižicu dobrovoljnih davalaca krvi.</string>
+    <string name="tx_take_donation_receipt_picture">Fotografiši potvrdu</string>
 
     <plurals name="tx_minutes_ago">
         <item quantity="one">prije %d minut</item>

@@ -18,8 +18,8 @@ class MainViewModel : BaseViewModel<MainEvent, MainTask>() {
         when (event) {
             is MainEvent.PageChange -> viewModelScope.launch {
                 when (event.page) {
-                    in arrayOf(0, 2) -> page = event.page
-                    else -> mTaskFlow += MainTask.ShowError(R.string.tx_soon.asUiText())
+                    1 -> mTaskFlow += MainTask.ShowError(R.string.tx_soon.asUiText())
+                    else -> page = event.page
                 }
             }
         }

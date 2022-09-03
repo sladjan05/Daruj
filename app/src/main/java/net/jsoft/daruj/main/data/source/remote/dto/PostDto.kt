@@ -1,6 +1,7 @@
 package net.jsoft.daruj.main.data.source.remote.dto
 
 import android.net.Uri
+import androidx.annotation.Keep
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import net.jsoft.daruj.common.data.source.remote.dto.BloodDto
@@ -9,6 +10,7 @@ import net.jsoft.daruj.main.domain.model.Post
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+@Keep
 class PostDto(
     @DocumentId
     val id: String? = null,

@@ -8,9 +8,9 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import net.jsoft.daruj.common.domain.repository.AuthRepository
-import net.jsoft.daruj.common.domain.usecase.auth.InitializeAuthenticatorUseCase
-import net.jsoft.daruj.common.domain.usecase.auth.SendSMSVerificationUseCase
-import net.jsoft.daruj.common.domain.usecase.user.HasCompletedRegistrationUseCase
+import net.jsoft.daruj.auth.domain.usecase.InitializeAuthenticatorUseCase
+import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
+import net.jsoft.daruj.common.domain.usecase.HasCompletedRegistrationUseCase
 import net.jsoft.daruj.common.misc.Country
 import net.jsoft.daruj.common.misc.UiText
 import net.jsoft.daruj.common.misc.asUiText
@@ -83,8 +83,8 @@ class PhoneNumberViewModel @Inject constructor(
                 initializeAuthenticator(Activity::class to event.activity)
 
                 when (sendSMSVerification(fullPhoneNumber.toString())) {
-                    AuthRepository.State.SENT_SMS -> mTaskFlow += PhoneNumberTask.ShowVerificationScreen
-                    AuthRepository.State.AUTHENTICATED -> {
+                    AuthRepository.VerificationState.SENT_SMS -> mTaskFlow += PhoneNumberTask.ShowVerificationScreen
+                    AuthRepository.VerificationState.AUTHENTICATED -> {
                         mTaskFlow += if (hasCompletedRegistration()) {
                             PhoneNumberTask.ShowMainScreen
                         } else {

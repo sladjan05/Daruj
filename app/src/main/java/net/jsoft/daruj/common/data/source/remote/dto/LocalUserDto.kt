@@ -1,10 +1,12 @@
 package net.jsoft.daruj.common.data.source.remote.dto
 
 import android.net.Uri
+import androidx.annotation.Keep
 import com.google.firebase.firestore.DocumentId
 import net.jsoft.daruj.common.domain.model.LocalUser
 import net.jsoft.daruj.common.domain.model.Sex
 
+@Keep
 class LocalUserDto(
     @DocumentId
     val id: String? = null,
@@ -16,7 +18,8 @@ class LocalUserDto(
     var blood: BloodDto? = null,
     var legalId: String? = null,
     var isPrivate: Boolean? = null,
-    var savedPosts: List<String>? = null
+    var savedPosts: List<String>? = null,
+    var points: Int? = null
 ) {
     fun getModel(
         pictureUri: Uri?
@@ -27,11 +30,12 @@ class LocalUserDto(
             sex = sex!!,
             blood = blood!!.getModel(),
             legalId = legalId,
-            isPrivate = isPrivate!!,
-            savedPosts = savedPosts!!
+            isPrivate = isPrivate!!
         ),
         immutable = LocalUser.Immutable(
-            displayName = displayName!!
+            displayName = displayName!!,
+            savedPosts = savedPosts!!,
+            points = points!!
         ),
         data = LocalUser.Data(
             id = id!!,

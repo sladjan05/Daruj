@@ -1,5 +1,7 @@
 package net.jsoft.daruj.main.presentation.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
@@ -13,12 +15,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import net.jsoft.daruj.common.utils.NoOverscrollEffect
 
 enum class LoadingLazyColumnState {
     LOADED,
@@ -27,6 +31,7 @@ enum class LoadingLazyColumnState {
 }
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 fun LoadingLazyColumn(
     lazyColumnState: LoadingLazyColumnState,
     noContentText: String,
@@ -56,17 +61,19 @@ fun LoadingLazyColumn(
         }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                lazyListState,
-                contentPadding,
-                reverseLayout,
-                verticalArrangement,
-                horizontalAlignment,
-                flingBehavior,
-                userScrollEnabled,
-                content
-            )
+            NoOverscrollEffect {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    lazyListState,
+                    contentPadding,
+                    reverseLayout,
+                    verticalArrangement,
+                    horizontalAlignment,
+                    flingBehavior,
+                    userScrollEnabled,
+                    content
+                )
+            }
 
             if (lazyColumnState == LoadingLazyColumnState.NO_CONTENT) {
                 Text(

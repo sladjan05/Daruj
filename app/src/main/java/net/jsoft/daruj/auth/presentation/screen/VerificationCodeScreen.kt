@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.component.NumberKeyboard
 import net.jsoft.daruj.auth.presentation.component.VerificationCodeBox
@@ -50,7 +51,7 @@ fun VerificationCodeScreen(
     val errorHostState = rememberSnackbarHostState()
 
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
+        viewModel.taskFlow.collectLatest { task ->
             when (task) {
                 is VerificationCodeTask.ShowCreateAccountScreen -> context.switchActivity<CreateAccountActivity>()
                 is VerificationCodeTask.ShowMainScreen -> context.switchActivity<MainActivity>()

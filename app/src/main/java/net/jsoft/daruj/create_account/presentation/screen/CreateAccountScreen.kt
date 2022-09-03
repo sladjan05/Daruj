@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.misc.MainTestTags
 import net.jsoft.daruj.common.presentation.component.*
@@ -45,7 +46,7 @@ fun CreateAccountScreen(
     val errorHostState = rememberSnackbarHostState()
 
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
+        viewModel.taskFlow.collectLatest { task ->
             when (task) {
                 is CreateAccountTask.CreateAccountClick -> context.switchActivity<MainActivity>()
 

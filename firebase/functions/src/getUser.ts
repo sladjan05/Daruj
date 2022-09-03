@@ -6,7 +6,7 @@ export const getUser = functions.https
         const userDocument = await admin
             .firestore()
             .doc(`/users/${data}`)
-            .get()
+            .get();
 
         const user = userDocument.data();
         
@@ -14,6 +14,7 @@ export const getUser = functions.https
             id: data,
             displayName: user!.displayName,
             sex: user!.sex,
-            blood: user!.blood
+            blood: user!.blood,
+            points: user!.points
         });
     });

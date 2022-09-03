@@ -1,5 +1,6 @@
 package net.jsoft.daruj.modify_post.domain.usecase
 
+import dagger.hilt.android.scopes.ViewModelScoped
 import net.jsoft.daruj.common.exception.BlankNameException
 import net.jsoft.daruj.common.exception.BlankSurameException
 import net.jsoft.daruj.main.domain.model.Post
@@ -8,7 +9,7 @@ import net.jsoft.daruj.modify_post.exception.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@ViewModelScoped
 class CreatePostUseCase @Inject constructor(
     private val postRepository: PostRepository
 ) {

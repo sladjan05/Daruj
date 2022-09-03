@@ -1,9 +1,5 @@
 package net.jsoft.daruj.main.presentation.screen.viewmodel.home
 
-import net.jsoft.daruj.main.domain.model.Post
+import net.jsoft.daruj.main.presentation.screen.viewmodel.posts.PostsEvent
 
-sealed class HomeEvent {
-    object Refresh : HomeEvent()
-
-    class SaveClick(val post: Post) : HomeEvent()
-}
+sealed interface HomeEvent : PostsEvent

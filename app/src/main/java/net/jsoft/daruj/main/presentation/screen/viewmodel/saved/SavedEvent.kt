@@ -1,11 +1,5 @@
 package net.jsoft.daruj.main.presentation.screen.viewmodel.saved
 
-import net.jsoft.daruj.main.domain.model.Post
+import net.jsoft.daruj.main.presentation.screen.viewmodel.posts.PostsEvent
 
-sealed class SavedEvent {
-    object Refresh : SavedEvent()
-
-    class SaveClick(val post: Post) : SavedEvent()
-
-    object ReachedEnd : SavedEvent()
-}
+sealed interface SavedEvent : PostsEvent

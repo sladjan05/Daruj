@@ -7,8 +7,7 @@ import net.jsoft.daruj.common.misc.DispatcherProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class AuthRepositoryImpl @Inject constructor(
+class AuthRepositoryImpl(
     private val authApi: AuthApi,
     private val dispatcherProvider: DispatcherProvider
 ) : AuthRepository {
@@ -17,12 +16,12 @@ class AuthRepositoryImpl @Inject constructor(
             authApi.initialize(*args)
         }
 
-    override suspend fun isLoggedIn(): Boolean =
+    override suspend fun getAuthState(): AuthRepository.AuthState =
         withContext(dispatcherProvider.io) {
-            authApi.isLoggedIn()
+            authApi.getAuthState()
         }
 
-    override suspend fun sendSMSVerification(phoneNumber: String): AuthRepository.State =
+    override suspend fun sendSMSVerification(phoneNumber: String): AuthRepository.VerificationState =
         withContext(dispatcherProvider.io) {
             authApi.sendSMSVerification(phoneNumber)
         }

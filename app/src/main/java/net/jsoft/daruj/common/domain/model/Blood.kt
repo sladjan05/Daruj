@@ -1,8 +1,10 @@
 package net.jsoft.daruj.common.domain.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 data class Blood(
     val type: Type,

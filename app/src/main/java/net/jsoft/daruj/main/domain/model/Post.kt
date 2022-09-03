@@ -2,11 +2,13 @@ package net.jsoft.daruj.main.domain.model
 
 import android.net.Uri
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.domain.model.User
 import java.time.ZonedDateTime
 
+@Keep
 @Parcelize
 data class Post(
     val mutable: Mutable,
@@ -14,6 +16,7 @@ data class Post(
     val data: Data
 ) : Parcelable {
 
+    @Keep
     @Parcelize
     data class Mutable(
         val name: String,
@@ -23,8 +26,12 @@ data class Post(
         val blood: Blood,
         val donorsRequired: Int,
         val description: String
-    ) : Parcelable
+    ) : Parcelable {
+        val fullName: String
+            get() = "$name $surname"
+    }
 
+    @Keep
     @Parcelize
     data class Immutable(
         val user: User,
@@ -34,6 +41,7 @@ data class Post(
         val donorCount: Int
     ) : Parcelable
 
+    @Keep
     @Parcelize
     data class Data(
         val id: String,

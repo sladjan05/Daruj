@@ -39,6 +39,7 @@
         <entry key="../../../../layout/compose-model-1658753784898.xml" value="0.30447635135135137" />
         <entry key="../../../../layout/compose-model-1659541503114.xml" value="0.1" />
         <entry key="../../../../layout/compose-model-1660228341780.xml" value="0.30447635135135137" />
+        <entry key="app/src/main/res/drawable/dw_transparent_background.xml" value="0.3205" />
         <entry key="app/src/main/res/drawable/ic_camera.xml" value="0.159" />
         <entry key="app/src/main/res/drawable/ic_dropdown.xml" value="0.2985" />
         <entry key="app/src/main/res/drawable/ic_full_logo.xml" value="0.165" />
@@ -51,6 +52,8 @@
         <entry key="app/src/main/res/drawable/ic_welcome_upper_part.xml" value="0.3205" />
         <entry key="app/src/main/res/layout/ac_crop_image.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/bg_splash.xml" value="0.2866847826086957" />
+        <entry key="app/src/main/res/layout/dg_bottom_sheet_dialog.xml" value="0.34791666666666665" />
+        <entry key="app/src/main/res/xml/file_provider_paths.xml" value="0.34791666666666665" />
       </map>
     </option>
   </component>

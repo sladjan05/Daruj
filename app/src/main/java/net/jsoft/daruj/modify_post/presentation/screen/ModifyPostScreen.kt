@@ -1,16 +1,12 @@
 package net.jsoft.daruj.modify_post.presentation.screen
 
 import android.app.Activity
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +16,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.misc.MainTestTags
 import net.jsoft.daruj.common.presentation.component.BloodSelectionBox
@@ -29,10 +26,7 @@ import net.jsoft.daruj.common.presentation.component.TextBox
 import net.jsoft.daruj.common.presentation.screen.ScreenWithBackAndTitle
 import net.jsoft.daruj.common.presentation.screen.ScreenWithSnackbars
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.goBack
-import net.jsoft.daruj.common.utils.indicationlessClickable
-import net.jsoft.daruj.common.utils.rememberSnackbarHostState
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.utils.*
 import net.jsoft.daruj.create_account.presentation.component.LabeledSection
 import net.jsoft.daruj.modify_post.presentation.component.PostPicture
 import net.jsoft.daruj.modify_post.presentation.viewmodel.ModifyPostEvent
@@ -40,7 +34,6 @@ import net.jsoft.daruj.modify_post.presentation.viewmodel.ModifyPostTask
 import net.jsoft.daruj.modify_post.presentation.viewmodel.ModifyPostViewModel
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun ModifyPostScreen(
     title: String,
     buttonText: String,
@@ -53,7 +46,7 @@ fun ModifyPostScreen(
     val errorHostState = rememberSnackbarHostState()
 
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
+        viewModel.taskFlow.collectLatest { task ->
             when (task) {
                 is ModifyPostTask.Close -> context.goBack()
 
@@ -62,8 +55,6 @@ fun ModifyPostScreen(
             }
         }
     }
-
-    BackHandler { context.goBack() }
 
     ScreenWithSnackbars(
         infoHostState = hostState,
@@ -78,9 +69,7 @@ fun ModifyPostScreen(
             title = title,
             modifier = Modifier.fillMaxSize()
         ) {
-            CompositionLocalProvider(
-                LocalOverscrollConfiguration provides null
-            ) {
+            NoOverscrollEffect {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -162,7 +151,7 @@ fun ModifyPostScreen(
                         ) {
                             TextBox(
                                 text = viewModel.location.value,
-                                hint = R.string.tx_located_at.value,
+                                hint = "${R.string.tx_located_at.value}…",
                                 onValueChange = { location ->
                                     viewModel.onEvent(ModifyPostEvent.LocationChange(location))
                                 },

@@ -2,11 +2,18 @@ package net.jsoft.daruj.common.domain.repository
 
 interface AuthRepository {
     suspend fun initialize(vararg args: Pair<Any, Any>)
-    suspend fun isLoggedIn(): Boolean
-    suspend fun sendSMSVerification(phoneNumber: String): State
+    suspend fun getAuthState(): AuthState
+    suspend fun sendSMSVerification(phoneNumber: String): VerificationState
     suspend fun verifyWithCode(code: String)
 
-    enum class State {
+    enum class AuthState {
+        LOGGED_IN,
+        LOGGED_OUT,
+        DISABLED,
+        DELETED
+    }
+
+    enum class VerificationState {
         SENT_SMS,
         AUTHENTICATED
     }

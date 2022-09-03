@@ -1,14 +1,9 @@
 package net.jsoft.daruj.introduction.presentation.screen
 
 import android.app.Activity
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,42 +13,36 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.AuthActivity
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
+import net.jsoft.daruj.common.utils.NoOverscrollEffect
 import net.jsoft.daruj.common.utils.switchActivity
 import net.jsoft.daruj.common.utils.value
 import net.jsoft.daruj.introduction.presentation.component.IntroductionIllustration
 import net.jsoft.daruj.introduction.presentation.component.PageIndicator
 import net.jsoft.daruj.introduction.presentation.viewmodel.IntroductionEvent
-import net.jsoft.daruj.introduction.presentation.viewmodel.IntroductionTask
 import net.jsoft.daruj.introduction.presentation.viewmodel.IntroductionViewModel
 
 @Composable
-@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 fun IntroductionScreen(
     viewModel: IntroductionViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     context as Activity
 
-    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+    var pageChangeJob: Job? = null
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { pagerState.currentPage }.collectLatest { newPage ->
-            viewModel.onEvent(IntroductionEvent.PageSwitch(newPage))
-        }
-    }
+    val pagerState = rememberPagerState(initialPage = viewModel.page)
+    val currentPage by derivedStateOf { pagerState.currentPage }
 
-    LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
-            when (task) {
-                is IntroductionTask.SwitchPage -> pagerState.animateScrollToPage(viewModel.page)
-                is IntroductionTask.Finish -> context.switchActivity<AuthActivity>()
-            }
-        }
+    LaunchedEffect(currentPage) {
+        viewModel.onEvent(IntroductionEvent.PageChange(currentPage))
     }
 
     Column(
@@ -79,9 +68,7 @@ fun IntroductionScreen(
             R.string.tx_tutorial_illustration_description_3
         )
 
-        CompositionLocalProvider(
-            LocalOverscrollConfiguration provides null
-        ) {
+        NoOverscrollEffect {
             HorizontalPager(
                 count = IntroductionViewModel.PAGE_COUNT,
                 modifier = Modifier
@@ -110,14 +97,27 @@ fun IntroductionScreen(
                 modifier = Modifier.width(125.dp)
             )
 
+            val isLastPage = viewModel.page == (IntroductionViewModel.PAGE_COUNT - 1)
+
             PrimaryButton(
-                text = if (viewModel.page == IntroductionViewModel.PAGE_COUNT - 1) {
+                text = if (isLastPage) {
                     R.string.tx_finish.value
                 } else {
                     R.string.tx_next.value
                 },
                 onClick = {
-                    viewModel.onEvent(IntroductionEvent.Next)
+                    if (isLastPage) {
+                        context.switchActivity<AuthActivity>()
+                    } else {
+                        val page = viewModel.page + 1
+
+                        pageChangeJob?.cancel()
+                        pageChangeJob = scope.launch {
+                            pagerState.animateScrollToPage(page)
+                        }
+
+                        viewModel.onEvent(IntroductionEvent.PageChange(page))
+                    }
                 },
                 modifier = Modifier.width(300.dp)
             )

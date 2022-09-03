@@ -35,12 +35,12 @@ class ModifyPostActivity : ComponentActivity() {
     }
 
     @Parcelize
-    sealed class Purpose : Parcelable {
+    sealed interface Purpose : Parcelable {
         @Parcelize
-        object CreatePost : Purpose(), Parcelable
+        object CreatePost : Purpose, Parcelable
 
         @Parcelize
-        class EditPost(val post: Post) : Purpose(), Parcelable
+        class EditPost(val post: Post) : Purpose, Parcelable
     }
 
     companion object {

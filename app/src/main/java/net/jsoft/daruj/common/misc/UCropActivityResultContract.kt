@@ -11,7 +11,8 @@ import java.util.*
 
 class UCropActivityResultContract : ActivityResultContract<Uri, Uri?>() {
     override fun createIntent(context: Context, input: Uri): Intent {
-        val outputUri = "${UUID.randomUUID()}.png"
+        val output = "${UUID.randomUUID()}.png"
+        val outputFile = File(context.cacheDir, output)
 
         val uCropOptions = UCrop.Options().apply {
             withAspectRatio(1f, 1f)
@@ -25,7 +26,7 @@ class UCropActivityResultContract : ActivityResultContract<Uri, Uri?>() {
 
         val uCrop = UCrop.of(
             input,
-            Uri.fromFile(File(context.cacheDir, outputUri))
+            Uri.fromFile(outputFile)
         ).withOptions(uCropOptions)
 
         return uCrop.getIntent(context)

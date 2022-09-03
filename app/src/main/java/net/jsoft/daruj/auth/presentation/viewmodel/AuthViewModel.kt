@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.auth.presentation.screen.Screen
-import net.jsoft.daruj.common.domain.usecase.user.GetSettingsUseCase
-import net.jsoft.daruj.common.domain.usecase.user.UpdateSettingsUseCase
+import net.jsoft.daruj.common.domain.usecase.GetSettingsUseCase
+import net.jsoft.daruj.common.domain.usecase.UpdateSettingsUseCase
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
 import net.jsoft.daruj.common.utils.plusAssign
 import net.jsoft.daruj.common.utils.uiText

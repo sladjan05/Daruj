@@ -15,4 +15,5 @@ interface UserRepository {
     suspend fun updateLocalUser(user: LocalUser.Mutable)
     suspend fun updateProfilePicture(pictureUri: Uri)
     suspend fun updateSettings(settings: LocalSettings)
+    suspend fun setPostSaved(postId: String, saved: Boolean)
 }

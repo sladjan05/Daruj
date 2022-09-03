@@ -3,27 +3,32 @@ package net.jsoft.daruj.main.data.source.remote
 import android.app.Application
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
+import com.google.gson.Gson
+import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.asDeferred
 import kotlinx.coroutines.tasks.await
+import net.jsoft.daruj.common.domain.model.User
 import net.jsoft.daruj.common.domain.repository.UserRepository
+import net.jsoft.daruj.common.utils.asMap
 import net.jsoft.daruj.common.utils.awaitOrNull
 import net.jsoft.daruj.common.utils.compressToByteArray
 import net.jsoft.daruj.common.utils.getBitmap
 import net.jsoft.daruj.main.data.source.remote.dto.PostDto
 import net.jsoft.daruj.main.domain.model.Post
+import net.jsoft.daruj.main.domain.repository.PostRepository
+import java.lang.Integer.min
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@ViewModelScoped
 class FirebasePostApi @Inject constructor(
     private val application: Application,
 
@@ -40,42 +45,40 @@ class FirebasePostApi @Inject constructor(
     private val postsStorage: StorageReference
         get() = storage.reference.child(POSTS)
 
-    private var recommendedPosts = FirebaseRecommendedPostsPaginator(firestore, storage, userRepository)
-    private var savedPosts = FirebaseSavedPostsPaginator(userRepository, this)
+    private var lastRecommendedPostSnapshot: DocumentSnapshot? = null
+    private val lastSavedPostIds = mutableListOf<String>()
+    private var lastMyPostSnapshot: DocumentSnapshot? = null
 
-    override suspend fun getPost(id: String): Post = coroutineScope {
+    override suspend fun getPosts(vararg ids: String): List<Post> = coroutineScope {
+        if (ids.isEmpty()) return@coroutineScope emptyList<Post>()
         val deferredLocalUser = async { userRepository.getLocalUser() }
-        val deferredPostSnapshot = posts.document(id).get().asDeferred()
-        val deferredPictureUri = postsStorage
-            .child("$id.png")
-            .downloadUrl
-            .asDeferred()
 
-        val postDto = deferredPostSnapshot.await().toObject<PostDto>()!!
-        val deferredUser = async { userRepository.getUser(postDto.userId!!) }
+        ids.map { id ->
+            val deferredPostSnapshot = posts.document(id).get().asDeferred()
+            val deferredPictureUri = postsStorage
+                .child("$id.png")
+                .downloadUrl
+                .asDeferred()
 
-        postDto.getModel(
-            user = deferredUser.await(),
-            pictureUri = deferredPictureUri.awaitOrNull(),
-            isSaved = deferredLocalUser.await().mutable.savedPosts.contains(postDto.id!!)
-        )
+            val postDto = deferredPostSnapshot.await().toObject<PostDto>()!!
+            val deferredUser = async { userRepository.getUser(postDto.userId!!) }
+
+            postDto.getModel(
+                user = deferredUser.await(),
+                pictureUri = deferredPictureUri.awaitOrNull(),
+                isSaved = deferredLocalUser.await().immutable.savedPosts.contains(postDto.id!!)
+            )
+        }
     }
 
     override suspend fun createPost(post: Post.Mutable): String {
-        val postDocument = posts
-            .add(post)
-            .await()
+        val postMerge = post.asMap(
+            PostDto::userId.name to auth.currentUser!!.uid
+        )
 
-        postDocument
-            .set(
-                mapOf(
-                    PostDto::userId.name to auth.currentUser!!.uid
-                ),
-                SetOptions.merge()
-            )
-            .await()
+        val postDocument = posts.add(postMerge).await()
 
-        return postDocument.id
+        return postDocument!!.id
     }
 
     override suspend fun updatePost(
@@ -107,13 +110,99 @@ class FirebasePostApi @Inject constructor(
     }
 
     override suspend fun getRecommendedPosts(reset: Boolean): List<Post> {
-        if (reset) recommendedPosts.reset()
-        return recommendedPosts.getNextPage()
+        if (reset) lastRecommendedPostSnapshot = null
+
+        val (posts, lastSnapshot) = getPosts(posts, lastRecommendedPostSnapshot)
+        lastRecommendedPostSnapshot = lastSnapshot
+
+        return posts
     }
 
-    override suspend fun getSavedPosts(reset: Boolean): List<Post> {
-        if (reset) savedPosts.reset()
-        return savedPosts.getNextPage()
+    override suspend fun getSavedPosts(reset: Boolean): List<Post> = coroutineScope {
+        if (reset) lastSavedPostIds.clear()
+
+        val localUser = userRepository.getLocalUser()
+        val savedPostIds = localUser.immutable.savedPosts.toMutableList()
+
+        var startIndex = 0
+        for ((index, id) in savedPostIds.reversed().withIndex()) {
+            if (lastSavedPostIds.contains(id)) {
+                startIndex = savedPostIds.size - index - 1
+                break
+            }
+        }
+
+        val endIndex = min(startIndex + PostRepository.POSTS_PER_PAGE, savedPostIds.size)
+        val postIds = savedPostIds.subList(startIndex, endIndex)
+
+        getPosts(*postIds.toTypedArray())
+    }
+
+    override suspend fun getMyPosts(reset: Boolean): List<Post> {
+        if (reset) lastMyPostSnapshot = null
+
+        val query = posts.whereEqualTo(PostDto::userId.name, auth.currentUser!!.uid)
+
+        val (posts, lastSnapshot) = getPosts(query, lastMyPostSnapshot)
+        lastMyPostSnapshot = lastSnapshot
+
+        return posts
+    }
+
+    override suspend fun getMyDonations(reset: Boolean): List<Post> {
+        TODO()
+    }
+
+    private suspend fun getPosts(
+        query: Query,
+        lastSnapshot: DocumentSnapshot?
+    ): Pair<List<Post>, DocumentSnapshot?> = coroutineScope {
+        val postSnapshots = query
+            .orderBy(Post.Immutable::timestamp.name, Query.Direction.DESCENDING)
+            .let { query ->
+                if (lastSnapshot != null) query.startAfter(lastSnapshot)
+                else query
+            }
+            .limit(PostRepository.POSTS_PER_PAGE.toLong())
+            .get()
+            .await()
+
+        if (postSnapshots.isEmpty) return@coroutineScope emptyList<Post>() to lastSnapshot
+
+        val postDtos = postSnapshots.toObjects<PostDto>()
+
+        val deferredPictureUris = postDtos.map { postDto ->
+            postsStorage
+                .child("${postDto.id!!}.png")
+                .downloadUrl
+                .asDeferred()
+        }
+
+        // Optimization: There might be multiple posts from one creator
+        val deferredUsers = mutableMapOf<String, Deferred<User>>()
+        for (postDto in postDtos) {
+            val userId = postDto.userId!!
+
+            if (userId !in deferredUsers) {
+                deferredUsers[userId] = async { userRepository.getUser(userId) }
+            }
+        }
+
+        val localUser = userRepository.getLocalUser()
+
+        postDtos.mapIndexed { index, postDto ->
+            val userId = postDto.userId!!
+
+            val user = deferredUsers[userId]!!.await()
+            val pictureUri = deferredPictureUris[index].awaitOrNull()
+            val savedPosts = localUser.immutable.savedPosts
+
+            postDto.getModel(
+                user = user,
+                pictureUri = pictureUri,
+                isSaved = postDto.id in savedPosts
+            )
+        } to postSnapshots.lastOrNull()
     }
 
     companion object {

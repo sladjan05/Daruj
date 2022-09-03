@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberEvent
 import net.jsoft.daruj.auth.presentation.viewmodel.phone.PhoneNumberTask
@@ -48,7 +50,7 @@ fun PhoneNumberScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
+        viewModel.taskFlow.collectLatest { task ->
             when (task) {
                 is PhoneNumberTask.ShowVerificationScreen -> {
                     val fullPhoneNumber = viewModel.fullPhoneNumber.getValue(context)
@@ -95,8 +97,8 @@ fun PhoneNumberScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val countries = context.countriesSortedBySerbianAlphabet()
-                val countryNames = countries.map { country -> country.resId.value }
+                val countries = remember { context.countriesSortedBySerbianAlphabet() }
+                val countryNames = remember { countries.map { country -> country.resId.getValue(context) } }
 
                 DropdownSelectionBox(
                     text = viewModel.country?.resId?.value ?: R.string.tx_unknown.value,

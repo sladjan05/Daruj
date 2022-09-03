@@ -6,9 +6,7 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +18,8 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import net.jsoft.daruj.common.utils.showShortToast
 import net.jsoft.daruj.main.presentation.component.BottomNavigationBar
 import net.jsoft.daruj.main.presentation.screen.viewmodel.MainEvent
 import net.jsoft.daruj.main.presentation.screen.viewmodel.MainTask
@@ -33,7 +33,10 @@ fun MainScreen(
     val context = LocalContext.current
     context as Activity
 
+    val scope = rememberCoroutineScope()
+
     val navController = rememberAnimatedNavController()
+    val homeController = remember { HomeScreenController() }
 
     fun getSign(
         initialRoute: String,
@@ -49,13 +52,9 @@ fun MainScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.taskFlow.collect { task ->
+        viewModel.taskFlow.collectLatest { task ->
             when (task) {
-                is MainTask.ShowError -> Toast.makeText(
-                    context,
-                    task.uiText.getValue(context),
-                    Toast.LENGTH_SHORT
-                ).show()
+                is MainTask.ShowError -> context.showShortToast(task.message.getValue(context))
             }
         }
     }
@@ -122,11 +121,18 @@ fun MainScreen(
             popExitTransition = exitTransition
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(navController)
+                HomeScreen(
+                    navController = navController,
+                    controller = homeController
+                )
             }
 
             composable(Screen.Saved.route) {
                 SavedScreen(navController)
+            }
+
+            composable(Screen.Profile.route) {
+                ProfileScreen(navController)
             }
 
             composable(
@@ -144,6 +150,10 @@ fun MainScreen(
         BottomNavigationBar(
             currentIndex = viewModel.page,
             onChange = { index ->
+                if (index == Screen.screens().indexOf(Screen.Home)) scope.launch {
+                    homeController.scrollToTop()
+                }
+
                 viewModel.onEvent(MainEvent.PageChange(index))
             },
             modifier = Modifier
