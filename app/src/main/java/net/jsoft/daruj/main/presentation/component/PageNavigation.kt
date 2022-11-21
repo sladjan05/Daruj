@@ -13,15 +13,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
-import net.jsoft.daruj.common.utils.indicationlessClickable
-import net.jsoft.daruj.common.utils.rememberMutableStateOf
-import net.jsoft.daruj.common.utils.toDp
+import net.jsoft.daruj.common.util.indicationlessClickable
+import net.jsoft.daruj.common.util.rememberMutableStateOf
+import net.jsoft.daruj.common.util.toDp
 
 @Composable
 fun PageNavigation(
@@ -43,9 +42,7 @@ fun PageNavigation(
                 shape = MaterialTheme.mShapes.medium
             )
             .clip(MaterialTheme.mShapes.medium)
-            .onSizeChanged { size ->
-                maxWidth = size.width.toDp(context)
-            }
+            .onSizeChanged { size -> maxWidth = size.width.toDp(context) }
     ) {
         var height by rememberMutableStateOf(0.dp)
         val offset by animateDpAsState(targetValue = maxWidth / pages.size * currentPage)
@@ -64,9 +61,7 @@ fun PageNavigation(
         Row(
             modifier = Modifier
                 .width(maxWidth)
-                .onSizeChanged { size ->
-                    height = size.height.toDp(context)
-                }
+                .onSizeChanged { size -> height = size.height.toDp(context) }
         ) {
             repeat(pages.size) { page ->
                 Box(

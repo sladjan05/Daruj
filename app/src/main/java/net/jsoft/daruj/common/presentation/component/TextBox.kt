@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
-import net.jsoft.daruj.common.utils.thenIf
+import net.jsoft.daruj.common.util.thenIf
 
 @Composable
 fun TextBox(
@@ -22,6 +22,8 @@ fun TextBox(
     modifier: Modifier = Modifier,
     prefix: String = "",
     hint: String = "",
+    leadingIcon: @Composable (BoxScope.() -> Unit)? = null,
+    trailingIcon: @Composable (BoxScope.() -> Unit)? = null,
     multiline: Boolean = false,
     maxLength: Int = Int.MAX_VALUE,
     enabled: Boolean = true,
@@ -31,11 +33,7 @@ fun TextBox(
     BasicTextField(
         value = text,
         modifier = modifier,
-        onValueChange = { value ->
-            if (value.length <= maxLength) {
-                onValueChange(value)
-            }
-        },
+        onValueChange = { value -> if (value.length <= maxLength) onValueChange(value) },
         enabled = enabled,
         singleLine = !multiline,
         maxLines = Int.MAX_VALUE,
@@ -57,20 +55,8 @@ fun TextBox(
                     ifModifier = Modifier.fillMaxSize(),
                     elseModifier = Modifier.fillMaxWidth()
                 ),
-            contentAlignment = if (multiline) {
-                Alignment.TopStart
-            } else {
-                Alignment.CenterStart
-            }
+            contentAlignment = if (multiline) Alignment.TopStart else Alignment.CenterStart
         ) {
-            if (hint.isNotBlank() && prefix.isEmpty() && text.isEmpty()) {
-                Text(
-                    text = hint,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-
             Row(
                 modifier = Modifier
                     .thenIf(
@@ -83,21 +69,48 @@ fun TextBox(
                             placeable.placeRelative(5, 0)
                         }
                     }
-                    .widthIn(min = 0.dp),
-                horizontalArrangement = Arrangement.Start,
+                    .widthIn(min = 0.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = prefix,
-                    color = if (enabled) {
-                        MaterialTheme.colorScheme.onSurfaceDim
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
-                    style = MaterialTheme.typography.labelMedium
-                )
+                if (leadingIcon != null) {
+                    Box(
+                        modifier = Modifier.size(20.dp),
+                        contentAlignment = Alignment.Center,
+                        content = leadingIcon
+                    )
+                }
 
-                innerTextField()
+                Row(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = prefix,
+                        color = if (enabled) MaterialTheme.colorScheme.onSurfaceDim else MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+
+                    Box {
+                        if (text.isEmpty()) {
+                            Text(
+                                text = hint,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
+
+                        innerTextField()
+                    }
+                }
+
+                if (trailingIcon != null) {
+                    Box(
+                        modifier = Modifier.size(20.dp),
+                        contentAlignment = Alignment.Center,
+                        content = trailingIcon
+                    )
+                }
             }
 
             if (maxLength != Int.MAX_VALUE && multiline) {

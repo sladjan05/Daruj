@@ -9,15 +9,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.jsoft.daruj.R
-import net.jsoft.daruj.auth.presentation.screen.Screen
-import net.jsoft.daruj.common.domain.repository.AuthRepository
 import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
 import net.jsoft.daruj.auth.domain.usecase.VerifyWithCodeUseCase
+import net.jsoft.daruj.auth.presentation.screen.Screen
+import net.jsoft.daruj.auth.domain.repository.AuthRepository
 import net.jsoft.daruj.common.domain.usecase.HasCompletedRegistrationUseCase
+import net.jsoft.daruj.common.misc.UiText
 import net.jsoft.daruj.common.misc.asUiText
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.utils.plusAssign
-import net.jsoft.daruj.common.utils.uiText
+import net.jsoft.daruj.common.util.plusAssign
+import net.jsoft.daruj.common.util.uiText
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,10 +30,10 @@ class VerificationCodeViewModel @Inject constructor(
     private val hasCompletedRegistration: HasCompletedRegistrationUseCase
 ) : LoadingViewModel<VerificationCodeEvent, VerificationCodeTask>() {
 
-    var code by mutableStateOf("".asUiText())
+    var code by mutableStateOf(UiText.Empty)
         private set
 
-    var waitTime by mutableStateOf(AuthRepository.SMS_WAIT_TIME)
+    var waitTime by mutableStateOf(AuthRepository.SmsWaitTime)
         private set
 
     var waitTimeProgress by mutableStateOf(1f)
@@ -41,10 +42,7 @@ class VerificationCodeViewModel @Inject constructor(
     private val fullPhoneNumber = savedStateHandle.get<String>(Screen.Verification.FULL_PHONE_NUMBER)!!
 
     init {
-        viewModelScope.registerExceptionHandler { e ->
-            mTaskFlow += VerificationCodeTask.ShowError(e.uiText)
-        }
-
+        viewModelScope.registerExceptionHandler { e -> mTaskFlow += VerificationCodeTask.ShowError(e.uiText) }
         viewModelScope.launch { startSMSWaitTimeCountdown() }
     }
 
@@ -83,11 +81,11 @@ class VerificationCodeViewModel @Inject constructor(
 
     private suspend fun startSMSWaitTimeCountdown() {
         val step = 50L // ms
-        val max = (AuthRepository.SMS_WAIT_TIME * 1000f / step).toInt()
+        val max = (AuthRepository.SmsWaitTime * 1000f / step).toInt()
 
         for (time in max downTo 0) {
             waitTimeProgress = time.toFloat() / max
-            waitTime = (AuthRepository.SMS_WAIT_TIME * waitTimeProgress).toInt()
+            waitTime = (AuthRepository.SmsWaitTime * waitTimeProgress).toInt()
             delay(step)
         }
     }

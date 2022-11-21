@@ -1,12 +1,14 @@
 package net.jsoft.daruj.main.presentation.screen
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,11 +21,11 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import net.jsoft.daruj.common.utils.showShortToast
+import net.jsoft.daruj.common.util.showShortToast
 import net.jsoft.daruj.main.presentation.component.BottomNavigationBar
-import net.jsoft.daruj.main.presentation.screen.viewmodel.MainEvent
-import net.jsoft.daruj.main.presentation.screen.viewmodel.MainTask
-import net.jsoft.daruj.main.presentation.screen.viewmodel.MainViewModel
+import net.jsoft.daruj.main.presentation.viewmodel.MainEvent
+import net.jsoft.daruj.main.presentation.viewmodel.MainTask
+import net.jsoft.daruj.main.presentation.viewmodel.MainViewModel
 
 @Composable
 @OptIn(ExperimentalAnimationApi::class)
@@ -59,15 +61,13 @@ fun MainScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { viewModel.page }.collectLatest { page ->
-            if (navController.currentDestination?.route == Screen.DetailedPost.route) {
-                navController.popBackStack()
-            }
+    val floatingRoutes = Screen.floatingScreens().map(Screen::route)
 
-            navController.popBackStack()
-            navController.navigate(Screen.screens()[page].route)
-        }
+    LaunchedEffect(viewModel.page) {
+        if (navController.currentDestination?.route in floatingRoutes) navController.popBackStack()
+
+        navController.popBackStack()
+        navController.navigate(Screen.screens()[viewModel.page].route)
     }
 
     val enterTransition: AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition = {
@@ -75,8 +75,8 @@ fun MainScreen(
         val targetRoute = targetState.destination.route!!
 
         when {
-            targetRoute == Screen.DetailedPost.route -> slideInVertically { it }
-            initialRoute == Screen.DetailedPost.route && (targetRoute == Screen.Home.route || targetRoute == Screen.Saved.route) -> fadeIn()
+            targetRoute in floatingRoutes -> slideInVertically { it }
+            initialRoute in floatingRoutes -> fadeIn()
 
             else -> {
                 val sign = getSign(
@@ -94,8 +94,8 @@ fun MainScreen(
         val targetRoute = targetState.destination.route!!
 
         when {
-            initialRoute == Screen.DetailedPost.route -> slideOutVertically { it } + fadeOut()
-            targetRoute == Screen.DetailedPost.route -> fadeOut()
+            initialRoute in floatingRoutes -> slideOutVertically { it } + fadeOut()
+            targetRoute in floatingRoutes -> fadeOut()
 
             else -> {
                 val sign = getSign(
@@ -127,33 +127,31 @@ fun MainScreen(
                 )
             }
 
-            composable(Screen.Saved.route) {
-                SavedScreen(navController)
-            }
+            composable(Screen.Search.route) { SearchScreen(navController) }
 
-            composable(Screen.Profile.route) {
-                ProfileScreen(navController)
-            }
+            composable(Screen.Saved.route) { SavedScreen(navController) }
+
+            composable(Screen.Profile.route) { ProfileScreen(navController) }
 
             composable(
                 route = Screen.DetailedPost.route,
                 arguments = listOf(
-                    navArgument(Screen.DetailedPost.POST_ID) {
-                        type = NavType.StringType
-                    }
+                    navArgument(Screen.DetailedPost.POST_ID) { type = NavType.StringType }
                 )
-            ) {
-                DetailedPostScreen()
-            }
+            ) { DetailedPostScreen(navController) }
+
+            composable(
+                route = Screen.Receipts.route,
+                arguments = listOf(
+                    navArgument(Screen.Receipts.POST_ID) { type = NavType.StringType }
+                )
+            ) { ReceiptsScreen() }
         }
 
         BottomNavigationBar(
             currentIndex = viewModel.page,
             onChange = { index ->
-                if (index == Screen.screens().indexOf(Screen.Home)) scope.launch {
-                    homeController.scrollToTop()
-                }
-
+                if (index == Screen.screens().indexOf(Screen.Home)) scope.launch { homeController.scrollToTop() }
                 viewModel.onEvent(MainEvent.PageChange(index))
             },
             modifier = Modifier

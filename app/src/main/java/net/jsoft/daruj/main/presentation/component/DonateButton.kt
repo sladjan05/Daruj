@@ -9,16 +9,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun DonateButton(
-    modifier: Modifier = Modifier
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     PrimaryButton(
         text = R.string.tx_donate_blood.value,
-        onClick = {},
+        onClick = onClick,
         modifier = modifier,
+        enabled = enabled,
         leadingIcon = {
             Icon(
                 painter = painterResource(R.drawable.ic_heart),

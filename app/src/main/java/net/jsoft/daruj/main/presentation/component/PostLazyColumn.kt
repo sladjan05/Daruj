@@ -14,37 +14,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.main.domain.model.Post
+import java.lang.Integer.max
 
 @Composable
 fun PostLazyColumn(
     posts: List<Post>,
     isLoading: Boolean,
     noContentText: String,
+    canDonateBlood: Boolean,
     onRefresh: () -> Unit,
     onEndReached: () -> Unit,
     onExpand: (post: Post) -> Unit,
+    onReceiptsClick: (post: Post) -> Unit,
     onDonateClick: (post: Post) -> Unit,
-    onCommentClick: (post: Post) -> Unit,
     onShareClick: (post: Post) -> Unit,
     onSaveClick: (post: Post) -> Unit,
+    onDeleteClick: (post: Post) -> Unit,
     modifier: Modifier = Modifier,
+    swipeRefreshEnabled: Boolean = true,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     val firstIndex by derivedStateOf { lazyListState.firstVisibleItemIndex }
 
     LaunchedEffect(firstIndex) {
-        if (firstIndex > posts.size - 5) onEndReached()
+        if (posts.isEmpty() || (firstIndex > max(0, posts.size - 5))) onEndReached()
     }
 
     LoadingLazyColumn(
         lazyColumnState = when {
             isLoading && posts.isEmpty() -> LoadingLazyColumnState.LOADING
-            posts.isEmpty() && !isLoading -> LoadingLazyColumnState.NO_CONTENT
+            posts.isEmpty() -> LoadingLazyColumnState.NO_CONTENT
             else -> LoadingLazyColumnState.LOADED
         },
         onRefresh = onRefresh,
         noContentText = noContentText,
         modifier = modifier,
+        swipeRefreshEnabled = swipeRefreshEnabled,
         lazyListState = lazyListState
     ) {
         items(
@@ -53,28 +58,22 @@ fun PostLazyColumn(
         ) { post ->
             Post(
                 post = post,
-                modifier = Modifier.fillMaxWidth(),
-                onExpand = {
-                    onExpand(post)
-                },
-                onDonateClick = {
-                    onDonateClick(post)
-                },
-                onCommentClick = {
-                    onCommentClick(post)
-                },
-                onShareClick = {
-                    onShareClick(post)
-                },
-                onSaveClick = {
-                    onSaveClick(post)
-                }
+                canDonateBlood = canDonateBlood,
+                onExpand = { onExpand(post) },
+                onReceiptsClick = { onReceiptsClick(post) },
+                onDonateClick = { onDonateClick(post) },
+                onShareClick = { onShareClick(post) },
+                onSaveClick = { onSaveClick(post) },
+                onDeleteClick = { onDeleteClick(post) },
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
         if (isLoading && posts.isNotEmpty()) item {
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
@@ -85,8 +84,6 @@ fun PostLazyColumn(
             }
         }
 
-        item {
-            Spacer(modifier = Modifier.height(80.dp))
-        }
+        item { Spacer(modifier = Modifier.height(80.dp)) }
     }
 }

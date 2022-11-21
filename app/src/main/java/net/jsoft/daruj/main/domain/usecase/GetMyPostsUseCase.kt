@@ -6,7 +6,7 @@ import net.jsoft.daruj.main.domain.repository.PostRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class GetMyPostsUseCase @Inject constructor(
     private val postRepository: PostRepository
 ) {

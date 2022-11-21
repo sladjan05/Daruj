@@ -22,8 +22,8 @@ import net.jsoft.daruj.common.misc.MainTestTags
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.ui.theme.bodySmaller
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.switchActivity
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.switchActivity
+import net.jsoft.daruj.common.util.value
 import net.jsoft.daruj.introduction.presentation.IntroductionActivity
 
 @Composable
@@ -73,9 +73,7 @@ fun WelcomeScreen() {
         ) {
             PrimaryButton(
                 text = R.string.tx_continue.value,
-                onClick = {
-                    context.switchActivity<IntroductionActivity>()
-                },
+                onClick = { context.switchActivity<IntroductionActivity>() },
                 modifier = Modifier
                     .testTag(MainTestTags.CreateAccount.CREATE_ACCOUNT_BUTTON)
                     .width(300.dp)

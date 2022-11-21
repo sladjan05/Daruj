@@ -10,8 +10,8 @@ import net.jsoft.daruj.auth.presentation.screen.Screen
 import net.jsoft.daruj.common.domain.usecase.GetSettingsUseCase
 import net.jsoft.daruj.common.domain.usecase.UpdateSettingsUseCase
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.utils.plusAssign
-import net.jsoft.daruj.common.utils.uiText
+import net.jsoft.daruj.common.util.plusAssign
+import net.jsoft.daruj.common.util.uiText
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,9 +24,7 @@ class AuthViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.registerExceptionHandler { e ->
-            mTaskFlow += AuthTask.ShowError(e.uiText)
-        }
+        viewModelScope.registerExceptionHandler { e -> mTaskFlow += AuthTask.ShowError(e.uiText) }
 
         viewModelScope.launch {
             val settings = getLocalSettings()

@@ -7,6 +7,13 @@
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint",
       "npm --prefix \"$RESOURCE_DIR\" run build"
+    ],
+    "source": "functions",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
     ]
   },
   "storage": {
@@ -14,19 +21,19 @@
   },
   "emulators": {
     "auth": {
-      "host": "172.16.20.253",
+      "host": "192.168.102.192",
       "port": 9099
     },
     "functions": {
-      "host": "172.16.20.253",
+      "host": "192.168.102.192",
       "port": 5001
     },
     "firestore": {
-      "host": "172.16.20.253",
+      "host": "192.168.102.192",
       "port": 8081
     },
     "storage": {
-      "host": "172.16.20.253",
+      "host": "192.168.102.192",
       "port": 9199
     },
     "ui": {

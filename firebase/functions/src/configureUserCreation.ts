@@ -7,13 +7,13 @@ export const configureUserCreation = functions.firestore
 
         try {
             await userRef.set({
-                displayName: `Korisnik ${userRef.id.substring(0, 5).toUpperCase()}`,
                 savedPosts: [],
+                donations: [],
                 points: 0
             }, {
                 merge: true
             });
-        } catch(e) {
+        } catch (e) {
             console.log(`An error occured: ${e}`);
         }
     });

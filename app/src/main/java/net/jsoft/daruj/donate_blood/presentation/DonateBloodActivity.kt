@@ -1,13 +1,13 @@
 package net.jsoft.daruj.donate_blood.presentation
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import net.jsoft.daruj.common.utils.setScreenContent
+import net.jsoft.daruj.common.util.setScreenContent
 import net.jsoft.daruj.donate_blood.presentation.screen.DonateBloodScreen
 
 @AndroidEntryPoint
-class DonateBloodActivity : ComponentActivity() {
+class DonateBloodActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +15,6 @@ class DonateBloodActivity : ComponentActivity() {
     }
 
     companion object {
-        const val POST_ID = "POST_ID"
+        const val Post = "post"
     }
 }

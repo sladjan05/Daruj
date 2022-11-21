@@ -14,54 +14,61 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
+import net.jsoft.daruj.common.misc.UCropContract
+import net.jsoft.daruj.common.presentation.component.PictureBottomSheetDialog
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.screen.ScreenWithBackAndTitle
 import net.jsoft.daruj.common.presentation.screen.ScreenWithSnackbars
-import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
+import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.getValue
-import net.jsoft.daruj.common.utils.rememberSnackbarHostState
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.*
+import net.jsoft.daruj.donate_blood.presentation.viewmodel.DonateBloodEvent
 import net.jsoft.daruj.donate_blood.presentation.viewmodel.DonateBloodTask
 import net.jsoft.daruj.donate_blood.presentation.viewmodel.DonateBloodViewModel
+import net.jsoft.daruj.main.domain.model.fullName
 
-@Preview
 @Composable
 fun DonateBloodScreen(
     viewModel: DonateBloodViewModel = hiltViewModel()
-) = DarujTheme {
+) {
     val context = LocalContext.current
     context as Activity
 
-    val hostState = rememberSnackbarHostState()
+    val bottomSheetDialogController = rememberBottomSheetDialogController()
+
     val errorHostState = rememberSnackbarHostState()
 
     LaunchedEffect(Unit) {
         viewModel.taskFlow.collectLatest { task ->
             when (task) {
+                is DonateBloodTask.Sent -> context.run {
+                    showShortToast(R.string.tx_receipt_sent.getValue(context))
+                    goBack()
+                }
+
                 is DonateBloodTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
             }
         }
     }
 
     ScreenWithSnackbars(
-        infoHostState = hostState,
-        errorHostState = errorHostState,
         modifier = Modifier.fillMaxSize(),
+        errorHostState = errorHostState
     ) {
         ScreenWithBackAndTitle(
             title = R.string.tx_thank_you_for_donation.value,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            enabled = !viewModel.isLoading
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
+                    .padding(top = MaterialTheme.spacing.small)
                     .align(Alignment.TopCenter),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
@@ -76,7 +83,7 @@ fun DonateBloodScreen(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     Text(
-                        text = "${R.string.tx_donate_blood_step_1.value}:",
+                        text = R.string.tx_donate_blood_step_1.value + ":",
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -89,14 +96,16 @@ fun DonateBloodScreen(
                                 shape = MaterialTheme.mShapes.medium
                             )
                             .padding(MaterialTheme.spacing.small),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
                     ) {
-                        val mutable = viewModel.post?.mutable
+                        val post = viewModel.post
+                        val mutable = post.mutable
+
                         val data = remember {
                             arrayOf(
-                                R.string.tx_recipient.getValue(context) to mutable?.fullName,
-                                R.string.tx_parent_name.getValue(context) to mutable?.parentName,
-                                R.string.tx_located_at.getValue(context) to mutable?.location
+                                R.string.tx_recipient.getValue(context) to post.fullName,
+                                R.string.tx_parent_name.getValue(context) to mutable.parentName,
+                                R.string.tx_located_at.getValue(context) to mutable.location
                             )
                         }
 
@@ -106,13 +115,13 @@ fun DonateBloodScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = "${title}:",
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                    text = "$title:",
+                                    color = MaterialTheme.colorScheme.onSurfaceDim,
                                     style = MaterialTheme.typography.bodySmall
                                 )
 
                                 Text(
-                                    text = description ?: "",
+                                    text = description,
                                     color = MaterialTheme.colorScheme.primary,
                                     style = MaterialTheme.typography.bodySmall
                                 )
@@ -132,16 +141,14 @@ fun DonateBloodScreen(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     Text(
-                        text = "${R.string.tx_donate_blood_step_2.value}:",
+                        text = R.string.tx_donate_blood_step_2.value + ":",
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.bodyMedium
                     )
 
                     PrimaryButton(
                         text = R.string.tx_take_donation_receipt_picture.value,
-                        onClick = {
-
-                        },
+                        onClick = bottomSheetDialogController::show,
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !viewModel.isLoading,
                         leadingIcon = {
@@ -159,4 +166,10 @@ fun DonateBloodScreen(
             }
         }
     }
+
+    PictureBottomSheetDialog(
+        controller = bottomSheetDialogController,
+        onPictureChange = { uri -> viewModel.onEvent(DonateBloodEvent.PicturePick(uri)) },
+        contract = UCropContract.ReceiptRatio()
+    )
 }

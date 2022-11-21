@@ -37,22 +37,23 @@ sealed class UiText {
         is StringResource -> "StringResource{$resId}"
         is QuantityString -> "QuantityString{$resId}"
     }
+
+    companion object {
+        val Empty get() = DynamicString("")
+    }
 }
 
 fun String.asUiText() = UiText.DynamicString(this)
 
-@JvmName("asUiTextListString")
+@JvmName("ListStringasUiText")
 fun List<String>.asUiText(): List<UiText> = map { string -> string.asUiText() }
 
 fun Int.asUiText(vararg args: Any) = UiText.StringResource(this, args)
 
-@JvmName("asUiTextListInt")
+@JvmName("ListIntasUiText")
 fun List<Int>.asUiText(): List<UiText> = map { int -> int.asUiText() }
 
 val List<UiText>.value: List<String>
-    @Composable
-    get() = getValues(LocalContext.current)
+    @Composable get() = getValues(LocalContext.current)
 
-fun List<UiText>.getValues(context: Context): List<String> = map { uiText ->
-    uiText.getValue(context)
-}
+fun List<UiText>.getValues(context: Context): List<String> = map { uiText -> uiText.getValue(context) }

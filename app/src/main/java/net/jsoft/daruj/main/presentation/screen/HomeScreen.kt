@@ -1,12 +1,13 @@
 package net.jsoft.daruj.main.presentation.screen
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -14,30 +15,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.component.AnimatedClickableIcon
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.showShortToast
-import net.jsoft.daruj.common.utils.startActivity
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.showShortToast
+import net.jsoft.daruj.common.util.startActivity
+import net.jsoft.daruj.common.util.value
+import net.jsoft.daruj.donate_blood.presentation.DonateBloodActivity
 import net.jsoft.daruj.main.presentation.component.PostLazyColumn
-import net.jsoft.daruj.main.presentation.screen.viewmodel.home.HomeViewModel
-import net.jsoft.daruj.main.presentation.screen.viewmodel.posts.PostsEvent
-import net.jsoft.daruj.main.presentation.screen.viewmodel.posts.PostsTask
+import net.jsoft.daruj.main.presentation.viewmodel.home.HomeViewModel
+import net.jsoft.daruj.main.presentation.viewmodel.posts.PostsEvent
+import net.jsoft.daruj.main.presentation.viewmodel.posts.PostsTask
 import net.jsoft.daruj.modify_post.presentation.ModifyPostActivity
 
 class HomeScreenController {
-    var scrollToTop by mutableStateOf(false)
-        private set
+    private var onScrollToTop: suspend () -> Unit = {}
 
-    suspend fun scrollToTop() {
-        scrollToTop = true
-        delay(1000L)
-        scrollToTop = false
+    fun registerOnScrollToTop(onScrollToTop: suspend () -> Unit) {
+        this.onScrollToTop = onScrollToTop
     }
+
+    suspend fun scrollToTop() = onScrollToTop()
 }
 
 @Composable
@@ -59,10 +59,8 @@ fun HomeScreen(
         }
     }
 
-    LaunchedEffect(controller.scrollToTop) {
-        if (controller.scrollToTop) {
-            lazyListState.animateScrollToItem(0)
-        }
+    LaunchedEffect(Unit) {
+        controller.registerOnScrollToTop { lazyListState.animateScrollToItem(0) }
     }
 
     Column(
@@ -90,7 +88,7 @@ fun HomeScreen(
                     contentDescription = R.string.tx_create_new_post.value,
                     onClick = {
                         context.startActivity<ModifyPostActivity>(
-                            ModifyPostActivity.PURPOSE to ModifyPostActivity.Purpose.CreatePost
+                            ModifyPostActivity.Intention to ModifyPostActivity.Intention.CreatePost
                         )
                     },
                     modifier = Modifier.size(25.dp),
@@ -104,12 +102,9 @@ fun HomeScreen(
             posts = viewModel.posts,
             isLoading = viewModel.isLoading,
             noContentText = R.string.tx_no_posts.value,
-            onRefresh = {
-                viewModel.onEvent(PostsEvent.Refresh)
-            },
-            onEndReached = {
-                viewModel.onEvent(PostsEvent.ReachedEnd)
-            },
+            canDonateBlood = viewModel.canDonateBlood,
+            onRefresh = { viewModel.onEvent(PostsEvent.Refresh) },
+            onEndReached = { viewModel.onEvent(PostsEvent.ReachedEnd) },
             onExpand = { post ->
                 val route = Screen.DetailedPost.route(
                     Screen.DetailedPost.POST_ID to post.data.id
@@ -117,12 +112,21 @@ fun HomeScreen(
 
                 navController.navigate(route)
             },
-            onDonateClick = {},
-            onCommentClick = {},
-            onShareClick = {},
-            onSaveClick = { post ->
-                viewModel.onEvent(PostsEvent.SaveClick(post))
+            onReceiptsClick = { post ->
+                val route = Screen.Receipts.route(
+                    Screen.Receipts.POST_ID to post.data.id
+                )
+
+                navController.navigate(route)
             },
+            onDonateClick = { post ->
+                context.startActivity<DonateBloodActivity>(
+                    DonateBloodActivity.Post to post
+                )
+            },
+            onShareClick = { TODO() },
+            onSaveClick = { post -> viewModel.onEvent(PostsEvent.SaveClick(post)) },
+            onDeleteClick = { post -> viewModel.onEvent(PostsEvent.DeleteClick(post)) },
             modifier = Modifier.fillMaxSize(),
             lazyListState = lazyListState
         )

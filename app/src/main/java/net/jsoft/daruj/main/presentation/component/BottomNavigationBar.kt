@@ -21,14 +21,14 @@ import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.ui.theme.full
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
-import net.jsoft.daruj.common.utils.indicationlessClickable
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.indicationlessClickable
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun BottomNavigationBar(
     currentIndex: Int,
-    modifier: Modifier = Modifier,
-    onChange: (index: Int) -> Unit = {}
+    onChange: (index: Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(
         topStart = 15.dp,
@@ -112,13 +112,7 @@ fun BottomNavigationBar(
                         }
                 ) {
                     Icon(
-                        painter = painterResource(
-                            if (index == currentIndex) {
-                                icons[index].second
-                            } else {
-                                icons[index].first
-                            }
-                        ),
+                        painter = painterResource(if (index == currentIndex) icons[index].second else icons[index].first),
                         contentDescription = contentDescriptions[index].value,
                         modifier = Modifier
                             .height(22.dp)

@@ -12,5 +12,6 @@ interface UserApi {
 
     suspend fun updateLocalUser(user: LocalUser.Mutable)
     suspend fun updateProfilePicture(pictureUri: Uri)
+
     suspend fun setPostSaved(postId: String, saved: Boolean)
 }

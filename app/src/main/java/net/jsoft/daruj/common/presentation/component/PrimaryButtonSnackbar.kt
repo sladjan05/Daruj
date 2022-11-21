@@ -54,11 +54,7 @@ fun PrimaryButtonSnackbar(
         }
     ) { targetMessage ->
         Button(
-            onClick = if (targetMessage == null) {
-                onClick
-            } else {
-                {}
-            },
+            onClick = { if (targetMessage == null) onClick() },
             modifier = modifier,
             shape = MaterialTheme.mShapes.medium,
             colors = ButtonDefaults.buttonColors(

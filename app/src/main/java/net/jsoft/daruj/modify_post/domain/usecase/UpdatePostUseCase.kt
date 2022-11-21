@@ -5,9 +5,11 @@ import net.jsoft.daruj.common.exception.BlankNameException
 import net.jsoft.daruj.common.exception.BlankSurameException
 import net.jsoft.daruj.main.domain.model.Post
 import net.jsoft.daruj.main.domain.repository.PostRepository
-import net.jsoft.daruj.modify_post.exception.*
+import net.jsoft.daruj.modify_post.exception.BlankDescriptionException
+import net.jsoft.daruj.modify_post.exception.BlankDonorsRequiredException
+import net.jsoft.daruj.modify_post.exception.BlankLocationException
+import net.jsoft.daruj.modify_post.exception.BlankParentNameException
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @ViewModelScoped
 class UpdatePostUseCase @Inject constructor(

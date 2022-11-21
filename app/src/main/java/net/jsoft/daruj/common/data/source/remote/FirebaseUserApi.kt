@@ -12,7 +12,6 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.tasks.asDeferred
 import kotlinx.coroutines.tasks.await
 import net.jsoft.daruj.common.data.source.remote.dto.LocalUserDto
@@ -21,10 +20,10 @@ import net.jsoft.daruj.common.domain.model.LocalUser
 import net.jsoft.daruj.common.domain.model.User
 import net.jsoft.daruj.common.misc.JsonParser
 import net.jsoft.daruj.common.misc.fromJson
-import net.jsoft.daruj.common.utils.awaitOrNull
-import net.jsoft.daruj.common.utils.compressToByteArray
-import net.jsoft.daruj.common.utils.getBitmap
-import net.jsoft.daruj.main.data.source.remote.dto.PostDto
+import net.jsoft.daruj.common.util.awaitOrNull
+import net.jsoft.daruj.common.util.compressToByteArray
+import net.jsoft.daruj.common.util.getBitmap
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,23 +39,25 @@ class FirebaseUserApi @Inject constructor(
     private val jsonParser: JsonParser
 ) : UserApi {
 
-    private val localUserDocument: DocumentReference
-        get() = firestore.collection(USERS).document(auth.currentUser!!.uid)
+    private val usersStorage: StorageReference
+        get() = storage.reference.child(Users)
+
+    private val localUserReference: DocumentReference
+        get() = firestore.collection(Users).document(auth.currentUser!!.uid)
 
     private val localUserPicture: StorageReference
         get() = usersStorage.child("${auth.currentUser!!.uid}.png")
 
-    private val usersStorage: StorageReference
-        get() = storage.reference.child(USERS)
-
     override suspend fun hasCompletedRegistration(): Boolean {
-        return localUserDocument.get().await().exists()
+        val localUserSnapshot = localUserReference.get().await()
+        return localUserSnapshot.exists()
     }
 
     override suspend fun getUser(id: String): User {
         val deferredUserJson = functions
             .getHttpsCallable("getUser")
-            .call(id).asDeferred()
+            .call(id)
+            .asDeferred()
 
         val deferredPictureUri = usersStorage
             .child("$id.png")
@@ -64,19 +65,18 @@ class FirebaseUserApi @Inject constructor(
             .asDeferred()
 
         val userDto = jsonParser.fromJson<UserDto>(deferredUserJson.await().data as String)
-
         return userDto.getModel(deferredPictureUri.awaitOrNull())
     }
 
     override suspend fun getLocalUser(): LocalUser {
         val deferredPictureUri = localUserPicture.downloadUrl.asDeferred()
-        val localUserDto = localUserDocument.get().await().toObject<LocalUserDto>()!!
+        val localUserDto = localUserReference.get().await().toObject<LocalUserDto>()!!
 
         return localUserDto.getModel(deferredPictureUri.awaitOrNull())
     }
 
     override suspend fun updateLocalUser(user: LocalUser.Mutable) {
-        localUserDocument
+        localUserReference
             .set(user, SetOptions.merge())
             .await()
     }
@@ -88,7 +88,7 @@ class FirebaseUserApi @Inject constructor(
             height = 300
         )
 
-        val compressed = bitmap?.compressToByteArray(50)
+        val compressed = bitmap?.compressToByteArray()
 
         val metadata = StorageMetadata.Builder()
             .setContentType("image/png")
@@ -98,18 +98,14 @@ class FirebaseUserApi @Inject constructor(
     }
 
     override suspend fun setPostSaved(postId: String, saved: Boolean) {
-        val fieldValue = if(saved) {
-            FieldValue.arrayUnion(postId)
-        } else {
-            FieldValue.arrayRemove(postId)
-        }
+        val fieldValue = if (saved) FieldValue.arrayUnion(postId) else FieldValue.arrayRemove(postId)
 
-        localUserDocument
+        localUserReference
             .update(LocalUser.Immutable::savedPosts.name, fieldValue)
             .await()
     }
 
     companion object {
-        private const val USERS = "users"
+        private const val Users = "users"
     }
 }

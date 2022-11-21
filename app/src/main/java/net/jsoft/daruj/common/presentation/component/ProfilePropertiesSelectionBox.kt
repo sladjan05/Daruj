@@ -24,10 +24,10 @@ import androidx.compose.ui.window.PopupProperties
 import kotlinx.coroutines.delay
 import net.jsoft.daruj.common.presentation.ui.theme.full
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
-import net.jsoft.daruj.common.utils.clickableIf
-import net.jsoft.daruj.common.utils.px
-import net.jsoft.daruj.common.utils.rememberMutableStateOf
-import net.jsoft.daruj.common.utils.thenIf
+import net.jsoft.daruj.common.util.clickableIf
+import net.jsoft.daruj.common.util.px
+import net.jsoft.daruj.common.util.rememberMutableStateOf
+import net.jsoft.daruj.common.util.thenIf
 
 private val ELEMENT_SIZE = 60.dp
 
@@ -72,11 +72,7 @@ fun ProfilePropertiesSelectionBox(
                     dismissOnBackPress = false
                 ),
                 offset = IntOffset(
-                    x = if (expandToRight) {
-                        0
-                    } else{
-                        -(ELEMENT_SIZE * (columns - 1) + padding * 2).px
-                    },
+                    x = if (expandToRight) 0 else -(ELEMENT_SIZE * (columns - 1) + padding * 2).px,
                     y = -(ELEMENT_SIZE * (rows - 1) + padding * 2).px
                 )
             ) {

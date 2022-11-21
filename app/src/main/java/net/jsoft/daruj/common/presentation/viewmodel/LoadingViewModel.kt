@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
-import net.jsoft.daruj.common.utils.plusAssign
+import net.jsoft.daruj.common.util.plusAssign
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -17,10 +17,7 @@ abstract class LoadingViewModel<Event, Task> : BaseViewModel<Event, Task>() {
 
     private val exceptions = MutableSharedFlow<Exception>()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        if (throwable is Exception) viewModelScope.launch {
-            exceptions += throwable
-        }
-
+        if (throwable is Exception) viewModelScope.launch { exceptions += throwable }
         isLoading = false
     }
 

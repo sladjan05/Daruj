@@ -33,11 +33,11 @@ import net.jsoft.daruj.common.presentation.component.ErrorInfoSnackbars
 import net.jsoft.daruj.common.presentation.screen.ScreenWithTitleAndSubtitle
 import net.jsoft.daruj.common.presentation.ui.theme.onBackgroundDim
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.formatSMSWaitTime
-import net.jsoft.daruj.common.utils.rememberSnackbarHostState
-import net.jsoft.daruj.common.utils.switchActivity
-import net.jsoft.daruj.common.utils.value
-import net.jsoft.daruj.create_account.presentation.CreateAccountActivity
+import net.jsoft.daruj.common.util.formatSMSWaitTime
+import net.jsoft.daruj.common.util.rememberSnackbarHostState
+import net.jsoft.daruj.common.util.switchActivity
+import net.jsoft.daruj.common.util.value
+import net.jsoft.daruj.create_account.presentation.ModifyAccountActivity
 import net.jsoft.daruj.main.presentation.MainActivity
 
 @Composable
@@ -53,7 +53,10 @@ fun VerificationCodeScreen(
     LaunchedEffect(Unit) {
         viewModel.taskFlow.collectLatest { task ->
             when (task) {
-                is VerificationCodeTask.ShowCreateAccountScreen -> context.switchActivity<CreateAccountActivity>()
+                is VerificationCodeTask.ShowCreateAccountScreen -> context.switchActivity<ModifyAccountActivity>(
+                    ModifyAccountActivity.Intention to ModifyAccountActivity.Intention.CreateAccount
+                )
+
                 is VerificationCodeTask.ShowMainScreen -> context.switchActivity<MainActivity>()
 
                 is VerificationCodeTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
@@ -159,12 +162,8 @@ fun VerificationCodeScreen(
 
             NumberKeyboard(
                 visible = !viewModel.isLoading,
-                onNumberClick = { number ->
-                    viewModel.onEvent(VerificationCodeEvent.NumberClick(number))
-                },
-                onDeleteClick = {
-                    viewModel.onEvent(VerificationCodeEvent.DeleteClick)
-                }
+                onNumberClick = { number -> viewModel.onEvent(VerificationCodeEvent.NumberClick(number)) },
+                onDeleteClick = { viewModel.onEvent(VerificationCodeEvent.DeleteClick) }
             )
         }
     }

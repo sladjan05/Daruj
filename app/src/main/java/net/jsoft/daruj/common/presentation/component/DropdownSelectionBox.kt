@@ -37,10 +37,10 @@ import net.jsoft.daruj.common.misc.PopupTestTags
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.clickableIf
-import net.jsoft.daruj.common.utils.px
-import net.jsoft.daruj.common.utils.rememberMutableStateOf
-import net.jsoft.daruj.common.utils.thenIf
+import net.jsoft.daruj.common.util.clickableIf
+import net.jsoft.daruj.common.util.px
+import net.jsoft.daruj.common.util.rememberMutableStateOf
+import net.jsoft.daruj.common.util.thenIf
 
 @Composable
 fun DropdownSelectionBox(

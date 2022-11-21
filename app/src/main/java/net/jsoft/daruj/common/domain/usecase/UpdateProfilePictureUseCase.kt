@@ -1,12 +1,11 @@
 package net.jsoft.daruj.common.domain.usecase
 
 import android.net.Uri
-import dagger.hilt.android.scopes.ViewModelScoped
 import net.jsoft.daruj.common.domain.repository.UserRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class UpdateProfilePictureUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {

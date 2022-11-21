@@ -15,9 +15,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
-import net.jsoft.daruj.common.utils.clickable
-import net.jsoft.daruj.common.utils.indicationlessClickable
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.clickable
+import net.jsoft.daruj.common.util.indicationlessClickable
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun CheckBox(

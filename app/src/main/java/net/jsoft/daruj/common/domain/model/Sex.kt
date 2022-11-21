@@ -4,6 +4,6 @@ import androidx.annotation.Keep
 
 @Keep
 enum class Sex {
-    MALE,
-    FEMALE
+    Male,
+    Female
 }

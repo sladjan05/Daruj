@@ -9,26 +9,27 @@ import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
-import com.google.gson.Gson
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.asDeferred
 import kotlinx.coroutines.tasks.await
+import net.jsoft.daruj.comment.data.remote.dto.CommentDto
+import net.jsoft.daruj.comment.domain.model.Comment
+import net.jsoft.daruj.common.data.source.remote.FirebaseUserApi
 import net.jsoft.daruj.common.domain.model.User
-import net.jsoft.daruj.common.domain.repository.UserRepository
-import net.jsoft.daruj.common.utils.asMap
-import net.jsoft.daruj.common.utils.awaitOrNull
-import net.jsoft.daruj.common.utils.compressToByteArray
-import net.jsoft.daruj.common.utils.getBitmap
+import net.jsoft.daruj.common.util.*
+import net.jsoft.daruj.donate_blood.data.source.remote.FirebaseReceiptApi
 import net.jsoft.daruj.main.data.source.remote.dto.PostDto
+import net.jsoft.daruj.main.domain.model.Donation
 import net.jsoft.daruj.main.domain.model.Post
 import net.jsoft.daruj.main.domain.repository.PostRepository
 import java.lang.Integer.min
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class FirebasePostApi @Inject constructor(
     private val application: Application,
 
@@ -36,47 +37,72 @@ class FirebasePostApi @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
 
-    private val userRepository: UserRepository
+    private val userApi: FirebaseUserApi,
+    private val receiptApi: FirebaseReceiptApi
 ) : PostApi {
 
     private val posts: CollectionReference
-        get() = firestore.collection(POSTS)
+        get() = firestore.collection(Posts)
 
     private val postsStorage: StorageReference
-        get() = storage.reference.child(POSTS)
+        get() = storage.reference.child(Posts)
+
+    private val comments: CollectionReference
+        get() = firestore.collection(Comments)
 
     private var lastRecommendedPostSnapshot: DocumentSnapshot? = null
     private val lastSavedPostIds = mutableListOf<String>()
     private var lastMyPostSnapshot: DocumentSnapshot? = null
+    private val lastDonationsPostIds = mutableListOf<String>()
+
+    private var lastSearchSnapshot: DocumentSnapshot? = null
+    private var lastCriteria: String = ""
 
     override suspend fun getPosts(vararg ids: String): List<Post> = coroutineScope {
         if (ids.isEmpty()) return@coroutineScope emptyList<Post>()
-        val deferredLocalUser = async { userRepository.getLocalUser() }
+        val deferredLocalUser = async { userApi.getLocalUser() }
 
-        ids.map { id ->
+        val deferredComments = ids.associateWith { id ->
+            comments.whereEqualTo(CommentDto::postId.name, id).get().asDeferred()
+        }
+
+        val posts = ids.map { id ->
             val deferredPostSnapshot = posts.document(id).get().asDeferred()
             val deferredPictureUri = postsStorage
                 .child("$id.png")
                 .downloadUrl
                 .asDeferred()
 
-            val postDto = deferredPostSnapshot.await().toObject<PostDto>()!!
-            val deferredUser = async { userRepository.getUser(postDto.userId!!) }
+            val postDto = deferredPostSnapshot.await().toObject<PostDto>() ?: return@map null
+            val deferredUser = async { userApi.getUser(postDto.userId!!) }
+            val localUser = deferredLocalUser.await()
+
+            val isMyPost = localUser.data.id == postDto.userId
+            val deferredReceiptCount = async { if (isMyPost) receiptApi.getReceiptCount(id) else 0 }
+
+            val blood = postDto.blood!!.getModel()
 
             postDto.getModel(
                 user = deferredUser.await(),
                 pictureUri = deferredPictureUri.awaitOrNull(),
-                isSaved = deferredLocalUser.await().immutable.savedPosts.contains(postDto.id!!)
+                isMyPost = isMyPost,
+                receiptCount = deferredReceiptCount.await(),
+                isSaved = postDto.id!! in localUser.immutable.savedPosts,
+                isBloodCompatible = localUser.mutable.blood.canDonateTo(blood),
+                commentCount = deferredComments[id]!!.await().size()
             )
         }
+
+        // Some posts may not exist, so it should be checked if there are any nulls in the list
+        posts.filterNotNull()
     }
 
     override suspend fun createPost(post: Post.Mutable): String {
-        val postMerge = post.asMap(
+        val postWithUser = post.asMap(
             PostDto::userId.name to auth.currentUser!!.uid
         )
 
-        val postDocument = posts.add(postMerge).await()
+        val postDocument = posts.add(postWithUser).await()
 
         return postDocument!!.id
     }
@@ -90,6 +116,22 @@ class FirebasePostApi @Inject constructor(
             .await()
     }
 
+    override suspend fun deletePost(postId: String) = coroutineScope {
+        val firestoreJob = launch {
+            posts.document(postId)
+                .delete()
+                .await()
+        }
+
+        val deferredStorage =
+            postsStorage.child("$postId.png")
+                .delete()
+                .asDeferred()
+
+        firestoreJob.join()
+        deferredStorage.safeAwait()
+    }
+
     override suspend fun updatePostPicture(
         postId: String,
         pictureUri: Uri
@@ -100,13 +142,15 @@ class FirebasePostApi @Inject constructor(
             height = 500
         )
 
-        val compressed = bitmap?.compressToByteArray(50)
+        val compressed = bitmap?.compressToByteArray()
 
         val metadata = StorageMetadata.Builder()
             .setContentType("image/png")
             .build()
 
-        postsStorage.child("$postId.png").putBytes(compressed!!, metadata).await()
+        postsStorage.child("$postId.png")
+            .putBytes(compressed!!, metadata)
+            .await()
     }
 
     override suspend fun getRecommendedPosts(reset: Boolean): List<Post> {
@@ -118,24 +162,19 @@ class FirebasePostApi @Inject constructor(
         return posts
     }
 
-    override suspend fun getSavedPosts(reset: Boolean): List<Post> = coroutineScope {
+    override suspend fun getSavedPosts(reset: Boolean): List<Post> {
         if (reset) lastSavedPostIds.clear()
 
-        val localUser = userRepository.getLocalUser()
-        val savedPostIds = localUser.immutable.savedPosts.toMutableList()
+        val localUser = userApi.getLocalUser()
+        val savedPostIds = localUser.immutable.savedPosts.reversed()
 
-        var startIndex = 0
-        for ((index, id) in savedPostIds.reversed().withIndex()) {
-            if (lastSavedPostIds.contains(id)) {
-                startIndex = savedPostIds.size - index - 1
-                break
-            }
-        }
+        val startIndex = savedPostIds.indexOfLast { postId -> postId in lastSavedPostIds } + 1
+        val endIndex = min(startIndex + PostRepository.PostsPerPage, savedPostIds.size)
 
-        val endIndex = min(startIndex + PostRepository.POSTS_PER_PAGE, savedPostIds.size)
         val postIds = savedPostIds.subList(startIndex, endIndex)
+        lastSavedPostIds += postIds
 
-        getPosts(*postIds.toTypedArray())
+        return getPosts(*postIds.toTypedArray())
     }
 
     override suspend fun getMyPosts(reset: Boolean): List<Post> {
@@ -149,8 +188,84 @@ class FirebasePostApi @Inject constructor(
         return posts
     }
 
-    override suspend fun getMyDonations(reset: Boolean): List<Post> {
-        TODO()
+    override suspend fun searchPosts(criteria: String): List<Post> {
+        if (criteria != lastCriteria) lastSearchSnapshot = null
+
+        val query = posts.whereEqualTo(PostDto::searchCriteria.name, criteria.lowercase())
+
+        val (posts, lastSnapshot) = getPosts(query, lastSearchSnapshot)
+        lastSearchSnapshot = lastSnapshot
+
+        return posts
+    }
+
+    override suspend fun getDonations(reset: Boolean): List<Donation> {
+        if (reset) lastDonationsPostIds.clear()
+
+        val localUser = userApi.getLocalUser()
+        val donationRecords = localUser.immutable.donations.reversed()
+
+        val startIndex = donationRecords.indexOfLast { record -> record.postId in lastDonationsPostIds } + 1
+        val endIndex = min(startIndex + PostRepository.PostsPerPage, donationRecords.size)
+
+        val currentDonationRecords = donationRecords.subList(startIndex, endIndex)
+        val postIds = currentDonationRecords.map { record -> record.postId }
+        lastDonationsPostIds += postIds
+
+        val posts = getPosts(*postIds.toTypedArray())
+        return posts.zip(currentDonationRecords) { post, record ->
+            Donation(
+                post = post,
+                timestamp = record.timestamp
+            )
+        }
+    }
+
+    override suspend fun postComment(postId: String, comment: Comment.Mutable) {
+        val localUser = userApi.getLocalUser()
+        val commentWithUser = comment.asMap(
+            CommentDto::postId.name to postId,
+            CommentDto::userId.name to localUser.data.id
+        )
+
+        comments.add(commentWithUser).await()
+    }
+
+    override suspend fun getComment(id: String): Comment {
+        val commentDto = comments
+            .document(id)
+            .get()
+            .await()
+            .toObject<CommentDto>()!!
+
+        val user = userApi.getUser(commentDto.userId!!)
+        return commentDto.getModel(user = user)
+    }
+
+    override suspend fun getComments(postId: String): List<Comment> = coroutineScope {
+        val commentDtos = comments
+            .whereEqualTo(CommentDto::postId.name, postId)
+            .orderBy(Comment.Immutable::timestamp.name, Query.Direction.DESCENDING)
+            .get()
+            .await()
+            .toObjects<CommentDto>()
+
+        // Optimization: There might be multiple posts from one creator
+        val deferredUsers = mutableMapOf<String, Deferred<User>>()
+        for (commentDto in commentDtos) {
+            val userId = commentDto.userId!!
+
+            if (userId !in deferredUsers) {
+                deferredUsers[userId] = async { userApi.getUser(userId) }
+            }
+        }
+
+        commentDtos.map { commentDto ->
+            val userId = commentDto.userId!!
+            val user = deferredUsers[userId]!!.await()
+
+            commentDto.getModel(user = user)
+        }
     }
 
     private suspend fun getPosts(
@@ -163,7 +278,7 @@ class FirebasePostApi @Inject constructor(
                 if (lastSnapshot != null) query.startAfter(lastSnapshot)
                 else query
             }
-            .limit(PostRepository.POSTS_PER_PAGE.toLong())
+            .limit(PostRepository.PostsPerPage.toLong())
             .get()
             .await()
 
@@ -178,34 +293,50 @@ class FirebasePostApi @Inject constructor(
                 .asDeferred()
         }
 
+        val postIds = postDtos.map { postDto -> postDto.id }
+        val deferredComments = postIds.associateWith { id ->
+            comments.whereEqualTo(CommentDto::postId.name, id).get()
+        }
+
         // Optimization: There might be multiple posts from one creator
         val deferredUsers = mutableMapOf<String, Deferred<User>>()
         for (postDto in postDtos) {
             val userId = postDto.userId!!
 
             if (userId !in deferredUsers) {
-                deferredUsers[userId] = async { userRepository.getUser(userId) }
+                deferredUsers[userId] = async { userApi.getUser(userId) }
             }
         }
 
-        val localUser = userRepository.getLocalUser()
+        val localUser = userApi.getLocalUser()
 
         postDtos.mapIndexed { index, postDto ->
+            val postId = postDto.id!!
             val userId = postDto.userId!!
 
             val user = deferredUsers[userId]!!.await()
             val pictureUri = deferredPictureUris[index].awaitOrNull()
             val savedPosts = localUser.immutable.savedPosts
 
+            val isMyPost = localUser.data.id == postDto.userId
+            val deferredReceiptCount = async { if (isMyPost) receiptApi.getReceiptCount(postId) else 0 }
+
+            val blood = postDto.blood!!.getModel()
+
             postDto.getModel(
                 user = user,
                 pictureUri = pictureUri,
-                isSaved = postDto.id in savedPosts
+                isMyPost = isMyPost,
+                receiptCount = deferredReceiptCount.await(),
+                isSaved = postDto.id in savedPosts,
+                isBloodCompatible = localUser.mutable.blood.canDonateTo(blood),
+                commentCount = deferredComments[postId]!!.await().size()
             )
         } to postSnapshots.lastOrNull()
     }
 
     companion object {
-        const val POSTS = "posts"
+        private const val Posts = "posts"
+        private const val Comments = "comments"
     }
 }

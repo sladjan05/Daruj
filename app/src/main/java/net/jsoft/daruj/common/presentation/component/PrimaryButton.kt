@@ -1,6 +1,5 @@
 package net.jsoft.daruj.common.presentation.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -9,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,8 +30,8 @@ fun PrimaryButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = color,
             contentColor = textColor,
-            disabledContainerColor = MaterialTheme.colorScheme.surface,
-            disabledContentColor = MaterialTheme.colorScheme.onSurface
+            disabledContainerColor = color.copy(alpha = 0.5f),
+            disabledContentColor = textColor.copy(alpha = 0.5f)
         ),
         enabled = enabled,
         contentPadding = PaddingValues(vertical = 15.dp)

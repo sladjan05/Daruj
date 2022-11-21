@@ -1,7 +1,7 @@
 package net.jsoft.daruj.auth.domain.usecase
 
 import dagger.hilt.android.scopes.ViewModelScoped
-import net.jsoft.daruj.common.domain.repository.AuthRepository
+import net.jsoft.daruj.auth.domain.repository.AuthRepository
 import javax.inject.Inject
 
 @ViewModelScoped

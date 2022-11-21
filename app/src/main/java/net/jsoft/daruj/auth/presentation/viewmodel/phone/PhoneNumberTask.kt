@@ -7,6 +7,5 @@ sealed interface PhoneNumberTask {
     object ShowCreateAccountScreen : PhoneNumberTask
     object ShowMainScreen : PhoneNumberTask
 
-    class ShowInfo(val message: UiText) : PhoneNumberTask
-    class ShowError(val message: UiText) : PhoneNumberTask
+    data class ShowError(val message: UiText) : PhoneNumberTask
 }

@@ -20,8 +20,8 @@ import net.jsoft.daruj.R
 import net.jsoft.daruj.common.misc.MainTestTags
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
 import net.jsoft.daruj.common.presentation.ui.theme.onSurfaceDim
-import net.jsoft.daruj.common.utils.clickableIf
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.clickableIf
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun NumberKeyboard(

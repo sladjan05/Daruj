@@ -7,18 +7,18 @@ import net.jsoft.daruj.common.domain.model.Sex
 sealed interface CreateAccountEvent {
     object Dismiss : CreateAccountEvent
 
-    class PictureChange(val uri: Uri) : CreateAccountEvent
+    data class PictureChange(val uri: Uri) : CreateAccountEvent
 
-    class NameChange(val name: String) : CreateAccountEvent
-    class SurnameChange(val surname: String) : CreateAccountEvent
+    data class NameChange(val name: String) : CreateAccountEvent
+    data class SurnameChange(val surname: String) : CreateAccountEvent
 
     object SexClick : CreateAccountEvent
-    class SexChange(val sex: Sex) : CreateAccountEvent
+    data class SexChange(val sex: Sex) : CreateAccountEvent
 
     object BloodClick : CreateAccountEvent
-    class BloodChange(val blood: Blood) : CreateAccountEvent
+    data class BloodChange(val blood: Blood) : CreateAccountEvent
 
-    class LegalIdChange(val legalId: String) : CreateAccountEvent
+    object IsPrivateClick : CreateAccountEvent
 
-    object CreateAccount : CreateAccountEvent
+    object Finish : CreateAccountEvent
 }

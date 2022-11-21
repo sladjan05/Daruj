@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Parcelable
 import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
+import net.jsoft.daruj.comment.domain.model.Comment
 import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.domain.model.User
 import java.time.ZonedDateTime
@@ -26,10 +27,7 @@ data class Post(
         val blood: Blood,
         val donorsRequired: Int,
         val description: String
-    ) : Parcelable {
-        val fullName: String
-            get() = "$name $surname"
-    }
+    ) : Parcelable
 
     @Keep
     @Parcelize
@@ -46,6 +44,12 @@ data class Post(
     data class Data(
         val id: String,
         val pictureUri: Uri?,
-        val isSaved: Boolean
+        val isMyPost: Boolean,
+        val receiptCount: Int,
+        val isSaved: Boolean,
+        val isBloodCompatible: Boolean
     ) : Parcelable
 }
+
+val Post.fullName: String
+    get() = "${mutable.name} ${mutable.surname}"

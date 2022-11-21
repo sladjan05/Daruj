@@ -2,7 +2,10 @@ package net.jsoft.daruj.common.data.repository
 
 import android.app.Application
 import android.net.Uri
-import androidx.work.*
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import kotlinx.coroutines.withContext
 import net.jsoft.daruj.common.data.source.local.SettingsDatabase
 import net.jsoft.daruj.common.data.source.remote.UserApi
@@ -12,8 +15,6 @@ import net.jsoft.daruj.common.domain.model.User
 import net.jsoft.daruj.common.domain.repository.UserRepository
 import net.jsoft.daruj.common.misc.DispatcherProvider
 import net.jsoft.daruj.common.misc.JsonParser
-import javax.inject.Inject
-import javax.inject.Singleton
 
 class UserRepositoryImpl(
     private val userApi: UserApi,
@@ -47,14 +48,14 @@ class UserRepositoryImpl(
     override suspend fun updateLocalUser(user: LocalUser.Mutable): Unit =
         withContext(dispatcherProvider.io) {
             val userJson = jsonParser.toJson(user)
-            val data = workDataOf(UpdateLocalUserWorker.LOCAL_USER_JSON to userJson)
+            val data = workDataOf(UpdateLocalUserWorker.LocalUserJson to userJson)
             val request = OneTimeWorkRequest.Builder(UpdateLocalUserWorker::class.java)
                 .setInputData(data)
                 .build()
 
             WorkManager.getInstance(application)
                 .enqueueUniqueWork(
-                    "UPDATE_LOCAL_USER",
+                    UpdateLocalUserWorker.WorkName,
                     ExistingWorkPolicy.REPLACE,
                     request
                 )

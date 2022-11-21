@@ -30,8 +30,8 @@ import net.jsoft.daruj.common.presentation.component.TextBox
 import net.jsoft.daruj.common.presentation.screen.ScreenWithSnackbars
 import net.jsoft.daruj.common.presentation.screen.ScreenWithTitleAndSubtitle
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.*
-import net.jsoft.daruj.create_account.presentation.CreateAccountActivity
+import net.jsoft.daruj.common.util.*
+import net.jsoft.daruj.create_account.presentation.ModifyAccountActivity
 import net.jsoft.daruj.main.presentation.MainActivity
 
 @Composable
@@ -43,11 +43,10 @@ fun PhoneNumberScreen(
     val context = LocalContext.current
     context as Activity
 
-    val hostState = rememberSnackbarHostState()
-    val errorHostState = rememberSnackbarHostState()
-
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val errorHostState = rememberSnackbarHostState()
 
     LaunchedEffect(Unit) {
         viewModel.taskFlow.collectLatest { task ->
@@ -61,10 +60,12 @@ fun PhoneNumberScreen(
                     navController.navigate(route)
                 }
 
-                is PhoneNumberTask.ShowCreateAccountScreen -> context.switchActivity<CreateAccountActivity>()
+                is PhoneNumberTask.ShowCreateAccountScreen -> context.switchActivity<ModifyAccountActivity>(
+                    ModifyAccountActivity.Intention to ModifyAccountActivity.Intention.CreateAccount
+                )
+
                 is PhoneNumberTask.ShowMainScreen -> context.switchActivity<MainActivity>()
 
-                is PhoneNumberTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
                 is PhoneNumberTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
             }
         }
@@ -78,9 +79,8 @@ fun PhoneNumberScreen(
     }
 
     ScreenWithSnackbars(
-        infoHostState = hostState,
-        errorHostState = errorHostState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        errorHostState = errorHostState
     ) {
         ScreenWithTitleAndSubtitle(
             title = R.string.tx_enter_your_phone_number.value,
@@ -88,9 +88,7 @@ fun PhoneNumberScreen(
             modifier = Modifier
                 .testTag(MainTestTags.Auth.PHONE_NUMBER_SCREEN)
                 .fillMaxSize()
-                .indicationlessClickable {
-                    viewModel.onEvent(PhoneNumberEvent.Dismiss)
-                }
+                .indicationlessClickable { viewModel.onEvent(PhoneNumberEvent.Dismiss) }
         ) {
             Column(
                 modifier = Modifier.align(Alignment.TopCenter),
@@ -108,12 +106,8 @@ fun PhoneNumberScreen(
                     items = countryNames,
                     expanded = viewModel.countryExpanded,
                     enabled = !viewModel.isLoading,
-                    onClick = {
-                        viewModel.onEvent(PhoneNumberEvent.CountryClick)
-                    },
-                    onSelected = { index ->
-                        viewModel.onEvent(PhoneNumberEvent.CountryChange(countries[index]))
-                    }
+                    onClick = { viewModel.onEvent(PhoneNumberEvent.CountryClick) },
+                    onSelected = { index -> viewModel.onEvent(PhoneNumberEvent.CountryChange(countries[index])) }
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
@@ -124,34 +118,26 @@ fun PhoneNumberScreen(
                 ) {
                     TextBox(
                         text = viewModel.dialCode.value,
-                        onValueChange = { value ->
-                            viewModel.onEvent(PhoneNumberEvent.DialCodeChange(value))
-                        },
+                        onValueChange = { dialCode -> viewModel.onEvent(PhoneNumberEvent.DialCodeChange(dialCode)) },
                         modifier = Modifier
                             .testTag(MainTestTags.Auth.DIAL_CODE_TEXTBOX)
                             .width(IntrinsicSize.Min),
                         prefix = "+",
                         maxLength = 4,
                         enabled = !viewModel.isLoading,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Phone
-                        )
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
                     )
 
                     TextBox(
                         text = viewModel.phoneNumber.value,
-                        onValueChange = { value ->
-                            viewModel.onEvent(PhoneNumberEvent.PhoneNumberChange(value))
-                        },
+                        onValueChange = { phoneNumber -> viewModel.onEvent(PhoneNumberEvent.PhoneNumberChange(phoneNumber)) },
                         modifier = Modifier
                             .testTag(MainTestTags.Auth.PHONE_NUMBER_TEXTBOX)
                             .fillMaxWidth(),
                         hint = R.string.tx_phone_number.value,
                         maxLength = 11,
                         enabled = !viewModel.isLoading,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Phone
-                        )
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
                     )
                 }
 
@@ -159,9 +145,7 @@ fun PhoneNumberScreen(
 
                 PrimaryButton(
                     text = R.string.tx_confirm.value,
-                    onClick = {
-                        viewModel.onEvent(PhoneNumberEvent.SendVerificationCodeClick(context))
-                    },
+                    onClick = { viewModel.onEvent(PhoneNumberEvent.SendVerificationCodeClick(context)) },
                     modifier = Modifier
                         .testTag(MainTestTags.Auth.NEXT_BUTTON)
                         .width(300.dp),

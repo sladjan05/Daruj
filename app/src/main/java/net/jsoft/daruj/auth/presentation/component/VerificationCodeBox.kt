@@ -52,15 +52,13 @@ fun VerificationCodeBox(
                             targetOffsetY = targetOffsetY
                         )
 
-                        if (targetState.isEmpty()) {
+                        val animation = if (targetState.isEmpty()) {
                             slideInVertically { -it } with slideOutVertically { it }
                         } else {
                             slideInVertically { it } with slideOutVertically { -it }
-                        } using SizeTransform { _, _ ->
-                            keyframes {
-                                durationMillis = 100
-                            }
                         }
+
+                        animation using SizeTransform { _, _ -> keyframes { durationMillis = 100 } }
                     }
                 ) { targetText ->
                     Text(

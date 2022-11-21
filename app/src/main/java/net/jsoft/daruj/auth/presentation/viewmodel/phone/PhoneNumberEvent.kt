@@ -7,10 +7,10 @@ sealed interface PhoneNumberEvent {
     object Dismiss : PhoneNumberEvent
 
     object CountryClick : PhoneNumberEvent
-    class CountryChange(val country: Country?) : PhoneNumberEvent
+    data class CountryChange(val country: Country?) : PhoneNumberEvent
 
-    class DialCodeChange(val dialCode: String) : PhoneNumberEvent
-    class PhoneNumberChange(val phoneNumber: String) : PhoneNumberEvent
+    data class DialCodeChange(val dialCode: String) : PhoneNumberEvent
+    data class PhoneNumberChange(val phoneNumber: String) : PhoneNumberEvent
 
-    class SendVerificationCodeClick(val activity: Activity) : PhoneNumberEvent
+    data class SendVerificationCodeClick(val activity: Activity) : PhoneNumberEvent
 }

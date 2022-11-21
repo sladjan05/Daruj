@@ -39,6 +39,10 @@
         <entry key="../../../../layout/compose-model-1658753784898.xml" value="0.30447635135135137" />
         <entry key="../../../../layout/compose-model-1659541503114.xml" value="0.1" />
         <entry key="../../../../layout/compose-model-1660228341780.xml" value="0.30447635135135137" />
+        <entry key="..\:/Users/Sladjan/IdeaProjects/Daruj/app/src/main/res/drawable/ic_cancel.xml" value="0.3395" />
+        <entry key="..\:/Users/Sladjan/IdeaProjects/Daruj/app/src/main/res/drawable/ic_check.xml" value="0.3395" />
+        <entry key="..\:/Users/Sladjan/IdeaProjects/Daruj/app/src/main/res/drawable/ic_welcome_upper_part.xml" value="0.26" />
+        <entry key="..\:/Users/Sladjan/IdeaProjects/Daruj/app/src/main/res/layout/ac_crop_image.xml" value="0.1641337386018237" />
         <entry key="app/src/main/res/drawable/dw_transparent_background.xml" value="0.3205" />
         <entry key="app/src/main/res/drawable/ic_camera.xml" value="0.159" />
         <entry key="app/src/main/res/drawable/ic_dropdown.xml" value="0.2985" />
@@ -57,7 +61,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

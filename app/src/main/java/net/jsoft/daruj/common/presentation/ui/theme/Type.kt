@@ -7,8 +7,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import net.jsoft.daruj.R
-import net.jsoft.daruj.common.utils.size
-import net.jsoft.daruj.common.utils.weight
+import net.jsoft.daruj.common.util.size
+import net.jsoft.daruj.common.util.weight
 
 val Roboto = FontFamily(
     Font(

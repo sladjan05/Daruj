@@ -13,8 +13,9 @@ import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.misc.UiText
 import net.jsoft.daruj.common.misc.asUiText
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.utils.plusAssign
-import net.jsoft.daruj.common.utils.uiText
+import net.jsoft.daruj.common.util.ifTrue
+import net.jsoft.daruj.common.util.plusAssign
+import net.jsoft.daruj.common.util.uiText
 import net.jsoft.daruj.main.domain.model.Post
 import net.jsoft.daruj.modify_post.domain.usecase.CreatePostUseCase
 import net.jsoft.daruj.modify_post.domain.usecase.UpdatePostPictureUseCase
@@ -34,19 +35,19 @@ class ModifyPostViewModel @Inject constructor(
     var pictureUri by mutableStateOf<Uri?>(null)
         private set
 
-    var name by mutableStateOf<UiText>("".asUiText())
+    var name by mutableStateOf<UiText>(UiText.Empty)
         private set
 
-    var surname by mutableStateOf<UiText>("".asUiText())
+    var surname by mutableStateOf<UiText>(UiText.Empty)
         private set
 
-    var parentName by mutableStateOf<UiText>("".asUiText())
+    var parentName by mutableStateOf<UiText>(UiText.Empty)
         private set
 
-    var location by mutableStateOf<UiText>("".asUiText())
+    var location by mutableStateOf<UiText>(UiText.Empty)
         private set
 
-    var donorsRequired by mutableStateOf("".asUiText())
+    var donorsRequired by mutableStateOf(UiText.Empty)
         private set
 
     var bloodExpanded by mutableStateOf(false)
@@ -55,7 +56,7 @@ class ModifyPostViewModel @Inject constructor(
     var blood by mutableStateOf(Blood.fromString("A+"))
         private set
 
-    var description by mutableStateOf<UiText>("".asUiText())
+    var description by mutableStateOf<UiText>(UiText.Empty)
         private set
 
     var agreement1Checked by mutableStateOf(false)
@@ -64,16 +65,14 @@ class ModifyPostViewModel @Inject constructor(
     var agreement2Checked by mutableStateOf(false)
         private set
 
-    private val purpose = savedStateHandle.get<ModifyPostActivity.Purpose>(ModifyPostActivity.PURPOSE)!!
+    private val intention = savedStateHandle.get<ModifyPostActivity.Intention>(ModifyPostActivity.Intention)!!
     private var pictureChanged = false
 
     init {
-        viewModelScope.registerExceptionHandler { e ->
-            mTaskFlow += ModifyPostTask.ShowError(e.uiText)
-        }
+        viewModelScope.registerExceptionHandler { e -> mTaskFlow += ModifyPostTask.ShowError(e.uiText) }
 
-        if (purpose is ModifyPostActivity.Purpose.EditPost) {
-            val post = purpose.post
+        if (intention is ModifyPostActivity.Intention.EditPost) {
+            val post = intention.post
 
             val mutable = post.mutable
             val data = post.data
@@ -84,6 +83,7 @@ class ModifyPostViewModel @Inject constructor(
             parentName = mutable.parentName.asUiText()
             location = mutable.location.asUiText()
             donorsRequired = mutable.donorsRequired.toString().asUiText()
+            blood = mutable.blood
             description = mutable.description.asUiText()
         }
     }
@@ -130,27 +130,22 @@ class ModifyPostViewModel @Inject constructor(
                     parentName = parentName.toString(),
                     location = location.toString(),
                     blood = blood,
-                    donorsRequired = if (donors == "") 0 else donors.toInt(),
+                    donorsRequired = donors.ifEmpty { "0" }.toInt(),
                     description = description.toString()
                 )
 
-                when (purpose) {
-                    is ModifyPostActivity.Purpose.CreatePost -> {
+                when (intention) {
+                    is ModifyPostActivity.Intention.CreatePost -> {
                         val id = createPost(post)
-
-                        if (pictureUri != null) {
-                            updatePostPicture(id, pictureUri!!)
-                        }
+                        if (pictureUri != null) updatePostPicture(id, pictureUri!!)
                     }
 
-                    is ModifyPostActivity.Purpose.EditPost -> {
-                        val id = purpose.post.data.id
+                    is ModifyPostActivity.Intention.EditPost -> {
+                        val id = intention.post.data.id
 
                         val updatePostJob = launch { updatePost(id, post) }
-                        val updatePictureJob = if (pictureChanged) {
+                        val updatePictureJob = pictureChanged.ifTrue {
                             launch { updatePostPicture(id, pictureUri!!) }
-                        } else {
-                            null
                         }
 
                         updatePostJob.join()

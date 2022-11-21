@@ -17,6 +17,6 @@ class IntroductionViewModel : BaseViewModel<IntroductionEvent, Nothing>() {
     }
 
     companion object {
-        const val PAGE_COUNT = 3
+        const val PageCount = 3
     }
 }

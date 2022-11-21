@@ -24,7 +24,7 @@ fun PageIndicator(
         modifier = modifier.height(HEIGHT),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        for(i in 0 until pageCount) {
+        repeat(pageCount) { i ->
             val color by animateColorAsState(
                 targetValue = if (i == page) {
                     MaterialTheme.colorScheme.primary

@@ -13,12 +13,11 @@ class LocalUserDto(
 
     var name: String? = null,
     var surname: String? = null,
-    var displayName: String? = null,
     var sex: Sex? = null,
     var blood: BloodDto? = null,
-    var legalId: String? = null,
     var isPrivate: Boolean? = null,
-    var savedPosts: List<String>? = null,
+    val savedPosts: List<String> = emptyList(),
+    var donations: List<DonationRecordDto> = emptyList(),
     var points: Int? = null
 ) {
     fun getModel(
@@ -29,12 +28,11 @@ class LocalUserDto(
             surname = surname!!,
             sex = sex!!,
             blood = blood!!.getModel(),
-            legalId = legalId,
             isPrivate = isPrivate!!
         ),
         immutable = LocalUser.Immutable(
-            displayName = displayName!!,
-            savedPosts = savedPosts!!,
+            savedPosts = savedPosts,
+            donations = donations.map(DonationRecordDto::getModel),
             points = points!!
         ),
         data = LocalUser.Data(

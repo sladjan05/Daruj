@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.ui.theme.DarujTheme
 
+// Must be public, for some reason...
 class BottomSheetDialog(
     private val content: @Composable BoxScope.() -> Unit
 ) : BottomSheetDialogFragment() {
@@ -74,7 +75,5 @@ fun BottomSheetDialog(
     val context = LocalContext.current
     context as AppCompatActivity
 
-    LaunchedEffect(Unit) {
-        controller.init(content)
-    }
+    LaunchedEffect(Unit) { controller.init(content) }
 }

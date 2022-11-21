@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +18,9 @@ import coil.compose.AsyncImage
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.presentation.ui.theme.full
 import net.jsoft.daruj.common.presentation.ui.theme.mShapes
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.ifFalse
+import net.jsoft.daruj.common.util.rememberMutableStateOf
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun ProfilePicture(
@@ -35,9 +35,7 @@ fun ProfilePicture(
             ),
         contentAlignment = Alignment.Center
     ) {
-        var isLoaded by rememberSaveable {
-            mutableStateOf(false)
-        }
+        var isLoaded by rememberMutableStateOf(false)
 
         AsyncImage(
             model = pictureUri,
@@ -45,21 +43,12 @@ fun ProfilePicture(
             modifier = Modifier
                 .fillMaxHeight(if (isLoaded) 1f else 0.7f)
                 .clip(MaterialTheme.mShapes.full),
-            contentScale = if (isLoaded) {
-                ContentScale.Crop
-            } else {
-                ContentScale.Fit
-            },
+            contentScale = if (isLoaded) ContentScale.Crop else ContentScale.Fit,
             error = painterResource(R.drawable.ic_logo),
             placeholder = painterResource(R.drawable.ic_logo),
-            onSuccess = {
-                isLoaded = true
-            },
-            colorFilter = if (isLoaded) {
-                null
-            } else {
-                ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface)
-            }
+            onSuccess = { isLoaded = true },
+            onLoading = { isLoaded = false },
+            colorFilter = isLoaded.ifFalse { ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface) }
         )
     }
 }

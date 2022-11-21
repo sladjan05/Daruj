@@ -5,6 +5,5 @@ import net.jsoft.daruj.common.misc.UiText
 sealed interface ModifyPostTask {
     object Close : ModifyPostTask
 
-    class ShowError(val message: UiText) : ModifyPostTask
-    class ShowInfo(val message: UiText) : ModifyPostTask
+    data class ShowError(val message: UiText) : ModifyPostTask
 }

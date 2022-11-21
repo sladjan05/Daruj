@@ -74,47 +74,47 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
 
     // AndroidX
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
     // Android Appcompat
-    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
 
     // Compose
-    implementation 'androidx.compose.ui:ui:1.3.0-beta01'
-    implementation 'androidx.compose.material3:material3:1.0.0-beta01'
+    implementation 'androidx.compose.ui:ui:1.3.0-beta02'
+    implementation 'androidx.compose.material3:material3:1.0.0-beta02'
     implementation 'androidx.compose.ui:ui-tooling-preview:1.2.1'
     implementation 'androidx.activity:activity-compose:1.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
-    implementation 'androidx.navigation:navigation-compose:2.5.1'
+    implementation 'androidx.navigation:navigation-compose:2.5.2'
     implementation 'androidx.compose.material:material-icons-extended:1.2.1'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-    implementation 'androidx.navigation:navigation-compose:2.5.1'
+    implementation 'androidx.navigation:navigation-compose:2.5.2'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.3.0-beta01'
-    debugImplementation 'androidx.compose.ui:ui-tooling:1.3.0-beta01'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest:1.3.0-beta01'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.3.0-beta02'
+    debugImplementation 'androidx.compose.ui:ui-tooling:1.3.0-beta02'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest:1.3.0-beta02'
     androidTestImplementation 'com.google.truth:truth:1.1.3'
 
     // Dagger - Hilt
-    implementation 'com.google.dagger:hilt-android:2.42'
-    kapt 'com.google.dagger:hilt-compiler:2.42'
+    implementation 'com.google.dagger:hilt-android:2.43.2'
+    kapt 'com.google.dagger:hilt-compiler:2.43.2'
 
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.42'
-    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.42'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.43.2'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.43.2'
 
-    testImplementation 'com.google.dagger:hilt-android-testing:2.42'
-    kaptTest 'com.google.dagger:hilt-compiler:2.42'
+    testImplementation 'com.google.dagger:hilt-android-testing:2.43.2'
+    kaptTest 'com.google.dagger:hilt-compiler:2.43.2'
 
     // DataStore
     implementation 'androidx.datastore:datastore-core:1.0.0'
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
-    implementation 'com.google.protobuf:protobuf-javalite:3.19.2'
+    implementation 'com.google.protobuf:protobuf-javalite:3.21.6'
 
     // Kotlin
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.7.10'
@@ -129,12 +129,13 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:30.2.0')
+    implementation platform('com.google.firebase:firebase-bom:30.5.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-functions-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -143,19 +144,19 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0'
 
     // Coil
-    implementation 'io.coil-kt:coil-compose:2.1.0'
+    implementation 'io.coil-kt:coil-compose:2.2.1'
 
     // Gson
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     // Cropping Library
     implementation 'com.github.krokyze:ucropnedit:2.2.8'
 
     // Accompanist
     implementation 'com.google.accompanist:accompanist-swiperefresh:0.26.1-alpha'
-    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.17.0'
-    implementation 'com.google.accompanist:accompanist-navigation-animation:0.24.13-rc'
-    implementation 'com.google.accompanist:accompanist-pager:0.22.0-rc'
+    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.25.1'
+    implementation 'com.google.accompanist:accompanist-navigation-animation:0.25.1'
+    implementation 'com.google.accompanist:accompanist-pager:0.25.1'
     implementation 'com.google.accompanist:accompanist-permissions:0.26.2-beta'
 
     // WorkManager

@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import net.jsoft.daruj.common.domain.repository.AuthRepository
+import net.jsoft.daruj.auth.domain.repository.AuthRepository
 import net.jsoft.daruj.auth.domain.usecase.InitializeAuthenticatorUseCase
 import net.jsoft.daruj.auth.domain.usecase.SendSMSVerificationUseCase
 import net.jsoft.daruj.common.domain.usecase.HasCompletedRegistrationUseCase
@@ -15,8 +15,8 @@ import net.jsoft.daruj.common.misc.Country
 import net.jsoft.daruj.common.misc.UiText
 import net.jsoft.daruj.common.misc.asUiText
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.utils.plusAssign
-import net.jsoft.daruj.common.utils.uiText
+import net.jsoft.daruj.common.util.plusAssign
+import net.jsoft.daruj.common.util.uiText
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,12 +33,10 @@ class PhoneNumberViewModel @Inject constructor(
     var countryExpanded by mutableStateOf(false)
         private set
 
-    var dialCode by mutableStateOf(
-        Country.BA.dialCode.removePrefix("+").asUiText()
-    )
+    var dialCode by mutableStateOf(Country.BA.dialCode.removePrefix("+").asUiText())
         private set
 
-    var phoneNumber by mutableStateOf("".asUiText())
+    var phoneNumber by mutableStateOf(UiText.Empty)
         private set
 
     val fullPhoneNumber: UiText
@@ -59,23 +57,18 @@ class PhoneNumberViewModel @Inject constructor(
                 country = event.country
                 setExpanded()
 
-                if (country != null) {
-                    dialCode = country!!.dialCode.removePrefix("+").asUiText()
-                }
+                if (country != null) dialCode = country!!.dialCode.removePrefix("+").asUiText()
             }
 
             is PhoneNumberEvent.DialCodeChange -> {
                 if (!event.dialCode.isDigitsOnly()) return
 
                 dialCode = event.dialCode.asUiText()
-                country = Country.values().find { country ->
-                    country.dialCode == "+" + event.dialCode
-                }
+                country = Country.values().find { country -> country.dialCode == "+" + event.dialCode }
             }
 
             is PhoneNumberEvent.PhoneNumberChange -> {
                 if (!event.phoneNumber.isDigitsOnly()) return
-
                 phoneNumber = event.phoneNumber.asUiText()
             }
 
@@ -83,8 +76,8 @@ class PhoneNumberViewModel @Inject constructor(
                 initializeAuthenticator(Activity::class to event.activity)
 
                 when (sendSMSVerification(fullPhoneNumber.toString())) {
-                    AuthRepository.VerificationState.SENT_SMS -> mTaskFlow += PhoneNumberTask.ShowVerificationScreen
-                    AuthRepository.VerificationState.AUTHENTICATED -> {
+                    AuthRepository.VerificationState.SentSms -> mTaskFlow += PhoneNumberTask.ShowVerificationScreen
+                    AuthRepository.VerificationState.Authenticated -> {
                         mTaskFlow += if (hasCompletedRegistration()) {
                             PhoneNumberTask.ShowMainScreen
                         } else {

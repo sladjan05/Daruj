@@ -19,9 +19,9 @@ import net.jsoft.daruj.R
 import net.jsoft.daruj.auth.presentation.AuthActivity
 import net.jsoft.daruj.common.presentation.component.PrimaryButton
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
-import net.jsoft.daruj.common.utils.NoOverscrollEffect
-import net.jsoft.daruj.common.utils.switchActivity
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.NoOverscrollEffect
+import net.jsoft.daruj.common.util.switchActivity
+import net.jsoft.daruj.common.util.value
 import net.jsoft.daruj.introduction.presentation.component.IntroductionIllustration
 import net.jsoft.daruj.introduction.presentation.component.PageIndicator
 import net.jsoft.daruj.introduction.presentation.viewmodel.IntroductionEvent
@@ -41,9 +41,7 @@ fun IntroductionScreen(
     val pagerState = rememberPagerState(initialPage = viewModel.page)
     val currentPage by derivedStateOf { pagerState.currentPage }
 
-    LaunchedEffect(currentPage) {
-        viewModel.onEvent(IntroductionEvent.PageChange(currentPage))
-    }
+    LaunchedEffect(currentPage) { viewModel.onEvent(IntroductionEvent.PageChange(currentPage)) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -70,7 +68,7 @@ fun IntroductionScreen(
 
         NoOverscrollEffect {
             HorizontalPager(
-                count = IntroductionViewModel.PAGE_COUNT,
+                count = IntroductionViewModel.PageCount,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -92,23 +90,18 @@ fun IntroductionScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             PageIndicator(
-                pageCount = IntroductionViewModel.PAGE_COUNT,
+                pageCount = IntroductionViewModel.PageCount,
                 page = viewModel.page,
                 modifier = Modifier.width(125.dp)
             )
 
-            val isLastPage = viewModel.page == (IntroductionViewModel.PAGE_COUNT - 1)
+            val isLastPage = viewModel.page == (IntroductionViewModel.PageCount - 1)
 
             PrimaryButton(
-                text = if (isLastPage) {
-                    R.string.tx_finish.value
-                } else {
-                    R.string.tx_next.value
-                },
+                text = if (isLastPage) R.string.tx_finish.value else R.string.tx_next.value,
                 onClick = {
-                    if (isLastPage) {
-                        context.switchActivity<AuthActivity>()
-                    } else {
+                    if (isLastPage) context.switchActivity<AuthActivity>()
+                    else {
                         val page = viewModel.page + 1
 
                         pageChangeJob?.cancel()

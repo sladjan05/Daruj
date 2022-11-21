@@ -10,13 +10,16 @@ service cloud.firestore {
 
       allow create: if  request.auth != null;
       allow delete: if  request.auth != null && request.auth.uid == resource.data.userId;
-      allow update: if  request.auth != null                        &&
-                        request.auth.uid == resource.data.userId    &&
-                        !("userId" in request.resource.data)        &&
-                        !("timestamp" in request.resource.data)     &&
-                        !("donorCount" in request.resource.data)    &&
-                        !("commentCount" in request.resource.data)  &&
-                        !("shareCount" in request.resource.data);
+      allow update: if  request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    match /userData/{userId} {
+      allow read, write:  if  request.auth != null && request.auth.uid == userId;
+    }
+
+    match /comments/{commentId} {
+      allow read:   if request.auth != null;
+      allow write:  if request.auth != null && request.auth.uid == request.resource.data.userId;
     }
   }
 }

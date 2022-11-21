@@ -1,10 +1,12 @@
 package net.jsoft.daruj.common.presentation.screen
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import net.jsoft.daruj.common.presentation.component.TitleSubtitle
 import net.jsoft.daruj.common.presentation.ui.theme.spacing
 
@@ -16,6 +18,9 @@ fun ScreenWithTitleAndSubtitle(
     screenBox: @Composable BoxScope.() -> Unit = {},
     content: @Composable BoxScope.() -> Unit
 ) {
+    val context = LocalContext.current
+    context as Activity
+
     Box(
         modifier = modifier
     ) {

@@ -13,30 +13,33 @@ import java.time.ZonedDateTime
 @Keep
 class PostDto(
     @DocumentId
-    val id: String? = null,
+    var id: String? = null,
 
-    val userId: String? = null,
-    val timestamp: Timestamp? = null,
+    var userId: String? = null,
+    var timestamp: Timestamp? = null,
 
+    var name: String? = null,
+    var surname: String? = null,
+    var parentName: String? = null,
 
-    val name: String? = null,
-    val surname: String? = null,
-    val parentName: String? = null,
+    var searchCriteria: String? = null,
 
-    val location: String? = null,
-    val donorsRequired: Int? = null,
-    val blood: BloodDto? = null,
-    val description: String? = null,
+    var location: String? = null,
+    var donorsRequired: Int? = null,
+    var blood: BloodDto? = null,
+    var description: String? = null,
 
-    val commentCount: Int? = null,
-    val shareCount: Int? = null,
-    val donorCount: Int? = null
-
+    var shareCount: Int? = null,
+    var donorCount: Int? = null
 ) {
     fun getModel(
         user: User,
         pictureUri: Uri?,
-        isSaved: Boolean
+        isMyPost: Boolean,
+        receiptCount: Int,
+        isSaved: Boolean,
+        isBloodCompatible: Boolean,
+        commentCount: Int
     ) = Post(
         mutable = Post.Mutable(
             name = name!!,
@@ -53,14 +56,17 @@ class PostDto(
                 timestamp!!.toDate().toInstant(),
                 ZoneId.of("UTC")
             ),
-            commentCount = commentCount!!,
+            commentCount = commentCount,
             shareCount = shareCount!!,
             donorCount = donorCount!!
         ),
         data = Post.Data(
             id = id!!,
             pictureUri = pictureUri,
-            isSaved = isSaved
+            isMyPost = isMyPost,
+            receiptCount = receiptCount,
+            isSaved = isSaved,
+            isBloodCompatible = isBloodCompatible
         )
     )
 }

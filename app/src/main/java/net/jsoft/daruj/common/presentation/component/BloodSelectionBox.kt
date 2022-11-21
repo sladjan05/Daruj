@@ -11,7 +11,7 @@ import net.jsoft.daruj.R
 import net.jsoft.daruj.common.domain.model.Blood
 import net.jsoft.daruj.common.presentation.ui.theme.bloodRh
 import net.jsoft.daruj.common.presentation.ui.theme.bloodType
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun BloodSelectionBox(

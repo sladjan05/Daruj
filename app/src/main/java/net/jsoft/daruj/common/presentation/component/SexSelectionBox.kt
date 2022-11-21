@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import net.jsoft.daruj.R
 import net.jsoft.daruj.common.domain.model.Sex
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun SexSelectionBox(
@@ -25,8 +25,8 @@ fun SexSelectionBox(
     ProfilePropertiesSelectionBox(
         selectedIndex = selectedSex.ordinal,
         label = when (selectedSex) {
-            Sex.MALE -> R.string.tx_man.value
-            Sex.FEMALE -> R.string.tx_woman.value
+            Sex.Male -> R.string.tx_man.value
+            Sex.Female -> R.string.tx_woman.value
         },
         rows = 1,
         columns = 2,
@@ -38,24 +38,24 @@ fun SexSelectionBox(
         expanded = expanded,
         enabled = enabled,
         labelColor = when (selectedSex) {
-            Sex.MALE -> MaterialTheme.colorScheme.primary
-            Sex.FEMALE -> MaterialTheme.colorScheme.secondary
+            Sex.Male -> MaterialTheme.colorScheme.primary
+            Sex.Female -> MaterialTheme.colorScheme.secondary
         }
     ) { index ->
         val sex = sexes[index]
 
         Icon(
             imageVector = when (sex) {
-                Sex.MALE -> Icons.Default.Male
-                Sex.FEMALE -> Icons.Default.Female
+                Sex.Male -> Icons.Default.Male
+                Sex.Female -> Icons.Default.Female
             },
             contentDescription = when (sex) {
-                Sex.MALE -> R.string.tx_man.value
-                Sex.FEMALE -> R.string.tx_woman.value
+                Sex.Male -> R.string.tx_man.value
+                Sex.Female -> R.string.tx_woman.value
             },
             tint = when (sex) {
-                Sex.MALE -> MaterialTheme.colorScheme.primary
-                Sex.FEMALE -> MaterialTheme.colorScheme.secondary
+                Sex.Male -> MaterialTheme.colorScheme.primary
+                Sex.Female -> MaterialTheme.colorScheme.secondary
             }
         )
     }

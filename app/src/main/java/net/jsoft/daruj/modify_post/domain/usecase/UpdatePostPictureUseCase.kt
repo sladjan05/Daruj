@@ -4,7 +4,6 @@ import android.net.Uri
 import dagger.hilt.android.scopes.ViewModelScoped
 import net.jsoft.daruj.main.domain.repository.PostRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @ViewModelScoped
 class UpdatePostPictureUseCase @Inject constructor(

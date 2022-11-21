@@ -17,22 +17,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import net.jsoft.daruj.R
-import net.jsoft.daruj.common.misc.UCropActivityResultContract
-import net.jsoft.daruj.common.utils.clickable
-import net.jsoft.daruj.common.utils.createCacheFile
-import net.jsoft.daruj.common.utils.value
-import java.util.*
+import net.jsoft.daruj.common.misc.UCropContract
+import net.jsoft.daruj.common.util.clickable
+import net.jsoft.daruj.common.util.createUniqueCacheFile
+import net.jsoft.daruj.common.util.value
 
 @Composable
 fun PictureBottomSheetDialog(
     controller: BottomSheetDialogController,
-    onPictureChange: (uri: Uri) -> Unit
+    onPictureChange: (uri: Uri) -> Unit,
+    contract: UCropContract = UCropContract.ProfilePictureRatio()
 ) {
     val context = LocalContext.current
 
-    val cropPictureLauncher = rememberLauncherForActivityResult(
-        contract = UCropActivityResultContract()
-    ) { uri ->
+    val cropPictureLauncher = rememberLauncherForActivityResult(contract) { uri ->
         if (uri != null) {
             controller.dismiss()
             onPictureChange(uri)
@@ -40,7 +38,7 @@ fun PictureBottomSheetDialog(
     }
 
     val takenPictureUri = remember {
-        val file = context.createCacheFile("${UUID.randomUUID()}.png")
+        val file = context.createUniqueCacheFile("png")
 
         FileProvider.getUriForFile(
             context,

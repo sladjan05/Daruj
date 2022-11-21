@@ -11,19 +11,32 @@ data class Blood(
     val rh: RH
 ) : Parcelable {
 
+    fun canDonateTo(other: Blood): Boolean {
+        if(rh == RH.Positive && other.rh == RH.Negative) return false
+
+        return when {
+            type == Type.Zero -> true
+            type == Type.A && other.type in arrayOf(Type.A, Type.AB) -> true
+            type == Type.B && other.type in arrayOf(Type.B, Type.AB) -> true
+            type == Type.AB && other.type == Type.AB -> true
+
+            else -> false
+        }
+    }
+
     override fun toString(): String {
-        return "${type}${rh}"
+        return "$type$rh"
     }
 
     enum class Type {
-        ZERO,
+        Zero,
         A,
         B,
         AB;
 
         override fun toString(): String {
             return when (this) {
-                ZERO -> "0"
+                Zero -> "0"
                 A -> "A"
                 B -> "B"
                 AB -> "AB"
@@ -32,13 +45,13 @@ data class Blood(
     }
 
     enum class RH {
-        POSITIVE,
-        NEGATIVE;
+        Positive,
+        Negative;
 
         override fun toString(): String {
             return when (this) {
-                POSITIVE -> "+"
-                NEGATIVE -> "-"
+                Positive -> "+"
+                Negative -> "-"
             }
         }
     }

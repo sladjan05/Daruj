@@ -26,11 +26,10 @@ class UpdateLocalUserWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = withContext(dispatcherProvider.io) {
         try {
-            val localUserJson = inputData.getString(LOCAL_USER_JSON)!!
+            val localUserJson = inputData.getString(LocalUserJson)!!
             val localUser = jsonParser.fromJson<LocalUser.Mutable>(localUserJson)
 
             userApi.updateLocalUser(localUser)
-
             Result.success()
         } catch (e: Exception) {
             Result.failure()
@@ -38,6 +37,7 @@ class UpdateLocalUserWorker @AssistedInject constructor(
     }
 
     companion object {
-        const val LOCAL_USER_JSON = "LOCAL_USER"
+        const val WorkName = "UpdateLocalUser"
+        const val LocalUserJson = "LocalUserJson"
     }
 }

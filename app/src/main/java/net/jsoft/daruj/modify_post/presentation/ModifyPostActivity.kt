@@ -2,48 +2,38 @@ package net.jsoft.daruj.modify_post.presentation
 
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 import net.jsoft.daruj.R
-import net.jsoft.daruj.common.utils.setScreenContent
-import net.jsoft.daruj.common.utils.value
+import net.jsoft.daruj.common.util.setScreenContent
+import net.jsoft.daruj.common.util.value
 import net.jsoft.daruj.main.domain.model.Post
 import net.jsoft.daruj.modify_post.presentation.screen.ModifyPostScreen
 
 @AndroidEntryPoint
-class ModifyPostActivity : ComponentActivity() {
+class ModifyPostActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val extras = intent.extras!!
-        val purpose = extras.get(PURPOSE) as Purpose
+        val intention = extras.get(Intention) as Intention
 
-        setScreenContent {
-            ModifyPostScreen(
-                title = when (purpose) {
-                    is Purpose.CreatePost -> R.string.tx_create_new_post.value
-                    is Purpose.EditPost -> R.string.tx_edit_post.value
-                },
-                buttonText = when (purpose) {
-                    is Purpose.CreatePost -> R.string.tx_create_post.value
-                    is Purpose.EditPost -> R.string.tx_save.value
-                }
-            )
-        }
+        setScreenContent { ModifyPostScreen(intention) }
     }
 
     @Parcelize
-    sealed interface Purpose : Parcelable {
-        @Parcelize
-        object CreatePost : Purpose, Parcelable
+    sealed interface Intention : Parcelable {
 
         @Parcelize
-        class EditPost(val post: Post) : Purpose, Parcelable
+        object CreatePost : Intention, Parcelable
+
+        @Parcelize
+        class EditPost(val post: Post) : Intention, Parcelable
     }
 
     companion object {
-        const val PURPOSE = "PURPOSE"
+        const val Intention = "intention"
     }
 }

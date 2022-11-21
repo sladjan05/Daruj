@@ -1,37 +1,38 @@
 package net.jsoft.daruj.donate_blood.presentation.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import net.jsoft.daruj.common.domain.usecase.GetPostUseCase
 import net.jsoft.daruj.common.presentation.viewmodel.LoadingViewModel
-import net.jsoft.daruj.common.utils.plusAssign
-import net.jsoft.daruj.common.utils.uiText
+import net.jsoft.daruj.common.util.plusAssign
+import net.jsoft.daruj.common.util.uiText
+import net.jsoft.daruj.donate_blood.domain.usecase.SendReceiptApprovalRequestUseCase
 import net.jsoft.daruj.donate_blood.presentation.DonateBloodActivity
 import net.jsoft.daruj.main.domain.model.Post
 import javax.inject.Inject
 
 @HiltViewModel
 class DonateBloodViewModel @Inject constructor(
-    //savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
+    private val sendReceiptApprovalRequest: SendReceiptApprovalRequestUseCase
+) : LoadingViewModel<DonateBloodEvent, DonateBloodTask>() {
 
-    //private val getPost: GetPostUseCase
-) : LoadingViewModel<Nothing, DonateBloodTask>() {
-
-    var post by mutableStateOf<Post?>(null)
-        private set
+    val post = savedStateHandle.get<Post>(DonateBloodActivity.Post)!!
 
     init {
-        viewModelScope.registerExceptionHandler { e ->
-            mTaskFlow += DonateBloodTask.ShowError(e.uiText)
-        }
-
-        //val postId = savedStateHandle.get<String>(DonateBloodActivity.POST_ID)!!
-        //viewModelScope.loadSafely { post = getPost(postId) }
+        viewModelScope.registerExceptionHandler { e -> mTaskFlow += DonateBloodTask.ShowError(e.uiText) }
     }
 
-    override fun onEvent(event: Nothing) = Unit
+    override fun onEvent(event: DonateBloodEvent) {
+        when (event) {
+            is DonateBloodEvent.PicturePick -> {
+                val postId = post.data.id
+
+                viewModelScope.loadSafely("SEND_APPROVAL_$postId") {
+                    sendReceiptApprovalRequest(postId, event.uri)
+                    mTaskFlow += DonateBloodTask.Sent
+                }
+            }
+        }
+    }
 }

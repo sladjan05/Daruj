@@ -1,20 +1,22 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
-export const getUser = functions.https
-    .onCall(async (data, context) => {
-        const userDocument = await admin
-            .firestore()
-            .doc(`/users/${data}`)
-            .get();
+import { getDisplayName } from "./getDisplayName";
 
-        const user = userDocument.data();
+export const getUser = functions.https
+    .onCall(async (userId, context) => {
+        const userSnapshot = await admin.firestore()
+                                        .collection("users")
+                                        .doc(userId.toString())
+                                        .get();
+
+        const userData = userSnapshot.data()!;
         
         return JSON.stringify({
-            id: data,
-            displayName: user!.displayName,
-            sex: user!.sex,
-            blood: user!.blood,
-            points: user!.points
+            id: userId,
+            displayName: getDisplayName(userSnapshot),
+            sex: userData.sex,
+            blood: userData.blood,
+            points: userData.points
         });
     });

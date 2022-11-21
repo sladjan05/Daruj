@@ -5,8 +5,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import dagger.Module
@@ -20,7 +22,7 @@ import javax.inject.Singleton
 object FirebaseModule {
 
     private const val USE_EMULATORS = true
-    private const val HOST = "172.16.20.253"
+    private const val HOST = "192.168.102.192"
 
     private const val AUTH_PORT = 9099
     private const val FIRESTORE_PORT = 8081
@@ -30,7 +32,6 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
-        Firebase.app
         return Firebase.auth.apply {
             if (USE_EMULATORS) useEmulator(HOST, AUTH_PORT)
         }
@@ -55,8 +56,14 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseFunctions(): FirebaseFunctions {
-        return FirebaseFunctions.getInstance().apply {
+        return Firebase.functions.apply {
             if (USE_EMULATORS) useEmulator(HOST, FUNCTIONS_PORT)
         }
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseMessaging(): FirebaseMessaging {
+        return Firebase.messaging
     }
 }

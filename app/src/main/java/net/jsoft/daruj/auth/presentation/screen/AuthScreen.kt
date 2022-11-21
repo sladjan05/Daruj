@@ -2,7 +2,6 @@ package net.jsoft.daruj.auth.presentation.screen
 
 import android.app.Activity
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,8 +17,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.collectLatest
 import net.jsoft.daruj.auth.presentation.viewmodel.AuthTask
 import net.jsoft.daruj.auth.presentation.viewmodel.AuthViewModel
-import net.jsoft.daruj.common.presentation.component.ErrorInfoSnackbars
-import net.jsoft.daruj.common.utils.rememberSnackbarHostState
+import net.jsoft.daruj.common.presentation.screen.ScreenWithSnackbars
+import net.jsoft.daruj.common.util.rememberSnackbarHostState
 
 @Composable
 @OptIn(ExperimentalAnimationApi::class)
@@ -31,21 +30,19 @@ fun AuthScreen(
 
     val navController = rememberAnimatedNavController()
 
-    val hostState = rememberSnackbarHostState()
     val errorHostState = rememberSnackbarHostState()
 
     LaunchedEffect(Unit) {
         viewModel.taskFlow.collectLatest { task ->
             when (task) {
-                is AuthTask.ShowInfo -> hostState.showSnackbar(task.message.getValue(context))
                 is AuthTask.ShowError -> errorHostState.showSnackbar(task.message.getValue(context))
             }
         }
     }
 
-    Box(
+    ScreenWithSnackbars(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        errorHostState = errorHostState
     ) {
         AnimatedNavHost(
             navController = navController,
@@ -94,11 +91,5 @@ fun AuthScreen(
                 VerificationCodeScreen()
             }
         }
-
-        ErrorInfoSnackbars(
-            infoHostState = hostState,
-            errorHostState = errorHostState,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
     }
 }

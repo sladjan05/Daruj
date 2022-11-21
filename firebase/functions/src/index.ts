@@ -9,5 +9,9 @@ admin.initializeApp({
 export * from "./configureUserCreation";
 export * from "./configureUserUpdate";
 export * from "./configurePostCreation";
+export * from "./configurePostDeletion";
+export * from "./configureCommentCreation";
 export * from "./configureStorage";
+
 export * from "./getUser";
+export * from "./signReceipt"

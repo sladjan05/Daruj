@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.first
 import net.jsoft.daruj.common.domain.model.LocalSettings
 import javax.inject.Inject
@@ -16,7 +15,7 @@ class DataStoreSettingsDatabase @Inject constructor(
     application: Application
 ) : SettingsDatabase {
     private val Context.userPreferencesStore: DataStore<DataStoreLocalSettings> by dataStore(
-        fileName = DATA_STORE_FILE_NAME,
+        fileName = DataStoreFilename,
         serializer = LocalSettingsSerializer
     )
 
@@ -39,6 +38,6 @@ class DataStoreSettingsDatabase @Inject constructor(
     }
 
     companion object {
-        private const val DATA_STORE_FILE_NAME = "local_settings.pb"
+        private const val DataStoreFilename = "local_settings.pb"
     }
 }

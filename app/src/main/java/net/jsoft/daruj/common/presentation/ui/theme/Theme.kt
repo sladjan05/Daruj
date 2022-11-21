@@ -42,10 +42,7 @@ fun DarujTheme(
     content: @Composable () -> Unit
 ) {
     val systemUiController = rememberSystemUiController()
-
-    systemUiController.setSystemBarsColor(
-        color = MaterialTheme.colorScheme.background
-    )
+    systemUiController.setSystemBarsColor(MaterialTheme.colorScheme.background)
 
     CompositionLocalProvider(
         LocalSpacing provides PhoneSpacing,

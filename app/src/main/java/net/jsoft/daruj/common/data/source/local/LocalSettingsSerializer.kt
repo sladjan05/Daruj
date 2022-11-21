@@ -11,9 +11,7 @@ object LocalSettingsSerializer : Serializer<LocalSettings> {
     override val defaultValue: LocalSettings
         get() = LocalSettings.getDefaultInstance()
 
-    override suspend fun readFrom(
-        input: InputStream
-    ): LocalSettings {
+    override suspend fun readFrom(input: InputStream): LocalSettings {
         try {
             return LocalSettings.parseFrom(input)
         } catch (exception: InvalidProtocolBufferException) {

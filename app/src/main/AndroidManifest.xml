@@ -1,51 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="net.jsoft.daruj">
+        xmlns:tools="http://schemas.android.com/tools"
+        package="net.jsoft.daruj">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name="net.jsoft.daruj.DarujApplication"
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Splash"
-        android:usesCleartextTraffic="true"
-        tools:ignore="LockedOrientationActivity"
-        tools:targetApi="31">
+            android:name="net.jsoft.daruj.DarujApplication"
+            android:allowBackup="true"
+            android:dataExtractionRules="@xml/data_extraction_rules"
+            android:fullBackupContent="@xml/backup_rules"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.Splash"
+            android:usesCleartextTraffic="true"
+            tools:ignore="LockedOrientationActivity"
+            tools:targetApi="31">
 
         <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
+                android:name="androidx.startup.InitializationProvider"
+                android:authorities="${applicationId}.androidx-startup"
+                android:exported="false"
+                tools:node="merge">
             <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
+                    android:name="androidx.work.WorkManagerInitializer"
+                    android:value="androidx.startup"
+                    tools:node="remove" />
         </provider>
 
         <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="${applicationId}.provider"
+                android:exported="false"
+                android:grantUriPermissions="true">
             <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_provider_paths" />
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_provider_paths" />
         </provider>
+
+        <service
+                android:name="net.jsoft.daruj.donate_blood.service.FirebaseMessageHandlingService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
-            android:name="net.jsoft.daruj.start.presentation.StartingActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Splash">
+                android:name="net.jsoft.daruj.start.presentation.StartingActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -53,51 +62,63 @@
         </activity>
 
         <activity
-            android:name="net.jsoft.daruj.welcome.presentation.WelcomeActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Daruj" />
+                android:name="net.jsoft.daruj.welcome.presentation.WelcomeActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj" />
 
         <activity
-            android:name="net.jsoft.daruj.introduction.presentation.IntroductionActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Daruj" />
+                android:name="net.jsoft.daruj.introduction.presentation.IntroductionActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj" />
 
         <activity
-            android:name="net.jsoft.daruj.auth.presentation.AuthActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Daruj"
-            android:windowSoftInputMode="adjustResize" />
+                android:name="net.jsoft.daruj.auth.presentation.AuthActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj"
+                android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="net.jsoft.daruj.create_account.presentation.CreateAccountActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Daruj"
-            android:windowSoftInputMode="adjustResize" />
+                android:name="net.jsoft.daruj.create_account.presentation.ModifyAccountActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj"
+                android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="net.jsoft.daruj.main.presentation.MainActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Daruj" />
+                android:name="net.jsoft.daruj.main.presentation.MainActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj" />
 
         <activity
-            android:name=".modify_post.presentation.ModifyPostActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Daruj" />
+                android:name=".modify_post.presentation.ModifyPostActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj" />
 
         <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+                android:name=".donate_blood.presentation.DonateBloodActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj" />
 
         <activity
-            android:name=".common.presentation.CropImageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Daruj" />
+                android:name=".comment.presentation.CommentsActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj"
+                android:windowSoftInputMode="adjustResize" />
+
+        <activity
+                android:name="com.yalantis.ucrop.UCropActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+                android:name=".common.presentation.CropImageActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Daruj" />
     </application>
 </manifest>

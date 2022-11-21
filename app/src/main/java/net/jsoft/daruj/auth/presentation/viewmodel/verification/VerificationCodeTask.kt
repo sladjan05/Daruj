@@ -6,6 +6,6 @@ sealed interface VerificationCodeTask {
     object ShowCreateAccountScreen : VerificationCodeTask
     object ShowMainScreen : VerificationCodeTask
 
-    class ShowError(val message: UiText) : VerificationCodeTask
-    class ShowInfo(val message: UiText) : VerificationCodeTask
+    data class ShowError(val message: UiText) : VerificationCodeTask
+    data class ShowInfo(val message: UiText) : VerificationCodeTask
 }

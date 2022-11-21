@@ -1,10 +1,10 @@
 package net.jsoft.daruj.main.domain.usecase
 
-import dagger.hilt.android.scopes.ViewModelScoped
 import net.jsoft.daruj.common.domain.repository.UserRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class SetPostSavedUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {

@@ -1,7 +1,7 @@
 package net.jsoft.daruj.auth.domain.usecase
 
 import dagger.hilt.android.scopes.ViewModelScoped
-import net.jsoft.daruj.common.domain.repository.AuthRepository
+import net.jsoft.daruj.auth.domain.repository.AuthRepository
 import net.jsoft.daruj.common.exception.WrongCodeException
 import net.jsoft.daruj.common.misc.RegexPatterns
 import javax.inject.Inject
@@ -11,9 +11,7 @@ class VerifyWithCodeUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(code: String) {
-        if (!code.matches(RegexPatterns.VERIFICATION_CODE)) {
-            throw WrongCodeException()
-        }
+        if (!code.matches(RegexPatterns.VerificationCode)) throw WrongCodeException()
 
         authRepository.verifyWithCode(code)
     }
